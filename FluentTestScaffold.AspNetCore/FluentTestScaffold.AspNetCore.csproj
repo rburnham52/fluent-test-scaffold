@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>FluentTestScaffold.AspNetCore</AssemblyName>
+        <RootNamespace>FluentTestScaffold.AspNetCore</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <DebugType>Embedded</DebugType>
+        <EmbedAllSources>true</EmbedAllSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <PackageId>FluentTestScaffold.AspNetCore</PackageId>
+        <Authors>Ryan Burnham</Authors>
+        <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
+        <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
+        <IsPackable>true</IsPackable>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.30" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Autofac" Version="6.4.0" />
+        <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.36" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="Moq" Version="4.17.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="NUnit" Version="3.13.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+        <PackageReference Include="coverlet.collector" Version="6.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Update="Nerdbank.GitVersioning">
+          <Version>3.6.133</Version>
+        </PackageReference>
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FluentTestScaffold.Autofac\FluentTestScaffold.Autofac.csproj" />
+        <ProjectReference Include="..\FluentTestScaffold.Bdd\FluentTestScaffold.Bdd.csproj" />
+        <ProjectReference Include="..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
+        <ProjectReference Include="..\FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\FluentTestScaffold.Nunit\FluentTestScaffold.Nunit.csproj" />
+        <ProjectReference Include="..\FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj" />
+    </ItemGroup>
+
+</Project>
