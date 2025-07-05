@@ -1,5 +1,45 @@
 # IOC
-Fluent Test Scaffold uses the .Net IOC Container by default to register and resolve builders and their dependencies. 
+Fluent Test Scaffold uses the .Net IOC Container by default to register and resolve builders and their dependencies.
+
+## IOC Container Flow
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ffffff','primaryTextColor':'#000000','primaryBorderColor':'#000000','lineColor':'#000000','secondaryColor':'#f0f0f0','tertiaryColor':'#ffffff'}}}%%
+flowchart TB
+    subgraph "Service Registration"
+        TS[TestScaffold] --> CHOOSE{IOC Choice}
+        CHOOSE -->|Default| DOTNET[UseIoc<br/>.NET Container]
+        CHOOSE -->|Autofac| AUTOFAC[UseAutofac<br/>Autofac Container]
+        
+        DOTNET --> REGISTER1[Register Services<br/>AddSingleton/AddTransient]
+        AUTOFAC --> REGISTER2[Register Services<br/>RegisterType/Register]
+        
+        REGISTER1 --> AUTO1[Auto-Register Builders]
+        REGISTER2 --> AUTO2[Auto-Register Builders]
+        
+        AUTO1 --> BUILD1[Build ServiceProvider]
+        AUTO2 --> BUILD2[Build ServiceProvider]
+    end
+    
+    subgraph "Service Resolution"
+        BUILD1 --> SP[IServiceProvider]
+        BUILD2 --> SP
+        
+        SP --> RESOLVE[Resolve T]
+        SP --> BUILDER[UsingBuilder T]
+        
+        RESOLVE --> SERVICE[Your Service]
+        BUILDER --> BUILDERINSTANCE[Builder Instance]
+    end
+    
+    style DOTNET fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+    style AUTOFAC fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
+    style SP fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style SERVICE fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style TS fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+    style CHOOSE fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style BUILDERINSTANCE fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
+```
 
 The IOC can be used to register and construct any services under test.
 The container is built after calling UseIoc which takes an optional parameter that exposes a Service Builder.
@@ -77,12 +117,54 @@ var testScaffold = new TestScaffold()
 ```
 
 ### Custom Service Builders
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ffffff','primaryTextColor':'#000000','primaryBorderColor':'#000000','lineColor':'#000000','secondaryColor':'#f0f0f0','tertiaryColor':'#ffffff'}}}%%
+classDiagram
+    class IocServiceBuilder {
+        <<abstract>>
+        +Container TContainer
+        +RegisterBuilder T()
+        +RegisterSingleton T()
+        +CreateServiceProvider()
+    }
+    
+    class DotnetServiceBuilder {
+        +Container IServiceCollection
+        +RegisterAppServices()
+    }
+    
+    class AutofacServiceBuilder {
+        +Container ContainerBuilder
+        +RegisterAppServices()
+    }
+    
+    class AppServicesBuilder {
+        +RegisterAppServices()
+    }
+    
+    class AutofacAppServicesBuilder {
+        +RegisterAppServices()
+    }
+    
+    IocServiceBuilder <|-- DotnetServiceBuilder
+    IocServiceBuilder <|-- AutofacServiceBuilder
+    DotnetServiceBuilder <|-- AppServicesBuilder
+    AutofacServiceBuilder <|-- AutofacAppServicesBuilder
+    
+    style IocServiceBuilder fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+    style DotnetServiceBuilder fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style AutofacServiceBuilder fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
+    style AppServicesBuilder fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style AutofacAppServicesBuilder fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
+```
+
 Custom Service Builders allow you to combine common blocks of registered services making IOC setup simpler.
 
 You can create a custom service builder by inheriting one of the IOC providers Service Builder base classes
 
 * `DotnetServiceBuilder<T>` - .Net's base service builder. (Default IOC)
-* `AutofacServiceBuilder<T>` - Autofac's base service builder. 
+* `AutofacServiceBuilder<T>` - Autofac's base service builder.
 
 The generic type supplied `T` is the type of your Service Builder and allows for strong typing in the IOC constructor func
 
