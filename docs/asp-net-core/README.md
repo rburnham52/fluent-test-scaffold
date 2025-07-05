@@ -1,3 +1,34 @@
+# ASP.Net Core
+
+The ASP.Net Core extension allows you to write Integration Tests for your Controllers including the full ASP.net stack for Auth Tests.
+
+## ASP.NET Core Integration Flow
+
+```mermaid
+sequenceDiagram
+    participant Test as Integration Test
+    participant TS as TestScaffold
+    participant WHF as WebHostFactory
+    participant APP as ASP.NET App
+    participant CLIENT as HttpClient
+    participant CTRL as Controller
+    participant SVC as Services
+    
+    Test->>TS: UseAspNetCore()
+    TS->>WHF: Configure WebHost
+    WHF->>APP: Start Test Server
+    APP->>CLIENT: Create HttpClient
+    
+    Test->>CLIENT: HTTP Request
+    CLIENT->>CTRL: Route to Controller
+    CTRL->>SVC: Use Registered Services
+    SVC-->>CTRL: Return Data
+    CTRL-->>CLIENT: HTTP Response
+    CLIENT-->>Test: Response for Assertion
+    
+    Note over Test,SVC: Full ASP.NET pipeline with real services
+```
+
 ## Integration testing with an ASP.Net core application
 
 TestScaffold can be used to make testing an ASP.Net core application easier.  The following is a list of steps to build a simple test.  If follows the article [Integration tests in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0).

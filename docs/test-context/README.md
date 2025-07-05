@@ -3,6 +3,47 @@
 The Test Scaffold Context is accessible from the `TestScaffold` and `Builders`.
 It allows for storing data between Builders, Data Templates and Tests.
 
+## Context Data Flow
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ffffff','primaryTextColor':'#000000','primaryBorderColor':'#000000','lineColor':'#000000','secondaryColor':'#f0f0f0','tertiaryColor':'#ffffff'}}}%%
+flowchart TB
+    subgraph "Context Sharing"
+        TSC[TestScaffoldContext<br/>Dictionary string object]
+        
+        TS[TestScaffold] --> TSC
+        B1[Builder A] --> TSC
+        B2[Builder B] --> TSC
+        DT[Data Template] --> TSC
+        TEST[Integration Test] --> TSC
+        
+        TSC --> TS
+        TSC --> B1
+        TSC --> B2
+        TSC --> DT
+        TSC --> TEST
+    end
+    
+    subgraph "Context Operations"
+        SET[Set T value key]
+        GET[Get T key]
+        TRY[TryGetValue T key]
+        FACTORY[Set T Func T]
+        
+        SET --> STORE[Store in Dictionary]
+        GET --> RETRIEVE[Retrieve & Cast]
+        TRY --> SAFE[Safe Retrieval]
+        FACTORY --> LAZY[Lazy Evaluation]
+    end
+    
+    style TSC fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style TS fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+    style B1 fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style B2 fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style DT fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
+    style TEST fill:#ffebee,stroke:#000,stroke-width:2px,color:#000
+```
+
 
 ## Using the Context
 

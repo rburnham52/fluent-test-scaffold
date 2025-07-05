@@ -1,6 +1,39 @@
 # Builders
 Builders enabled the Fluent API and control the Setup for the specific framework the builder is Designed for.
 
+## Builder Workflow
+
+```mermaid
+flowchart TD
+    START[TestScaffold.UsingBuilder&lt;T&gt;] --> RESOLVE[IOC Resolves Builder]
+    RESOLVE --> FLUENT[Builder Fluent API Available]
+    
+    FLUENT --> WITH[With/WithRange Methods]
+    FLUENT --> COND[If/IfElse Methods]
+    FLUENT --> CONTEXT[SetTestContext Methods]
+    
+    WITH --> ENQUEUE[Actions Enqueued]
+    COND --> ENQUEUE
+    CONTEXT --> ENQUEUE
+    
+    ENQUEUE --> SWITCH{Switch Context?}
+    SWITCH -->|UsingBuilder&lt;Other&gt;| AUTOBUILD[Auto Build Current]
+    SWITCH -->|UsingTestScaffold| AUTOBUILD
+    SWITCH -->|Manual Build| BUILD[Build Method Called]
+    
+    AUTOBUILD --> EXECUTE[Execute Queued Actions]
+    BUILD --> EXECUTE
+    
+    EXECUTE --> PERSIST[Persist Changes<br/>e.g., SaveChanges]
+    PERSIST --> RETURN[Return New Context]
+    
+    style START fill:#e3f2fd
+    style FLUENT fill:#f1f8e9
+    style ENQUEUE fill:#fff3e0
+    style EXECUTE fill:#fce4ec
+    style PERSIST fill:#e8f5e8
+```
+
 ```csharp
         new TestScaffold()
             .UseIoc(ctx => ctx.Container.RegisterSingleton(_ => dbContext))
@@ -73,7 +106,29 @@ new TestScaffold()
 
 ### Conditional Build Actions
 
-You can conditionally apply actions to a builder by using the `If` or `IfElse` methods. 
+```mermaid
+flowchart LR
+    subgraph "Conditional Building"
+        COND{Condition}
+        COND -->|true| TRUE[Execute True Action]
+        COND -->|false| FALSE[Execute False Action]
+        COND -->|false + If only| SKIP[Skip Action]
+        
+        TRUE --> ENQUEUE1[Enqueue Action]
+        FALSE --> ENQUEUE2[Enqueue Alternative]
+        SKIP --> CONTINUE[Continue Chain]
+        
+        ENQUEUE1 --> CONTINUE
+        ENQUEUE2 --> CONTINUE
+    end
+    
+    style COND fill:#fff3e0
+    style TRUE fill:#e8f5e8
+    style FALSE fill:#ffebee
+    style SKIP fill:#f5f5f5
+```
+
+You can conditionally apply actions to a builder by using the `If` or `IfElse` methods.
 
 ```csharp
 //This will only enqueue and action if the condition is true.

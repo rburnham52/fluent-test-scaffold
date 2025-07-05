@@ -1,3 +1,36 @@
+# BDD
+
+The BDD extension adds BDD style fluent api to the TestScaffold.
+
+## BDD Workflow
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ffffff','primaryTextColor':'#000000','primaryBorderColor':'#000000','lineColor':'#000000','secondaryColor':'#f0f0f0','tertiaryColor':'#ffffff'}}}%%
+flowchart LR
+    subgraph "BDD Pattern"
+        GIVEN[Given<br/>Setup Context] --> WHEN[When<br/>Execute Action]
+        WHEN --> THEN[Then<br/>Assert Results]
+    end
+    
+    subgraph "FluentTestScaffold BDD"
+        SETUP[TestScaffold Setup] --> BDD_GIVEN[Given - WithBuilder]
+        BDD_GIVEN --> BDD_WHEN[When - ExecuteAction]
+        BDD_WHEN --> BDD_THEN[Then - AssertResult]
+    end
+    
+    GIVEN -.-> BDD_GIVEN
+    WHEN -.-> BDD_WHEN
+    THEN -.-> BDD_THEN
+    
+    style GIVEN fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style WHEN fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style THEN fill:#ffebee,stroke:#000,stroke-width:2px,color:#000
+    style BDD_GIVEN fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
+    style BDD_WHEN fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
+    style BDD_THEN fill:#ffebee,stroke:#000,stroke-width:2px,color:#000
+    style SETUP fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+```
+
 ## Behaviour Driven Development API
 
 `TestScaffold.Bdd` adds basic support for BDD style tests to the TestScaffold. 

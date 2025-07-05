@@ -360,3 +360,6 @@ MigrationBackup/
 
 # JetBrains IDEs
 .idea/
+
+#Specflow Generated Files
+*.feature.cs
