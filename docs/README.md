@@ -48,16 +48,13 @@ flowchart LR
     style SCAFFOLD fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
 ```
 
-When a scenario requires testing multiple components working together then we are writing Integration Tests.
-We often mistake Integration Tests for Unit tests.
+Integration Tests are often mistaken for Unit tests. Integration Tests focus on testing the interaction between components that together make up a more complicated workflow. They can often be difficult to create due to their dependencies that often lead to external integrations like a Database. 
+Due to these complexities we often mock these services instead. This can lead to both false positives and false negatives unless you mock the service to respond exactly the same as it would normally.
 
-These are generally higher level components that together make up a more complicated workflow. The can often be difficult to create dependancies that often lead to external integrations like the Database. 
-Due to these complexities we often mock these services instead. This can lead to both false positives and false negatives unless you mock the service to respond exactly the same as it would normally for all methods internal uses of the service.
+The Test Scaffold aims to assist with the setup your services in an environment that matches how it would run normally. 
+This includes using an IOC container to register and resolve dependencies and a Database Builders to help initialise your database state.
 
-The Test Scaffold aims to setup your services in an environment that matches how it would run normally. 
-This includes using an IOC container to register and resolve dependencies and a Database Builders to setup your DBContext.
-
-By setting up the Data Structures in your tests the same way that they are used in production, we can initialize the dependant services in the same manner or with minimal mocking to give a better, more accurate coverage of your code.
+By setting up the Data Structures in your tests the same way that they are used in production, we can initialize any dependant services in the same manner or with minimal mocking to give a more realistic representation of how your application would run.
 
 ## Example
 
