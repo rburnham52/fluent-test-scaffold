@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
-    <ProjectReference Include="..\FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
+    <ProjectReference Include="..\..\FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\FluentTestScaffold.Sample.WebApp\FluentTestScaffold.Sample.WebApp.csproj" />
-    <ProjectReference Include="..\FluentTestScaffold.AspNetCore\FluentTestScaffold.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\FluentTestScaffold.AspNetCore\FluentTestScaffold.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 #
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.EntityFrameworkCore", "FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj", "{DE392251-0100-4E3B-8FBA-D50BC4E89B28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Tests", "FluentTestScaffold.Tests\FluentTestScaffold.Tests.csproj", "{8AD731C9-846A-484A-851A-7AE35E2645FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Tests", "Tests\FluentTestScaffold.Tests\FluentTestScaffold.Tests.csproj", "{8AD731C9-846A-484A-851A-7AE35E2645FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Specflow.Tests", "FluentTestScaffold.Specflow.Tests\FluentTestScaffold.Specflow.Tests.csproj", "{64F1F602-437E-4890-BB47-FBB8F9E04C6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.SpecFlow.Tests", "Tests\FluentTestScaffold.SpecFlow.Tests\FluentTestScaffold.SpecFlow.Tests.csproj", "{64F1F602-437E-4890-BB47-FBB8F9E04C6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Core", "FluentTestScaffold.Core\FluentTestScaffold.Core.csproj", "{64461EB5-C9FB-4CFF-8DF1-1A22C4F1FD5A}"
 EndProject
@@ -19,11 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.AspNetCo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{492423A5-EF68-4399-BD5E-2F375C3349D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample", "FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj", "{0FFDE425-801E-4101-8C37-39A6C17CBAAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample", "Samples\FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj", "{0FFDE425-801E-4101-8C37-39A6C17CBAAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.WebApp", "FluentTestScaffold.Sample.WebApp\FluentTestScaffold.Sample.WebApp.csproj", "{CE4BA711-4E78-491E-BB79-3DED88880D92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.WebApp", "Samples\FluentTestScaffold.Sample.WebApp\FluentTestScaffold.Sample.WebApp.csproj", "{CE4BA711-4E78-491E-BB79-3DED88880D92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.WebApp.Tests", "FluentTestScaffold.Sample.WebApp.Tests\FluentTestScaffold.Sample.WebApp.Tests.csproj", "{9FB93A12-2788-4221-97C6-524A3E5F741F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.WebApp.Tests", "Samples\FluentTestScaffold.Sample.WebApp.Tests\FluentTestScaffold.Sample.WebApp.Tests.csproj", "{9FB93A12-2788-4221-97C6-524A3E5F741F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F577EE9A-0FE6-4D6E-B9F3-606D5C8A2CEA}"
 EndProject

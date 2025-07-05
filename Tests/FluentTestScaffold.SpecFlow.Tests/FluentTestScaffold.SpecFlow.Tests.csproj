@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
+        <ProjectReference Include="..\..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
         <ProjectReference Include="..\FluentTestScaffold.Tests\FluentTestScaffold.Tests.csproj" />
     </ItemGroup>
 

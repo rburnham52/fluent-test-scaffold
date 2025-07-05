@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace FluentTestScaffold.Specflow.Tests.Features
+namespace FluentTestScaffold.SpecFlow.Tests.Features
 {
     using TechTalk.SpecFlow;
     using System;
