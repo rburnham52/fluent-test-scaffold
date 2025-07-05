@@ -35,8 +35,8 @@ namespace FluentTestScaffold.Sample.WebApp.Tests.Features.ShoppingCart
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/ShoppingCart", "Shopping Cart", "\tAs a customer\r\n\tI want to add items to my shopping cart\r\n\tso I can purchase the " +
-                    "items", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/ShoppingCart", "Shopping Cart", "\tAs a customer\n\tI want to add items to my shopping cart\n\tso I can purchase the it" +
+                    "ems", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         

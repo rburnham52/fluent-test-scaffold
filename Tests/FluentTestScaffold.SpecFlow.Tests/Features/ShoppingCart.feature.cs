@@ -35,8 +35,8 @@ namespace FluentTestScaffold.SpecFlow.Tests.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Shopping Cart", "As a User\r\nI want to be able to add an Items to my shopping cart\r\nSo that i can p" +
-                    "urchase them all at once", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Shopping Cart", "As a User\nI want to be able to add an Items to my shopping cart\nSo that i can pur" +
+                    "chase them all at once", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         

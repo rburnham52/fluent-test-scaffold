@@ -35,8 +35,8 @@ namespace FluentTestScaffold.Sample.WebApp.Tests.Features.Users
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/Users", "UserFeatures", "\tAs a user\r\n\tI want to know when I\'m logged into the system\r\n\tSo I can correct in" +
-                    "teract with the system", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/Users", "UserFeatures", "\tAs a user\n\tI want to know when I\'m logged into the system\n\tSo I can correct inte" +
+                    "ract with the system", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         

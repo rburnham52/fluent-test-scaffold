@@ -35,8 +35,8 @@ namespace FluentTestScaffold.Sample.WebApp.Tests.Features.ShoppingCart
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/ShoppingCart", "UnderAgedUser", "\tAs as shop owner\r\n\tI do not want to sell aged restricted items to under aged cus" +
-                    "tomers\r\n\tSo I can be compliant with the law", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features/ShoppingCart", "UnderAgedUser", "\tAs as shop owner\n\tI do not want to sell aged restricted items to under aged cust" +
+                    "omers\n\tSo I can be compliant with the law", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
