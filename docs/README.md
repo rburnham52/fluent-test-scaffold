@@ -64,7 +64,7 @@ By setting up the Data Structures in your tests the same way that they are used 
 dotnet add package FluentTestScaffold.Core
 
 # Install framework-specific package
-dotnet add package FluentTestScaffold.Nunit
+dotnet add package FluentTestScaffold.EntityFrameworkCore
 ```
 
 ## Packages

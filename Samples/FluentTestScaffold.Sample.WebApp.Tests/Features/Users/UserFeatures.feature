@@ -24,6 +24,7 @@ Scenario: When an invalid password is used, then the system should not return an
 	Given the user attempts to sign in with an incorrect password
 	When the user's details are requested
 	Then the system responds with unauthorized
+
 Scenario: When the user has logged out, then the system should not return any information about the user
 	Given the user has logged in
 	And the user logs out
