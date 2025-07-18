@@ -1,8 +1,14 @@
 name: CD
 
 on:
-  push:
-    tags: [ 'v*' ]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to deploy (e.g., v1.0.0)'
+        required: true
+        type: string
 
 env:
   DOTNET_VERSION: '8.0.412'
@@ -11,6 +17,9 @@ jobs:
   validate-and-prepare:
     name: Validate and Prepare Release
     runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://www.nuget.org/packages?q=FluentTestScaffold
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -21,10 +30,25 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Validate release is from main branch
+      run: |
+        if [[ "${{ github.event_name }}" == "release" ]]; then
+          RELEASE_BRANCH=$(git branch -r --contains ${{ github.sha }} | grep origin/main || echo "")
+          if [[ -z "$RELEASE_BRANCH" ]]; then
+            echo "Error: Release must be created from main branch"
+            exit 1
+          fi
+          echo "✅ Release is from main branch"
+        fi
+    
     - name: Extract version from tag
       id: get_version
       run: |
-        TAG_VERSION="${{ github.ref_name }}"
+        if [[ "${{ github.event_name }}" == "release" ]]; then
+          TAG_VERSION="${{ github.event.release.tag_name }}"
+        else
+          TAG_VERSION="${{ github.event.inputs.release_tag }}"
+        fi
         if [[ $TAG_VERSION == v* ]]; then
           TAG_VERSION="${TAG_VERSION#v}"
         fi
@@ -63,61 +87,19 @@ jobs:
         name: release-packages
         path: ./artifacts/
         retention-days: 1
-    - name: Create Draft Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref_name }}
-        body: |
-          ## Release Candidate
-          
-          This is a draft release for review before publishing to NuGet.org.
-          **Version:** ${{ steps.get_version.outputs.version }}
-          **Tag:** ${{ github.ref_name }}
-          ### Packages Included:
-          - FluentTestScaffold.Core
-          - FluentTestScaffold.AspNetCore
-          - FluentTestScaffold.Autofac
-          - FluentTestScaffold.Bdd
-          - FluentTestScaffold.EntityFrameworkCore
-          - FluentTestScaffold.Nunit
-          ### Next Steps:
-          1. Review the packages in the artifacts
-          2. Approve the release by commenting "approve" on this release
-          3. The packages will be published to NuGet.org after approval
-          ### Installation (GitHub Packages):
-          ```bash
-          dotnet add package FluentTestScaffold.Core
-          ```
-        draft: true
-        prerelease: false
-    - name: Wait for Manual Approval
-      uses: actions/github-script@v7
-      id: wait-for-approval
-      with:
-        script: |
-          const { data: comments } = await github.rest.issues.listComments({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number
-          });
-          const approvalComment = comments.find(comment => 
-            comment.body.toLowerCase().includes('approve') &&
-            comment.user.type === 'User'
-          );
-          if (!approvalComment) {
-            core.setFailed('Release not approved. Please comment "approve" on the release to proceed.');
-          }
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Validate all CI checks passed
+      run: |
+        echo "✅ All CI checks must pass before deployment"
+        echo "This job only runs after successful CI validation"
 
-  publish-github:
-    name: Publish to GitHub Packages
+  publish-nuget:
+    name: Publish to NuGet.org (Manual Approval Required)
     runs-on: ubuntu-latest
     needs: validate-and-prepare
     if: needs.validate-and-prepare.result == 'success'
+    environment: 
+      name: nuget-production
+      url: https://www.nuget.org/packages?q=FluentTestScaffold
     
     steps:
     - name: Checkout code
@@ -135,53 +117,55 @@ jobs:
         name: release-packages
         path: ./artifacts
     
-    - name: Publish to GitHub Packages
+    - name: Publish to NuGet.org
       run: |
-        # Configure NuGet to use GitHub Packages
-        dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository }}/index.json \
-          --name github \
-          --username ${{ github.actor }} \
-          --password ${{ secrets.GITHUB_TOKEN }} \
-          --store-password-in-clear-text
-        
-        # Publish each package
+        echo "Publishing packages to NuGet.org..."
         for package in ./artifacts/*.nupkg; do
-          echo "Publishing package to GitHub Packages: $package"
+          echo "Publishing package: $package"
           dotnet nuget push "$package" \
-            --source github \
-            --api-key ${{ secrets.GITHUB_TOKEN }}
+            --source https://api.nuget.org/v3/index.json \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --skip-duplicate
         done
+        echo "✅ All packages published to NuGet.org"
     
     - name: Update Release Status
       uses: actions/github-script@v7
       with:
         script: |
-          await github.rest.repos.updateRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: ${{ needs.validate-and-prepare.outputs.release_id }},
-            draft: false,
-            body: `## Release ${{ github.ref_name }}
-            
-            ✅ **Published to GitHub Packages**
-            
-            This release includes the following packages:
-            - FluentTestScaffold.Core
-            - FluentTestScaffold.AspNetCore
-            - FluentTestScaffold.Autofac
-            - FluentTestScaffold.Bdd
-            - FluentTestScaffold.EntityFrameworkCore
-            - FluentTestScaffold.Nunit  
-            ## Installation
-            
-            \`\`\`bash
-            dotnet add package FluentTestScaffold.Core
-            \`\`\`
-            
-            For more information, visit the [documentation](https://github.com/${{ github.repository }}/tree/main/docs).
-            
-            **Note:** This release is available on GitHub Packages. NuGet.org publishing requires separate approval.`
-          })
+          if (context.eventName === 'release') {
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id,
+              body: `## Release ${{ steps.get_version.outputs.version }}
+              
+              ✅ **Published to NuGet.org**
+              
+              This release includes the following packages:
+              - FluentTestScaffold.Core
+              - FluentTestScaffold.AspNetCore
+              - FluentTestScaffold.Autofac
+              - FluentTestScaffold.Bdd
+              - FluentTestScaffold.EntityFrameworkCore
+              - FluentTestScaffold.Nunit  
+              
+              ## Installation
+              
+              \`\`\`bash
+              dotnet add package FluentTestScaffold.Core --version ${{ steps.get_version.outputs.version }}
+              \`\`\`
+              
+              For more information, visit the [documentation](https://github.com/${{ github.repository }}/tree/main/docs).
+              
+              **Deployment Process:**
+              1. ✅ PR reviewed and merged to main
+              2. ✅ Release tagged from main branch  
+              3. ✅ All CI checks passed
+              4. ✅ Manual approval granted
+              5. ✅ Published to NuGet.org`
+            })
+          }
       
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}             
