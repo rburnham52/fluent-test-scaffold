@@ -23,7 +23,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Required for Nerdbank.GitVersioning
+        fetch-depth: 0
 
     - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
@@ -142,4 +142,4 @@ jobs:
         languages: csharp
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3  
+      uses: github/codeql-action/analyze@v3    

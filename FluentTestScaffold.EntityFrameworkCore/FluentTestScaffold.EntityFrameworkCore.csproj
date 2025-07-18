@@ -27,9 +27,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" Condition="'$(TargetFramework)' == 'net7.0'" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.18" Condition="'$(TargetFramework)' == 'net8.0'" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
-        <PackageReference Update="Nerdbank.GitVersioning">
-          <Version>3.7.115</Version>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

@@ -25,45 +25,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Required for Nerdbank.GitVersioning
+        fetch-depth: 0
         ref: ${{ github.event.inputs.release_tag }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v0.12.0
-      with:
-        versionSpec: '5.12.0'
-    
-    - name: Execute GitVersion
-      uses: gittools/actions/gitversion/execute@v0.12.0
-      with:
-        useConfigFile: true
-        configFilePath: version.json
-    - name: Validate Version Consistency
+    - name: Extract version from tag
+      id: get_version
       run: |
-        # Get the version from GitVersion
-        echo "GitVersion calculated version: ${{ steps.gitversion.outputs.SemVer }}"
-        echo "Release tag: ${{ github.event.inputs.release_tag }}"
-        # Extract version from tag (remove 'v' prefix)
         TAG_VERSION="${{ github.event.inputs.release_tag }}"
         if [[ $TAG_VERSION == v* ]]; then
           TAG_VERSION="${TAG_VERSION#v}"
         fi
-        # Compare versions
-        if [[ "${{ steps.gitversion.outputs.SemVer }}" != "$TAG_VERSION" ]]; then
-          echo "Error: Version mismatch!"
-          echo "GitVersion calculated: ${{ steps.gitversion.outputs.SemVer }}"
-          echo "Tag version: $TAG_VERSION"
-          exit 1
-        fi
-        echo "✅ Version consistency validated"
+        echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
+        echo "Version extracted: $TAG_VERSION"
+    - name: Validate Version Consistency
+      run: |
+        echo "Release tag: ${{ github.event.inputs.release_tag }}"
+        echo "Extracted version: ${{ steps.get_version.outputs.version }}"
+        echo "✅ Version extracted from tag"
     - name: Build and Pack
       run: |
         dotnet restore
-        dotnet build --configuration Release --no-restore --verbosity normal
-        dotnet pack --configuration Release --no-build --output ./artifacts
+        dotnet build --configuration Release --no-restore --verbosity normal -p:Version=${{ steps.get_version.outputs.version }}
+        dotnet pack --configuration Release --no-build --output ./artifacts -p:Version=${{ steps.get_version.outputs.version }}
     - name: Validate Package Versions
       run: |
         echo "Validating package versions..."
@@ -72,13 +58,15 @@ jobs:
           # Extract version from package name
           PACKAGE_VERSION=$(basename "$package" | sed -n 's/.*\.\([0-9]\+\.[0-9]\+\.[0-9]\+.*\)\.nupkg/\1/p')
           echo "Package version: $PACKAGE_VERSION"
-          # Compare with GitVersion
-          if [[ "$PACKAGE_VERSION" != "${{ steps.gitversion.outputs.SemVer }}" ]]; then
+          # Compare with extracted version
+          if [[ "$PACKAGE_VERSION" != "${{ steps.get_version.outputs.version }}" ]]; then
             echo "Error: Package version mismatch!"
             echo "Package: $PACKAGE_VERSION"
-            echo "Expected: ${{ steps.gitversion.outputs.SemVer }}"
+            echo "Expected: ${{ steps.get_version.outputs.version }}"
             exit 1
-        done      echo "✅ All package versions validated"
+          fi
+        done
+        echo "✅ All package versions validated"
     - name: Check NuGet.org for existing version
       run: |
         echo "Checking if version already exists on NuGet.org..."
@@ -130,7 +118,7 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.issue.number,
             body: `## ✅ NuGet.org Publishing Complete
-            **Version:** ${{ needs.validate-release.outputs.version }}
+            **Version:** ${{ steps.get_version.outputs.version }}
             **Tag:** ${{ github.event.inputs.release_tag }}
             All packages have been successfully published to NuGet.org:
             - FluentTestScaffold.Core
@@ -146,4 +134,4 @@ jobs:
             Packages are now available on [NuGet.org](https://www.nuget.org/packages?q=FluentTestScaffold)`
           })
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        

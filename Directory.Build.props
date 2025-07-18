@@ -18,21 +18,13 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- Assembly Version Management -->
-    <AssemblyVersion>$(GitVersionAssemblySemVer)</AssemblyVersion>
-    <FileVersion>$(GitVersionAssemblySemFileVer)</FileVersion>
-    <InformationalVersion>$(GitVersionInformationalVersion)</InformationalVersion>
-    <PackageVersion>$(GitVersionNuGetVersion)</PackageVersion>
-    <!-- Ensure version consistency -->
-    <Version>$(GitVersionNuGetVersion)</Version>
-    <VersionPrefix>$(GitVersionMajorMinorPatch)</VersionPrefix>
-    <VersionSuffix>$(GitVersionPreReleaseTag)</VersionSuffix>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+    <PackageVersion>$(Version)</PackageVersion>
+    <!-- Default version - will be overridden by CI -->
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
-      <PrivateAssets>all</PrivateAssets>
-      <Version>3.7.115</Version>
-    </PackageReference>
-  </ItemGroup>
   <!-- Include README in packages -->
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)docs/README.md" Pack="true" PackagePath="README.md" />

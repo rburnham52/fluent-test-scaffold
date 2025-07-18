@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -36,7 +38,7 @@ jobs:
     - name: Check for mixed line endings
       run: |
         # Check for mixed line endings
-        if grep -r --include="*.cs" --include="*.csproj" --include="*.props" --include="*.xml" -U $'\r\n' .; then
+        if find . -name "*.cs" -o -name "*.csproj" -o -name "*.props" -o -name "*.xml" | xargs file | grep CRLF; then
           echo "Error: Found mixed line endings (CRLF) in files"
           exit 1
         fi
@@ -47,6 +49,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -78,6 +82,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -87,7 +93,7 @@ jobs:
     - name: Check for outdated packages
       run: |
         dotnet tool install --global dotnet-outdated-tool
-        dotnet outdated --fail-on-updates
+        dotnet outdated --upgrade:major --fail-on-updates
     - name: Check for vulnerable packages
       run: |
         dotnet list package --vulnerable
@@ -105,6 +111,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -142,4 +150,4 @@ jobs:
       with:
         name: coverage-report-pr
         path: ./coverage-report/
-        retention-days: 7    
+        retention-days: 7            

@@ -19,9 +19,6 @@
         <PackageReference Include="nunit" Version="3.14.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
-        <PackageReference Update="Nerdbank.GitVersioning">
-          <Version>3.7.115</Version>
-        </PackageReference>
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
 
