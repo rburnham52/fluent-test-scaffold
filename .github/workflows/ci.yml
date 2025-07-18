@@ -28,7 +28,10 @@ jobs:
     - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          ${{ matrix.dotnet-version }}
 
     - name: Restore dependencies
       run: dotnet restore
@@ -62,7 +65,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          ${{ env.DOTNET_VERSION }}
 
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./artifacts
@@ -97,7 +103,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          ${{ env.DOTNET_VERSION }}
 
     - name: Restore dependencies
       run: dotnet restore
@@ -128,7 +137,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          ${{ env.DOTNET_VERSION }}
     
     - name: Restore dependencies
       run: dotnet restore
@@ -145,4 +157,4 @@ jobs:
         languages: csharp
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3        
+      uses: github/codeql-action/analyze@v3            
