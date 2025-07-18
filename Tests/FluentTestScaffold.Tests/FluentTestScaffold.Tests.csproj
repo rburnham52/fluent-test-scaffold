@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     </PropertyGroup>
 
     <ItemGroup>
