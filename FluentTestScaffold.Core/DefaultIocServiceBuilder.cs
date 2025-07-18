@@ -14,7 +14,7 @@ public class DotnetServiceBuilder : DotnetServiceBuilder<DotnetServiceBuilder>
 }
 
 /// <summary>
-/// Default .net IOC Service Builder used to create customer Service Builders. 
+/// Default .net IOC Service Builder used to create customer Service Builders.
 /// </summary>
 /// <typeparam name="TServiceBuilder">Your custom Service Builder type</typeparam>
 public class DotnetServiceBuilder<TServiceBuilder> : IocServiceBuilder<IServiceCollection, TServiceBuilder>

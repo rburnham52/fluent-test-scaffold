@@ -222,7 +222,7 @@ strategy:
    ```bash
    # Test build locally
    dotnet build --configuration Release
-   
+
    # Test packaging
    dotnet pack --configuration Release
    
@@ -277,4 +277,4 @@ For issues with the CI/CD setup:
 1. **Check Documentation**: Review this guide and GitHub Actions docs
 2. **Review Logs**: Examine workflow execution logs
 3. **Community**: Ask questions in GitHub Discussions
-4. **Issues**: Create GitHub issues for bugs or feature requests 
+4. **Issues**: Create GitHub issues for bugs or feature requests  

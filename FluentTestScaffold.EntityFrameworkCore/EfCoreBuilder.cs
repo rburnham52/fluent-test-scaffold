@@ -21,7 +21,7 @@ public class EfCoreBuilder<TDbContext> : EfCoreBuilder<TDbContext, EfCoreBuilder
 }
 
 /// <summary>
-/// Base builder for custom builder implementations. 
+/// Base builder for custom builder implementations.
 /// </summary>
 /// <typeparam name="TDbContext">The DBContext to build</typeparam>
 /// <typeparam name="TBuilder">The type of the Custom Builder</typeparam>

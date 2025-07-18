@@ -24,7 +24,7 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     }
 
     /// <summary>
-    /// Enqueue an action to be applied when Build is called. 
+    /// Enqueue an action to be applied when Build is called.
     /// </summary>
     /// <param name="action"></param>
     protected void Enqueue(Action<IServiceProvider> action)
@@ -96,7 +96,7 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     }
 
     /// <summary>
-    /// Build the current builder actions and return the TestScaffold context. 
+    /// Build the current builder actions and return the TestScaffold context.
     /// </summary>
     /// <returns></returns>
     public virtual TestScaffold Build()
@@ -127,7 +127,7 @@ public interface IBuilder
     TNewBuilder UsingBuilder<TNewBuilder>() where TNewBuilder : IBuilder;
 
     /// <summary>
-    /// Build the current builder actions and return the TestScaffold context. 
+    /// Build the current builder actions and return the TestScaffold context.
     /// </summary>
     /// <returns></returns>
     TestScaffold Build();

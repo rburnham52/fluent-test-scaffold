@@ -14,31 +14,30 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         dotnet-version: [8.0.x]
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Required for Nerdbank.GitVersioning
-    
+
     - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-    
+
     - name: Restore dependencies
       run: dotnet restore
-    
+
     - name: Build
       run: dotnet build --no-restore --configuration Release --verbosity normal
-    
+
     - name: Run tests
       run: dotnet test --no-build --configuration Release --verbosity normal
-    
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
@@ -53,26 +52,26 @@ jobs:
     name: Validate Packages
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
+
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./artifacts
-    
+
     - name: Validate package structure
       run: |
         # Check that all expected packages were created
         ls -la ./artifacts/
-        
+
         # Validate each package
         for package in ./artifacts/*.nupkg; do
           echo "Validating package: $package"
@@ -80,7 +79,6 @@ jobs:
           dotnet tool install -g dotnet-validate
           dotnet validate package "$package"
         done
-    
     - name: Upload packages
       uses: actions/upload-artifact@v4
       with:
@@ -91,28 +89,27 @@ jobs:
   code-coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
+
     - name: Install coverlet.collector
       run: dotnet tool install --global coverlet.collector
-    
+
     - name: Run tests with coverage
       run: |
         dotnet test --collect:"XPlat Code Coverage" --results-directory ./coverage/
-    
+
     - name: Generate coverage report
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool
         reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage-report -reporttypes:Html
-    
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
       with:
@@ -145,4 +142,4 @@ jobs:
         languages: csharp
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3 
+      uses: github/codeql-action/analyze@v3  

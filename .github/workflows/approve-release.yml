@@ -25,37 +25,31 @@ jobs:
     name: Validate Release Approval
     runs-on: ubuntu-latest
     if: github.event.inputs.approve == 'true'
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.release_tag }}
-    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.12.0
       with:
         versionSpec: '5.12.0'
-    
     - name: Execute GitVersion
       uses: gittools/actions/gitversion/execute@v0.12.0
       with:
         useConfigFile: true
         configFilePath: version.json
-    
     - name: Validate Release
       run: |
         echo "Validating release for approval..."
         echo "Tag: ${{ github.event.inputs.release_tag }}"
         echo "GitVersion: ${{ steps.gitversion.outputs.SemVer }}"
         echo "Approved by: ${{ github.actor }}"
-        
         # Validate version consistency
         TAG_VERSION="${{ github.event.inputs.release_tag }}"
         if [[ $TAG_VERSION == v* ]]; then
@@ -66,16 +60,11 @@ jobs:
           echo "❌ Version mismatch!"
           exit 1
         fi
-        
-        echo "✅ Release validation passed"
-    
-    - name: Build and Test
+        echo "✅ Release validation passed"- name: Build and Test
       run: |
         dotnet restore
         dotnet build --configuration Release --no-restore --verbosity normal
-        dotnet test --configuration Release --no-build --verbosity normal
-    
-    - name: Create Approval Record
+        dotnet test --configuration Release --no-build --verbosity normal- name: Create Approval Record
       uses: actions/github-script@v7
       with:
         script: |
@@ -86,33 +75,27 @@ jobs:
             approvedAt: new Date().toISOString(),
             releaseNotes: '${{ github.event.inputs.release_notes }}'
           };
-          
           // Create a comment with approval details
           await github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: context.issue.number,
             body: `## ✅ Release Approved for NuGet.org Publishing
-            
             **Tag:** ${approvalData.tag}
             **Version:** ${approvalData.version}
             **Approved by:** ${approvalData.approvedBy}
             **Approved at:** ${approvalData.approvedAt}
-            
             ${approvalData.releaseNotes ? `**Release Notes:** ${approvalData.releaseNotes}` : ''}
-            
             ### Next Steps:
             1. The release has been validated and approved
             2. You can now trigger the NuGet.org publishing workflow
             3. Use the "Publish to NuGet.org" workflow with the same tag
-            
             ### Validation Results:
             - ✅ Version consistency verified
             - ✅ Build successful
             - ✅ Tests passed
             - ✅ Ready for NuGet.org publishing`
           });
-      
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -120,7 +103,6 @@ jobs:
     name: Reject Release
     runs-on: ubuntu-latest
     if: github.event.inputs.approve == 'false'
-    
     steps:
     - name: Create Rejection Record
       uses: actions/github-script@v7
@@ -131,7 +113,6 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.issue.number,
             body: `## ❌ Release Not Approved for NuGet.org Publishing
-            
             **Tag:** ${{ github.event.inputs.release_tag }}
             **Rejected by:** ${{ github.actor }}
             **Rejected at:** ${new Date().toISOString()}
@@ -143,6 +124,5 @@ jobs:
             - Make necessary changes and create a new release
             - Contact the team for further discussion`
           });
-      
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    

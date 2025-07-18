@@ -1,6 +1,6 @@
 # Data Templates
 
-Data Templates are used to build up the Test Scaffold context large presets of data. 
+Data Templates are used to build up the Test Scaffold context large presets of data.
 It allows the use of multiple Builders to build up common data structures.
 
 ## Data Template Workflow
@@ -13,24 +13,19 @@ sequenceDiagram
     participant DT as Data Template
     participant B1 as Builder A
     participant B2 as Builder B
-    
     Test->>TS: WithTemplate("TemplateName")
     TS->>DTS: FindByName("TemplateName")
     DTS->>DTS: Scan assemblies for [DataTemplate]
     DTS-->>TS: Return MethodInfo
-    
     TS->>DT: Invoke template method
     DT->>TS: UsingBuilder<BuilderA>()
     TS->>B1: Configure data
     B1->>B1: Enqueue actions
-    
     DT->>TS: UsingBuilder<BuilderB>()
     TS->>B2: Configure more data
     B2->>B2: Enqueue actions
-    
     DT-->>TS: Return configured TestScaffold
     TS-->>Test: Ready for test execution
-    
     Note over Test,B2: All builders auto-build when switching context
 ```
 
@@ -74,13 +69,13 @@ new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.DataTemplate
 ```
 
 ## Using a Data Template
-When building the Test Scaffold you can specify the Data Template to use via the `WithTemplate` method. 
+When building the Test Scaffold you can specify the Data Template to use via the `WithTemplate` method.
 
 This will match the Template name to the name of the method that has the `DataTemplate` attribute or to the Name property of the `DataTemplate` attribute.
 
 ```csharp
         var testScaffold = new TestScaffold()
-            .UseIoc(new DefaultIocAppServicesBuilder(new ConfigOptions(){ AutoDiscovery = AutoDiscovery.DataTemplates}), 
+            .UseIoc(new DefaultIocAppServicesBuilder(new ConfigOptions(){ AutoDiscovery = AutoDiscovery.DataTemplates}),
                 ctx =>
                 {
                     ctx.Container.AddSingleton(_ =>  TestDbContextFactory.Create());
@@ -101,13 +96,10 @@ flowchart LR
         PARAMS --> INVOKE[Invoke Template Method]
         INVOKE --> EXECUTE[Execute Template Logic]
     end
-    
     subgraph "Template Method Signature"
         SIG["[DataTemplate]<br/>Method(TestScaffold ts, int p1, Guid p2, string p3)"]
     end
-    
     EXECUTE -.-> SIG
-    
     style CALL fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
     style PARAMS fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
     style SIG fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
@@ -117,7 +109,7 @@ flowchart LR
     style EXECUTE fill:#c8e6c9,stroke:#000,stroke-width:2px,color:#000
 ```
 
-You can pass parameters to a Data Template by using the `WithTemplate` method and passing an optional number of parameters. 
+You can pass parameters to a Data Template by using the `WithTemplate` method and passing an optional number of parameters.
 These parameters must match the order and data type of the parameters on the Data Template method.
 
 ```csharp
@@ -131,7 +123,7 @@ These parameters must match the order and data type of the parameters on the Dat
                 Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
             })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), 
+            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters),
             param1, param2, param3);
 ```
 
@@ -144,7 +136,6 @@ These parameters must match the order and data type of the parameters on the Dat
         testScaffold.TestScaffoldContext.Set(param1, nameof(param1));
         testScaffold.TestScaffoldContext.Set(param2, nameof(param2));
         testScaffold.TestScaffoldContext.Set(param3, nameof(param3));
-        
         return testScaffold;
     }
 ```

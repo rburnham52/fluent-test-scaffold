@@ -103,7 +103,7 @@ namespace FluentTestScaffold.Core
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="testScaffold"></param>
         /// <param name="action"></param>

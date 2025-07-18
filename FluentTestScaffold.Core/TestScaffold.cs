@@ -61,7 +61,7 @@ public class TestScaffold
     }
 
     /// <summary>
-    /// Resolves and switches the Fluent API to a Builder. 
+    /// Resolves and switches the Fluent API to a Builder.
     /// </summary>
     /// <typeparam name="TBuilder">Type of Builder to Resolve</typeparam>
     /// <returns>The resolved builder</returns>

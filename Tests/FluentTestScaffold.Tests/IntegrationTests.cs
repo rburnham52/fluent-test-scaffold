@@ -19,7 +19,7 @@ public class IntegrationTest
 {
     /// <summary>
     /// Example of a more complicated Component Integration Test.
-    /// ShoppingCartService depends on UserContext which depends on AuthService to resolve the user. 
+    /// ShoppingCartService depends on UserContext which depends on AuthService to resolve the user.
     /// -- Setup DB Structure with Custom EFBuilder
     /// -- Setup Dependant AuthServices
     /// -- Setup Ioc & Dependant Services
@@ -36,7 +36,7 @@ public class IntegrationTest
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices(requestContext => requestContext.AuthenticateUser(email, password));
 
                 // Register service under test
@@ -81,7 +81,7 @@ public class IntegrationTest
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices();
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
@@ -107,7 +107,7 @@ public class IntegrationTest
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices();
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();

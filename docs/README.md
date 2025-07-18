@@ -10,13 +10,13 @@ block-beta
   INT["<b>Integration Testing</b><br/>Fluent Test Scaffold (Whitebox Testing)"]
   COMP["<b>Component Testing</b><br/>Individual Components (Mocked dependencies)"]
   UNIT["<b>Unit Testing</b><br/>Isolated Functions"]
-  
+
   style UI fill:#ffcdd2,stroke:#000,stroke-width:2px,color:#000,width:500px
   style INT fill:#c8e6c9,stroke:#000,stroke-width:2px,color:#000,width:500px
   style COMP fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000,width:500px
   style UNIT fill:#e1f5fe,stroke:#000,stroke-width:2px,color:#000,width:500px
 ```
-The Testing Pyramid is a concept that describes the different levels of testing in software development. It emphasizes the importance of having a solid foundation of unit tests, followed by integration tests, and finally end-to-end (E2E) tests. Generally, the higher up the pyramid you go, the more complex and time-consuming the tests become. 
+The Testing Pyramid is a concept that describes the different levels of testing in software development. It emphasizes the importance of having a solid foundation of unit tests, followed by integration tests, and finally end-to-end (E2E) tests. Generally, the higher up the pyramid you go, the more complex and time-consuming the tests become.
 
 Integration tests fit in the middle where they provide more realistic coverage but are often difficult to set up and maintain. **Fluent Test Scaffold** aims to simplify the integration testing process by providing a structured way to set up your test environment and dependencies.
 ## FluentTestScaffold Benefits vs Traditional Mocking
@@ -28,19 +28,20 @@ flowchart LR
         MOCK[Mock Dependencies<br/>❌ Complex Setup<br/>❌ Brittle Tests<br/>❌ False Confidence]
         ISOLATED[Isolated Components<br/>❌ Missing Integration Bugs<br/>❌ Mock Drift Issues]
     end
-    
+
     subgraph "FluentTestScaffold Integration Testing"
         REAL[Real Dependencies<br/>✅ Actual Database<br/>✅ Real Services<br/>✅ True Integration]
         FLUENT[Fluent API<br/>✅ Easy Setup<br/>✅ Readable Tests<br/>✅ Consistent Data]
         SCAFFOLD[Test Scaffold<br/>✅ Reusable Builders<br/>✅ Data Templates<br/>✅ IOC Management]
-        
+
         REAL --> FLUENT
         FLUENT --> SCAFFOLD
     end
-    
+
     MOCK -.->|"FluentTestScaffold<br/>Eliminates"| REAL
     ISOLATED -.->|"Replaced by"| SCAFFOLD
-    
+
+
     style MOCK fill:#ffcdd2,stroke:#000,stroke-width:2px,color:#000
     style ISOLATED fill:#ffcdd2,stroke:#000,stroke-width:2px,color:#000
     style REAL fill:#c8e6c9,stroke:#000,stroke-width:2px,color:#000
@@ -48,10 +49,10 @@ flowchart LR
     style SCAFFOLD fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
 ```
 
-Integration Tests are often mistaken for Unit tests. Integration Tests focus on testing the interaction between components that together make up a more complicated workflow. They can often be difficult to create due to their dependencies that often lead to external integrations like a Database. 
+Integration Tests are often mistaken for Unit tests. Integration Tests focus on testing the interaction between components that together make up a more complicated workflow. They can often be difficult to create due to their dependencies that often lead to external integrations like a Database.
 Due to these complexities we often mock these services instead. This can lead to both false positives and false negatives unless you mock the service to respond exactly the same as it would normally.
 
-The Test Scaffold aims to assist with the setup your services in an environment that matches how it would run normally. 
+The Test Scaffold aims to assist with the setup your services in an environment that matches how it would run normally.
 This includes using an IOC container to register and resolve dependencies and a Database Builders to help initialise your database state.
 
 By setting up the Data Structures in your tests the same way that they are used in production, we can initialize any dependant services in the same manner or with minimal mocking to give a more realistic representation of how your application would run.
@@ -84,10 +85,11 @@ dotnet add package FluentTestScaffold.Nunit
     public void ComponentIntegrationTest_UserCanAddToCart()
     {
         using var dbContext = TestDbContextFactory.Create();
-        
+
         var email = "Jim@test.com";
         var password = "SupperSecretPa$$word";
-        
+
+
         // Arrange
         var userId = Guid.Parse("A5A743C3-A02F-4CA3-94F8-B0ECAF4A6345");
         var testScaffold = new TestScaffold()
@@ -117,14 +119,14 @@ dotnet add package FluentTestScaffold.Nunit
             ))
             .WithShoppingCart(userId)
             .Build();
-        
+
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
+
         // Act
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         shoppingCartService.AddItemToCart(item!.Id);
-        
-        // Assert      
+
+        // Assert
         var cart = dbContext.ShoppingCart.Include(s => s.Inventory).FirstOrDefault(u => u.UserId == userId);
         Assert.IsTrue(cart?.Inventory.Any(i => i.Id == item.Id));
     }
@@ -139,7 +141,7 @@ flowchart TB
         TS[TestScaffold<br/>Entry Point] --> IOC[IOC Container<br/>.NET/Autofac]
         TS --> TSC[TestScaffoldContext<br/>Shared State]
         TS --> DT[Data Templates<br/>Preset Configurations]
-        
+
         IOC --> B1[Builder A<br/>Database Setup]
         IOC --> B2[Builder B<br/>Service Config]
         IOC --> B3[Builder N<br/>Custom Logic]

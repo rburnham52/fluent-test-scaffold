@@ -15,7 +15,7 @@ public class AutofacServiceBuilder : AutofacServiceBuilder<AutofacServiceBuilder
     public AutofacServiceBuilder(ConfigOptions configOptions) : base(configOptions) { }
 }
 /// <summary>
-/// Autofac Service Builder used to create customer Service Builders. 
+/// Autofac Service Builder used to create customer Service Builders.
 /// </summary>
 /// <typeparam name="TServiceBuilder">Your custom Service Builder type</typeparam>
 public class AutofacServiceBuilder<TServiceBuilder> : IocServiceBuilder<ContainerBuilder, TServiceBuilder>

@@ -3,7 +3,7 @@
 The EF Builder allows you to initialize your database using Entity Framework Core.
 
 The default EfCoreBuilder provides some standard method to setup your DBContext.
-Ensure the DBContext is registered into the IOC Container before use. 
+Ensure the DBContext is registered into the IOC Container before use.
 ```csharp
 var dbContext = TestDbContextFactory.Create();
 var userId = Guid.Parse("65579043-8112-480C-A885-C6157947F0F3");
@@ -24,7 +24,7 @@ new TestScaffold()
     ))
     .Build();
 ```
- 
+
 See Tests for more examples.
 ### Using EF Builders
 
@@ -42,13 +42,12 @@ new TestScaffold()
         })
         .UsingBuilder<InventoryBuilder>()
         .With(new Item()
-        { 
+        {
             Id = itemId,
-            Title = Defaults.CatalogueItems.Avengers, 
+            Title = Defaults.CatalogueItems.Avengers,
             Price = 24
         })
         .Build();
-        
 var updatedItem = new Item { Id = itemId, Title = "Updated Item", Price = 30 };
 testScaffold
     .UsingBuilder<InventoryBuilder>()
@@ -81,7 +80,7 @@ new TestScaffold()
       .Build();
 ```
 
-Implement a EF core builder by inheriting `EfCoreBuilder<TDbContext, TBuilder>`. 
+Implement a EF core builder by inheriting `EfCoreBuilder<TDbContext, TBuilder>`.
 `TBuilder` should be the same type as your custom builder to ensure the Fluent Api continues with your Custom Builders Fluent API
 
 **It's convention to start builder methods with the `With` prefix**
@@ -105,7 +104,6 @@ public class InventoryBuilder : EfCoreBuilder<TestDbContext, InventoryBuilder>
 
         return this;
     }
-    
         /// <summary>
     /// Adds a set of sample Items to the DBContext
     /// </summary>

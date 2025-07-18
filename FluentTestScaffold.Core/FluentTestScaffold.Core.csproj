@@ -21,10 +21,10 @@
 
     <ItemGroup>
         <PackageReference Update="Nerdbank.GitVersioning">
-          <Version>3.6.133</Version>
+          <Version>3.7.115</Version>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-        <PackageReference Include="Moq" Version="4.17.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+        <PackageReference Include="Moq" Version="4.20.72" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>

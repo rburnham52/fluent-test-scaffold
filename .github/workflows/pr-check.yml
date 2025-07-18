@@ -11,7 +11,6 @@ jobs:
   format-check:
     name: Check Formatting
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -26,7 +25,6 @@ jobs:
     
     - name: Check formatting
       run: dotnet format --verify-no-changes --verbosity diagnostic
-    
     - name: Check for trailing whitespace
       run: |
         # Check for trailing whitespace in .cs files
@@ -46,7 +44,6 @@ jobs:
   lint-check:
     name: Lint Check
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -56,16 +53,13 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Install StyleCop.Analyzers
+    - name: Install dotnet-format
       run: |
         dotnet tool install --global dotnet-format
-        dotnet tool install --global Microsoft.CodeAnalysis.NetAnalyzers
-    
     - name: Run analyzers
       run: |
         dotnet build --configuration Release --verbosity normal
         dotnet format --verify-no-changes --verbosity diagnostic
-    
     - name: Check for compiler warnings
       run: |
         # Build and capture warnings
@@ -81,7 +75,6 @@ jobs:
   dependency-check:
     name: Dependency Check
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -95,7 +88,6 @@ jobs:
       run: |
         dotnet tool install --global dotnet-outdated-tool
         dotnet outdated --fail-on-updates
-    
     - name: Check for vulnerable packages
       run: |
         dotnet list package --vulnerable
@@ -110,7 +102,6 @@ jobs:
   test-coverage:
     name: Test Coverage Check
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -151,4 +142,4 @@ jobs:
       with:
         name: coverage-report-pr
         path: ./coverage-report/
-        retention-days: 7 
+        retention-days: 7    

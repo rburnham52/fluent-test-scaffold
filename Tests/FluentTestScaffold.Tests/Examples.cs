@@ -20,7 +20,7 @@ namespace FluentTestScaffold.Tests;
 public class Examples
 {
     /// <summary>
-    /// Demonstrates the supported Autofac and .Net Ioc Containers and how to register services 
+    /// Demonstrates the supported Autofac and .Net Ioc Containers and how to register services
     /// </summary>
     public void IOC_Examples()
     {
@@ -59,7 +59,7 @@ public class Examples
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices(requestContext => requestContext.AuthenticateUser(email, password));
 
                 // Register service under test

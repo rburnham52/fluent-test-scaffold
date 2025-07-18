@@ -23,7 +23,7 @@ public class BddTests
             .UsingNunit()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices();
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
@@ -65,7 +65,7 @@ public class BddTests
             .UsingNunit()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices();
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();

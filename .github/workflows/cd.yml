@@ -11,7 +11,6 @@ jobs:
   validate-and-prepare:
     name: Validate and Prepare Release
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -22,30 +21,25 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.12.0
       with:
         versionSpec: '5.12.0'
-    
     - name: Execute GitVersion
       uses: gittools/actions/gitversion/execute@v0.12.0
       with:
         useConfigFile: true
         configFilePath: version.json
-    
     - name: Validate Version Consistency
       run: |
         # Get the version from GitVersion
         echo "GitVersion calculated version: ${{ steps.gitversion.outputs.SemVer }}"
         echo "Tag version: ${{ github.ref_name }}"
-        
         # Extract version from tag (remove 'v' prefix)
         TAG_VERSION="${{ github.ref_name }}"
         if [[ $TAG_VERSION == v* ]]; then
           TAG_VERSION="${TAG_VERSION#v}"
         fi
-        
         # Compare versions
         if [[ "${{ steps.gitversion.outputs.SemVer }}" != "$TAG_VERSION" ]]; then
           echo "Error: Version mismatch!"
@@ -53,15 +47,12 @@ jobs:
           echo "Tag version: $TAG_VERSION"
           exit 1
         fi
-        
         echo "✅ Version consistency validated"
-    
     - name: Build and Pack
       run: |
         dotnet restore
         dotnet build --configuration Release --no-restore --verbosity normal
         dotnet pack --configuration Release --no-build --output ./artifacts
-    
     - name: Validate Package Versions
       run: |
         echo "Validating package versions..."
@@ -70,24 +61,20 @@ jobs:
           # Extract version from package name
           PACKAGE_VERSION=$(basename "$package" | sed -n 's/.*\.\([0-9]\+\.[0-9]\+\.[0-9]\+.*\)\.nupkg/\1/p')
           echo "Package version: $PACKAGE_VERSION"
-          
           # Compare with GitVersion
           if [[ "$PACKAGE_VERSION" != "${{ steps.gitversion.outputs.SemVer }}" ]]; then
             echo "Error: Package version mismatch!"
             echo "Package: $PACKAGE_VERSION"
             echo "Expected: ${{ steps.gitversion.outputs.SemVer }}"
             exit 1
-          fi
-        done
+          fidone
         echo "✅ All package versions validated"
-    
     - name: Upload artifacts for review
       uses: actions/upload-artifact@v4
       with:
         name: release-packages
         path: ./artifacts/
         retention-days: 1
-    
     - name: Create Draft Release
       uses: actions/create-release@v1
       env:
@@ -99,10 +86,8 @@ jobs:
           ## Release Candidate
           
           This is a draft release for review before publishing to NuGet.org.
-          
           **Version:** ${{ steps.gitversion.outputs.SemVer }}
           **Tag:** ${{ github.ref_name }}
-          
           ### Packages Included:
           - FluentTestScaffold.Core
           - FluentTestScaffold.AspNetCore
@@ -110,19 +95,16 @@ jobs:
           - FluentTestScaffold.Bdd
           - FluentTestScaffold.EntityFrameworkCore
           - FluentTestScaffold.Nunit
-          
           ### Next Steps:
           1. Review the packages in the artifacts
           2. Approve the release by commenting "approve" on this release
           3. The packages will be published to NuGet.org after approval
-          
           ### Installation (GitHub Packages):
           ```bash
           dotnet add package FluentTestScaffold.Core
           ```
         draft: true
         prerelease: false
-    
     - name: Wait for Manual Approval
       uses: actions/github-script@v7
       id: wait-for-approval
@@ -133,23 +115,19 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.issue.number
           });
-          
           const approvalComment = comments.find(comment => 
             comment.body.toLowerCase().includes('approve') &&
             comment.user.type === 'User'
           );
-          
           if (!approvalComment) {
             core.setFailed('Release not approved. Please comment "approve" on the release to proceed.');
           }
-      
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-github:
     name: Publish to GitHub Packages
-    runs-on: ubuntu-latest
-    needs: validate-and-prepare
+    runs-on: ubuntu-latestneeds: validate-and-prepare
     if: needs.validate-and-prepare.result == 'success'
     
     steps:
@@ -162,7 +140,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
     - name: Download artifacts
       uses: actions/download-artifact@v4
       with:
@@ -205,8 +182,7 @@ jobs:
             - FluentTestScaffold.Autofac
             - FluentTestScaffold.Bdd
             - FluentTestScaffold.EntityFrameworkCore
-            - FluentTestScaffold.Nunit
-            
+            - FluentTestScaffold.Nunit  
             ## Installation
             
             \`\`\`bash
@@ -219,4 +195,4 @@ jobs:
           })
       
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
