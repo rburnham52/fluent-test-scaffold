@@ -67,6 +67,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Build
+      run: dotnet build --configuration Release --verbosity normal
+
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./artifacts
 
@@ -138,6 +141,9 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
+
+    - name: Build for CodeQL
+      run: dotnet build --configuration Release --verbosity normal
     
     - name: Run security scan
       run: |
@@ -151,4 +157,4 @@ jobs:
         languages: csharp
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3                
+      uses: github/codeql-action/analyze@v3                       
