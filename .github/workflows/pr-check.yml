@@ -38,7 +38,7 @@ jobs:
     - name: Check for mixed line endings
       run: |
         # Check for mixed line endings
-        if find . -name "*.cs" -o -name "*.csproj" -o -name "*.props" -o -name "*.xml" | xargs file | grep CRLF; then
+        if find . -path "./*/obj" -prune -o -path "./*/bin" -prune -o \( -name "*.cs" -o -name "*.csproj" -o -name "*.props" -o -name "*.xml" \) -print | xargs file | grep CRLF; then
           echo "Error: Found mixed line endings (CRLF) in files"
           exit 1
         fi
@@ -93,7 +93,7 @@ jobs:
     - name: Check for outdated packages
       run: |
         dotnet tool install --global dotnet-outdated-tool
-        dotnet outdated --upgrade:major --fail-on-updates
+        dotnet outdated --fail-on-updates
     - name: Check for vulnerable packages
       run: |
         dotnet list package --vulnerable
@@ -150,4 +150,4 @@ jobs:
       with:
         name: coverage-report-pr
         path: ./coverage-report/
-        retention-days: 7            
+        retention-days: 7                        
