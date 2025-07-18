@@ -16,14 +16,24 @@
         <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
         <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
         <IsPackable>true</IsPackable>
-        <TargetFrameworks>net8.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Autofac" Version="6.4.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Autofac" Version="8.0.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Autofac" Version="8.3.0" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     </ItemGroup>
