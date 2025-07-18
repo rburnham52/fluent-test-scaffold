@@ -16,14 +16,11 @@
         <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
         <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
         <IsPackable>true</IsPackable>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <TargetFrameworks>net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.36" Condition="'$(TargetFramework)' == 'net6.0'" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.20" Condition="'$(TargetFramework)' == 'net7.0'" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.18" Condition="'$(TargetFramework)' == 'net8.0'" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.18" />
     </ItemGroup>
 
     <ItemGroup>

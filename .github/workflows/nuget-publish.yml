@@ -105,7 +105,8 @@ jobs:
           dotnet nuget push "$package" \
             --source https://api.nuget.org/v3/index.json \
             --api-key ${{ secrets.NUGET_API_KEY }}
-        done      echo "✅ All packages published to NuGet.org"
+        done
+        echo "✅ All packages published to NuGet.org"
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     
@@ -134,4 +135,4 @@ jobs:
             Packages are now available on [NuGet.org](https://www.nuget.org/packages?q=FluentTestScaffold)`
           })
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          

@@ -16,8 +16,7 @@
         <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
         <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
         <IsPackable>true</IsPackable>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <TargetFrameworks>net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>

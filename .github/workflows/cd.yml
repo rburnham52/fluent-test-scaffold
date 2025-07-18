@@ -115,7 +115,8 @@ jobs:
 
   publish-github:
     name: Publish to GitHub Packages
-    runs-on: ubuntu-latestneeds: validate-and-prepare
+    runs-on: ubuntu-latest
+    needs: validate-and-prepare
     if: needs.validate-and-prepare.result == 'success'
     
     steps:
@@ -183,4 +184,4 @@ jobs:
           })
       
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
