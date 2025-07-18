@@ -6,7 +6,7 @@
         <AssemblyName>FluentTestScaffold.AspNetCore</AssemblyName>
         <RootNamespace>FluentTestScaffold.AspNetCore</RootNamespace>
         <LangVersion>latest</LangVersion>
-        <DebugType>Embedded</DebugType>
+        <DebugType>portable</DebugType>
         <EmbedAllSources>true</EmbedAllSources>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
