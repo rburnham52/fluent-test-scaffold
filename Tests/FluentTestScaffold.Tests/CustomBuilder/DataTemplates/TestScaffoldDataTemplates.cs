@@ -27,15 +27,15 @@ public class TestScaffoldDataTemplates
         testScaffold.TestScaffoldContext.Set(id, "AppliedByTemplateParameter");
         return testScaffold;
     }
-    
-    
+
+
     [DataTemplate]
     public TestScaffold SetContextFromTemplateMultipleParameters(TestScaffold testScaffold, int param1, Guid param2, string param3)
     {
         testScaffold.TestScaffoldContext.Set(param1, nameof(param1));
         testScaffold.TestScaffoldContext.Set(param2, nameof(param2));
         testScaffold.TestScaffoldContext.Set(param3, nameof(param3));
-        
+
         return testScaffold;
     }
 }

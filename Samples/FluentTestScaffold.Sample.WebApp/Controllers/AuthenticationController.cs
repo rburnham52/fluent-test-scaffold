@@ -9,13 +9,13 @@ namespace FluentTestScaffold.Sample.WebApp.Controllers;
 public class AuthenticationController : ControllerBase
 {
     private readonly IUserRequestContext _userRequestContext;
-   
+
     public AuthenticationController(
         IUserRequestContext userRequest)
     {
         _userRequestContext = userRequest;
     }
-    
+
     [HttpPost("login")]
     public IActionResult Login(LoginRequest loginRequest)
     {
@@ -31,7 +31,7 @@ public class AuthenticationController : ControllerBase
     {
         // Clear the existing external cookie
         _userRequestContext.SignOut();
-        
+
         return Ok();
     }
 }

@@ -31,4 +31,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="docs\README.md" />
+    </ItemGroup>
+
 </Project>

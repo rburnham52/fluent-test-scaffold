@@ -18,7 +18,7 @@ public class UserController : ControllerBase
     {
         _userRequestContext = userRequestContext;
     }
-    
+
     [HttpGet]
     public ActionResult<UserDetails> Get()
     {

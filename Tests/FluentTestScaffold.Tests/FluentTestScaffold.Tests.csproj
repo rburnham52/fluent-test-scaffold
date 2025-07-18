@@ -36,4 +36,8 @@
         <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="docs\README.md" />
+    </ItemGroup>
+
 </Project>

@@ -59,7 +59,7 @@ public class AutofacServiceBuilderTests
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacServiceBuilder());
 
-        Assert.NotNull( testScaffold.Resolve<InventoryBuilder>());
+        Assert.NotNull(testScaffold.Resolve<InventoryBuilder>());
     }
     [Test]
     public void AutofacServiceBuilder_CustomConfig()
@@ -72,18 +72,18 @@ public class AutofacServiceBuilderTests
 
         Assert.Throws<ComponentNotRegisteredException>(() => testScaffold.Resolve<InventoryBuilder>());
     }
-    
+
     //Scoped
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterScoped()
     {
         var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<MockService>().InstancePerLifetimeScope());
-        
+
         var resolved1 = testScaffold.Resolve<MockService>();
         var resolved2 = testScaffold.Resolve<MockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         resolved3?.Increment();
@@ -108,7 +108,7 @@ public class AutofacServiceBuilderTests
 
         var resolved1 = testScaffold.Resolve<MockService>();
         var resolved2 = testScaffold.Resolve<MockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
 
@@ -116,7 +116,7 @@ public class AutofacServiceBuilderTests
         Assert.AreNotSame(resolved1, resolved3, "Object reference should not match when resolved from different scopes");
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterScopedAs_As_Type()
     {
@@ -128,7 +128,7 @@ public class AutofacServiceBuilderTests
 
         var resolved1 = testScaffold.Resolve<IMockService>();
         var resolved2 = testScaffold.Resolve<IMockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         var resolved4 = scope.ServiceProvider.GetService<MockService>();
@@ -151,11 +151,11 @@ public class AutofacServiceBuilderTests
                     return service;
                 }).InstancePerLifetimeScope();
             });
-       
+
 
         var resolved1 = testScaffold.Resolve<IMockService>();
         var resolved2 = testScaffold.Resolve<IMockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         var resolved4 = scope.ServiceProvider.GetService<MockService>();
@@ -165,7 +165,7 @@ public class AutofacServiceBuilderTests
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
         Assert.IsNull(resolved4, "Base type should not be registered");
     }
-    
+
     // Transient
     [Test]
     public void AutofacServiceBuilder_RegisterTransient()
@@ -203,7 +203,7 @@ public class AutofacServiceBuilderTests
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
         Assert.AreEqual(1, resolved2.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterTransientAs_As_Type()
     {
@@ -234,10 +234,10 @@ public class AutofacServiceBuilderTests
         Assert.AreNotSame(resolved1, resolved2, "Object reference should not match");
         Assert.Catch<ComponentNotRegisteredException>(() => testScaffold.Resolve<MockService>());
     }
-    
+
     //Singleton
 
-      [Test]
+    [Test]
     public void AutofacServiceBuilder_RegisterSingleton()
     {
         var testScaffold = new TestScaffold()
@@ -266,7 +266,7 @@ public class AutofacServiceBuilderTests
         Assert.AreSame(resolved1, resolved2, "Object reference should match");
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterSingletonAs_As_Type()
     {
@@ -301,20 +301,20 @@ public class AutofacServiceBuilderTests
         Assert.AreSame(resolved1, resolved3, "Object reference should match");
         Assert.Catch<ComponentNotRegisteredException>(() => testScaffold.Resolve<MockService>());
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterBuilder()
     {
         var messages = new List<string>();
-        
+
         new TestScaffold()
             .UseAutofac()
             .UsingBuilder<MockBuilder>()
             .WithMockData(messages);
-        
+
         Assert.Contains("Hello World!", messages);
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_RegisterBuilder_Multiple_At_Once()
     {
@@ -324,14 +324,14 @@ public class AutofacServiceBuilderTests
             {
                 ctx.Container.Register(_ => dbContext);
             });
-        
+
         var mockBuilder = testScaffold.Resolve<MockBuilder>();
         var inventoryBuilder = testScaffold.Resolve<InventoryBuilder>();
-        
+
         Assert.IsNotNull(mockBuilder);
         Assert.IsNotNull(inventoryBuilder);
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_With_DefaultServiceBuilder()
     {
@@ -373,21 +373,21 @@ public class AutofacServiceBuilderTests
 
         Assert.AreEqual(user, requestContext.CurrentUser);
     }
-    
-    
+
+
     [Test]
     public void AutofacServiceBuilder_WithAutoDiscovery_None()
     {
         Assert.Throws<ComponentNotRegisteredException>(() =>
         {
-            new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.None})
+            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
                 .UseAutofac()
                 .Resolve<InventoryBuilder>();
         });
 
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.None})
+        var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
             .UseAutofac()
             .Resolve<DataTemplateService>();
         Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
@@ -398,26 +398,26 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.Builders})
+            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.Builders })
                 .UseAutofac()
                 .Resolve<InventoryBuilder>();
         });
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_WithAutoDiscovery_DataTemplate()
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.DataTemplates})
+            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
                 .UseAutofac()
                 .Resolve<DataTemplateService>();
-            
+
             var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             Assert.IsNotNull(dataTemplate);
         });
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_AutoDiscovery_WithDefaultConfigOptions()
     {
@@ -426,12 +426,12 @@ public class AutofacServiceBuilderTests
             var dataTemplateService = new TestScaffold()
                 .UseAutofac()
                 .Resolve<DataTemplateService>();
-            
+
             var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             Assert.IsNotNull(dataTemplate);
         });
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_AutoDiscovery_WithIgnoredAssemblies()
     {
@@ -449,72 +449,72 @@ public class AutofacServiceBuilderTests
                 !a.FullName.StartsWith("FluentTestScaffold.Tests")
                 || !a.FullName.StartsWith("Microsoft")
                 || !a.FullName.StartsWith("System")));
-            
+
             var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-            Assert.Throws<MissingMethodException>(() => 
+            Assert.Throws<MissingMethodException>(() =>
             {
                 var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             });
         });
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_WithAutoDiscovery_All()
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.All})
+            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
                 .UseAutofac()
                 .Resolve<DataTemplateService>();
-            
+
             var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             Assert.IsNotNull(dataTemplate);
         });
     }
-    
+
     [Test]
     public void AutofacServiceBuilder_WithAutoDiscovery_WithSpecificAssemblies()
     {
         var options = new ConfigOptions()
         {
             // Not expecting any custom builders or data templates to be found in this assembly.
-            Assemblies = new List<Assembly> {typeof(TestScaffold).Assembly},
+            Assemblies = new List<Assembly> { typeof(TestScaffold).Assembly },
             AutoDiscovery = AutoDiscovery.All
         };
-        
+
         Assert.Throws<ComponentNotRegisteredException>(() =>
         {
             new TestScaffold(options)
                 .UseAutofac()
                 .Resolve<InventoryBuilder>();
         });
-        
+
         //Service is still initialized but should have nothing cached
         var dataTemplateService = new TestScaffold(options)
             .UseAutofac()
             .Resolve<DataTemplateService>();
         Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
     }
-    
-        [Test]
-        public void AutofacServiceBuilder_WithMock()
+
+    [Test]
+    public void AutofacServiceBuilder_WithMock()
+    {
+        Assert.DoesNotThrow(() =>
         {
-            Assert.DoesNotThrow(() =>
-            {
-                var timeString = "12:51:01";
-                var timeService = new TestScaffold()
-                    .UseAutofac(serviceBuilder =>
+            var timeString = "12:51:01";
+            var timeService = new TestScaffold()
+                .UseAutofac(serviceBuilder =>
+                {
+                    serviceBuilder.WithMock<ITimeService>(mock =>
                     {
-                        serviceBuilder.WithMock<ITimeService>(mock =>
-                        {
-                            mock.Setup(c => c.GetTime()).Returns(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture));
-                            return mock;
-                        });
-                    })
-                    .Resolve<ITimeService>();
-                
-                var time = timeService.GetTime();
-                Assert.AreEqual(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture), time);
-            });
-        }
+                        mock.Setup(c => c.GetTime()).Returns(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture));
+                        return mock;
+                    });
+                })
+                .Resolve<ITimeService>();
+
+            var time = timeService.GetTime();
+            Assert.AreEqual(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture), time);
+        });
+    }
 }

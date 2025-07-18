@@ -16,7 +16,7 @@ public class HandRolledUserRequestContext : IUserRequestContext
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     private User? _user = null;
-    
+
     public HandRolledUserRequestContext(
         TestDbContext dbContext,
         IAuthService authService,
@@ -38,11 +38,11 @@ public class HandRolledUserRequestContext : IUserRequestContext
     public User? AuthenticateUser(string? email, string? password)
     {
         var user = _authService.AuthenticateUser(
-            email ?? throw new ArgumentException( $"{nameof(email)} is required"), 
+            email ?? throw new ArgumentException($"{nameof(email)} is required"),
             password ?? throw new ArgumentException($"{nameof(password)} is required"));
 
         if (user == null) return null;
-        
+
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -61,8 +61,8 @@ public class HandRolledUserRequestContext : IUserRequestContext
         };
 
         _httpContextAccessor.HttpContext?.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme, 
-            new ClaimsPrincipal(claimsIdentity), 
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(claimsIdentity),
             authProperties)
             .Wait();
 
@@ -80,7 +80,7 @@ public class HandRolledUserRequestContext : IUserRequestContext
     /// claim NameIdentifier which should contain the user's user id.
     /// </summary>
     public User? CurrentUser => _user ??= ResolveUserFromHttpContext();
-    
+
     private User? ResolveUserFromHttpContext()
     {
         var identity = _httpContextAccessor.HttpContext?.User.Identities.FirstOrDefault(id =>

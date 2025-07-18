@@ -23,12 +23,12 @@ public static class TestScaffoldExtensions
         if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var webApplicationFactory))
         {
             throw new InvalidOperationException(
-                "A call to testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" + 
+                "A call to testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" +
                 " to initialise the a web application factory before a HttpClient can be created");
         }
 
         var key = CreateHttpClientKey<TWebApplicationFactory, TEntry>();
-        
+
         // Maintain the same HttpClient for each WebApplicationFactory, this is we can maintain any cookies or sessions
         // create between http requests
         if (!testScaffold.TestScaffoldContext.TryGetValue<HttpClient>(key, out var httpClient))
@@ -39,7 +39,7 @@ public static class TestScaffoldExtensions
                     HandleCookies = true,
                     AllowAutoRedirect = true
                 });
-            
+
             testScaffold.TestScaffoldContext.Set(httpClient, key);
         }
 

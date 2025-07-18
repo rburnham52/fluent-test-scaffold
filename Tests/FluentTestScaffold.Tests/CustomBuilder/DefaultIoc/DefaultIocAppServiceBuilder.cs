@@ -12,9 +12,9 @@ public class DotnetIocAppServicesBuilder : DotnetServiceBuilder<DotnetIocAppServ
     private static readonly ConfigOptions Options = new()
     {
         AutoDiscovery = AutoDiscovery.All,
-        Assemblies = new List<Assembly>(){Assembly.GetCallingAssembly()}
+        Assemblies = new List<Assembly>() { Assembly.GetCallingAssembly() }
     };
-    
+
     public DotnetIocAppServicesBuilder() : base(Options) { }
     public DotnetIocAppServicesBuilder(ConfigOptions configOptions) : base(configOptions) { }
 

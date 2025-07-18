@@ -80,7 +80,7 @@ public class ShoppingCartSteps
     [Then(@"I should see the item (.*) in my Shopping Cart")]
     public void ThenIShouldSeeTheseItemsInMyShoppingCart(string title)
     {
-       var testScaffold = _scenarioContext.Get<TestScaffold>(nameof(TestScaffold)); 
+        var testScaffold = _scenarioContext.Get<TestScaffold>(nameof(TestScaffold));
         var dbContext = testScaffold.Resolve<TestDbContext>();
 
         var userId = _scenarioContext.Get<Guid?>("CurrentUserId");

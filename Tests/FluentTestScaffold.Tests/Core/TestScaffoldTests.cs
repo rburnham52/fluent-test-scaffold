@@ -74,10 +74,10 @@ public class TestScaffoldTests
     public void TestScaffold_Can_Apply_Templates_By_MethodName()
     {
         var testScaffold = new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.DataTemplates,
-                Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-            })
+        {
+            AutoDiscovery = AutoDiscovery.DataTemplates,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
             .UseIoc()
             .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplate));
 
@@ -90,10 +90,10 @@ public class TestScaffoldTests
     public void TestScaffold_Can_Apply_Templates_By_AttributeName()
     {
         var testScaffold = new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-            })
+        {
+            AutoDiscovery = AutoDiscovery.All,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
             .UseIoc()
             .WithTemplate(TestScaffoldDataTemplates.TemplateAttributeName);
 
@@ -109,10 +109,10 @@ public class TestScaffoldTests
         var id = Guid.NewGuid();
 
         var testScaffold = new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-            })
+        {
+            AutoDiscovery = AutoDiscovery.All,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
             .UseIoc()
             .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateParameter), id);
 
@@ -130,10 +130,10 @@ public class TestScaffoldTests
         var exception = Assert.Throws<DataTemplateException>(() =>
         {
             new TestScaffold(new ConfigOptions
-                {
-                    AutoDiscovery = AutoDiscovery.All,
-                    Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-                })
+            {
+                AutoDiscovery = AutoDiscovery.All,
+                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+            })
                 .UseIoc()
                 .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplate), id);
         });
@@ -149,10 +149,10 @@ public class TestScaffoldTests
         var exception = Assert.Throws<DataTemplateException>(() =>
         {
             new TestScaffold(new ConfigOptions
-                {
-                    AutoDiscovery = AutoDiscovery.All,
-                    Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-                })
+            {
+                AutoDiscovery = AutoDiscovery.All,
+                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+            })
                 .UseIoc()
                 .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateParameter), incorrectParamType);
         });
@@ -170,10 +170,10 @@ public class TestScaffoldTests
         var param3 = "Hello World";
 
         var testScaffold = new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-            })
+        {
+            AutoDiscovery = AutoDiscovery.All,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
             .UseIoc()
             .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param1, param2,
                 param3);
@@ -196,10 +196,10 @@ public class TestScaffoldTests
         var exception = Assert.Throws<DataTemplateException>(() =>
         {
             new TestScaffold(new ConfigOptions
-                {
-                    AutoDiscovery = AutoDiscovery.All,
-                    Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-                })
+            {
+                AutoDiscovery = AutoDiscovery.All,
+                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+            })
                 .UseIoc()
                 .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param1,
                     param2);
@@ -217,10 +217,10 @@ public class TestScaffoldTests
         var exception = Assert.Throws<DataTemplateException>(() =>
         {
             new TestScaffold(new ConfigOptions
-                {
-                    AutoDiscovery = AutoDiscovery.All,
-                    Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-                })
+            {
+                AutoDiscovery = AutoDiscovery.All,
+                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+            })
                 .UseIoc()
                 .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param3,
                     param2, param1);

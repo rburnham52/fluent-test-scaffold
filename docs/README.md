@@ -56,6 +56,27 @@ This includes using an IOC container to register and resolve dependencies and a 
 
 By setting up the Data Structures in your tests the same way that they are used in production, we can initialize any dependant services in the same manner or with minimal mocking to give a more realistic representation of how your application would run.
 
+## Installation
+
+```bash
+# Install the core package
+dotnet add package FluentTestScaffold.Core
+
+# Install framework-specific package
+dotnet add package FluentTestScaffold.Nunit
+```
+
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| `FluentTestScaffold.Core` | Core framework and interfaces |
+| `FluentTestScaffold.AspNetCore` | ASP.NET Core integration |
+| `FluentTestScaffold.Autofac` | Autofac DI container support |
+| `FluentTestScaffold.Bdd` | BDD testing support |
+| `FluentTestScaffold.EntityFrameworkCore` | Entity Framework Core support |
+| `FluentTestScaffold.Nunit` | NUnit testing framework support |
+
 ## Example
 
 ```csharp
@@ -330,9 +351,67 @@ The Base Builder class, while intended to be used to build up a Database is DB i
 
 The current implementation supports `.net` & `Autofac` for IOC and `Entity Framework Core` for the Database Builders.  
 
+## CI/CD Setup
+
+This project uses GitHub Actions for continuous integration and deployment. The CI/CD pipeline includes:
+
+### Workflows
+
+1. **CI (`ci.yml`)**: Runs on every push and pull request
+   - Builds and tests on multiple .NET versions (6.0, 7.0, 8.0)
+   - Validates package structure
+   - Generates code coverage reports
+   - Runs security scans
+
+2. **CD (`cd.yml`)**: Runs on tag pushes
+   - Publishes packages to GitHub Packages
+   - Creates GitHub releases
+   - Uploads package artifacts
+
+3. **PR Check (`pr-check.yml`)**: Runs on pull requests
+   - Checks code formatting
+   - Validates linting rules
+   - Checks for outdated dependencies
+   - Ensures minimum code coverage (80%)
+
+4. **NuGet Publish (`nuget-publish.yml`)**: Publishes to NuGet.org
+   - Publishes packages to NuGet.org when tags are pushed
+   - Requires `NUGET_API_KEY` secret
+
+5. **Scheduled Maintenance (`scheduled-maintenance.yml`)**: Weekly maintenance
+   - Checks for dependency updates
+   - Runs security scans
+   - Validates documentation
+   - Performance testing
+
+### Required Secrets
+
+To use the CI/CD pipeline, you need to set up the following secrets in your GitHub repository:
+
+1. **`NUGET_API_KEY`**: Your NuGet.org API key for publishing packages
+2. **`GITHUB_TOKEN`**: Automatically provided by GitHub Actions
+
+### Release Process
+
+1. **Create a release**:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+2. **The CI/CD pipeline will**:
+   - Build all packages
+   - Run all tests
+   - Publish to GitHub Packages
+   - Create a GitHub release
+   - Publish to NuGet.org (if `NUGET_API_KEY` is configured)
+
+For detailed CI/CD setup instructions, see [CI/CD Setup Guide](ci-cd-setup.md).
+
 ## Documentation
 <!--- Add a README.md to a folder for your feature's docs --->
 * [Setup](setup.md)
+* [CI/CD Setup](ci-cd-setup.md) - Continuous Integration and Deployment setup
 * [Ioc](ioc) - IOC container used by the TestScaffold. 
 * [Builders](builders) - builders are used to build up the Test Scaffold context
 * [Data Templates](data-templates) - builders are used to build up the Test Scaffold context

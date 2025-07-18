@@ -43,11 +43,11 @@ public class ShoppingCartService
 
     private void VerifyAgeRestriction(User user, Item item)
     {
-        var userAge = Years(user.DateOfBirth, DateTime.Now); 
-        if(userAge < item.AgeRestriction)
+        var userAge = Years(user.DateOfBirth, DateTime.Now);
+        if (userAge < item.AgeRestriction)
             throw new InvalidOperationException($"You must be over {item.AgeRestriction} to add this item");
     }
-    
+
     int Years(DateTime start, DateTime end)
     {
         return (end.Year - start.Year - 1) +

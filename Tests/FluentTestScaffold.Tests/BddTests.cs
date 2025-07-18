@@ -56,7 +56,7 @@ public class BddTests
                 });
             });
     }
-    
+
     [Test]
     public void CanRunATestUsingFeatureClass()
     {
@@ -79,7 +79,7 @@ public class BddTests
             .When("The user attempts to add an item to the shopping cart", WhenTheUserAddsItemToCart)
             .Then("The user should not be able to add the item to the shopping cart", ThenTheUserCanNotAddAgeRestrictedContent);
     }
-    
+
     private static void ThenTheUserCanNotAddAgeRestrictedContent(TestScaffold testScaffold)
     {
         // Assert

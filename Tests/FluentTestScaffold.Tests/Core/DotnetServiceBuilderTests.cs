@@ -49,16 +49,16 @@ public class DotnetServiceBuilderTests
     }
 
     //Scoped
-    
+
     [Test]
     public void DotnetServiceBuilder_RegisterScoped()
     {
         var testScaffold = new TestScaffold()
             .UseIoc(ctx => ctx.Container.AddScoped<MockService>());
-        
+
         var resolved1 = testScaffold.Resolve<MockService>();
         var resolved2 = testScaffold.Resolve<MockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         resolved3?.Increment();
@@ -83,7 +83,7 @@ public class DotnetServiceBuilderTests
 
         var resolved1 = testScaffold.Resolve<MockService>();
         var resolved2 = testScaffold.Resolve<MockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
 
@@ -91,7 +91,7 @@ public class DotnetServiceBuilderTests
         Assert.AreNotSame(resolved1, resolved3, "Object reference should not match when resolved from different scopes");
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_RegisterScopedAs_As_Type()
     {
@@ -103,7 +103,7 @@ public class DotnetServiceBuilderTests
 
         var resolved1 = testScaffold.Resolve<IMockService>();
         var resolved2 = testScaffold.Resolve<IMockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         var resolved4 = scope.ServiceProvider.GetService<MockService>();
@@ -126,11 +126,11 @@ public class DotnetServiceBuilderTests
                     return service;
                 });
             });
-       
+
 
         var resolved1 = testScaffold.Resolve<IMockService>();
         var resolved2 = testScaffold.Resolve<IMockService>();
-        
+
         using var scope = testScaffold.ServiceProvider!.CreateScope();
         var resolved3 = scope.ServiceProvider.GetService<MockService>();
         var resolved4 = scope.ServiceProvider.GetService<MockService>();
@@ -140,7 +140,7 @@ public class DotnetServiceBuilderTests
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
         Assert.IsNull(resolved4, "Base type should not be registered");
     }
-    
+
     // Transient
     [Test]
     public void DotnetServiceBuilder_RegisterTransient()
@@ -178,7 +178,7 @@ public class DotnetServiceBuilderTests
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
         Assert.AreEqual(1, resolved2.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_RegisterTransientAs_As_Type()
     {
@@ -209,10 +209,10 @@ public class DotnetServiceBuilderTests
         Assert.AreNotSame(resolved1, resolved2, "Object reference should not match");
         Assert.Catch<InvalidOperationException>(() => testScaffold.Resolve<MockService>());
     }
-    
+
     //Singleton
 
-      [Test]
+    [Test]
     public void DotnetServiceBuilder_RegisterSingleton()
     {
         var testScaffold = new TestScaffold()
@@ -241,7 +241,7 @@ public class DotnetServiceBuilderTests
         Assert.AreSame(resolved1, resolved2, "Object reference should match");
         Assert.AreEqual(1, resolved1.Count, "Constructor State is not replicated");
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_RegisterSingletonAs_As_Type()
     {
@@ -276,7 +276,7 @@ public class DotnetServiceBuilderTests
         Assert.AreSame(resolved1, resolved3, "Object reference should match");
         Assert.Catch<InvalidOperationException>(() => testScaffold.Resolve<MockService>());
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_RegisterBuilder()
     {
@@ -287,7 +287,7 @@ public class DotnetServiceBuilderTests
 
         Assert.NotNull(builder, "Could not resolver builder from IOC container");
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_CreateBuilder_Returns_Builder_From_Context()
     {
@@ -304,14 +304,14 @@ public class DotnetServiceBuilderTests
             {
                 ctx.Container.AddSingleton(_ => dbContext);
             });
-        
+
         var mockBuilder = testScaffold.Resolve<MockBuilder>();
         var inventoryBuilder = testScaffold.Resolve<InventoryBuilder>();
-        
+
         Assert.IsNotNull(mockBuilder);
         Assert.IsNotNull(inventoryBuilder);
     }
-    
+
     [Test]
     public void DotnetServiceBuilder_With_DotnetServiceBuilder()
     {
@@ -356,14 +356,14 @@ public class DotnetServiceBuilderTests
     {
         Assert.Throws<InvalidOperationException>(() =>
         {
-            new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.None})
+            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
                 .UseIoc()
                 .Resolve<InventoryBuilder>();
         });
 
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.None})
+        var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
             .UseIoc()
             .Resolve<DataTemplateService>();
         Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
@@ -374,64 +374,64 @@ public class DotnetServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.Builders})
+            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.Builders })
                 .UseIoc()
                 .Resolve<InventoryBuilder>();
         });
     }
-    
+
     [Test]
     public void DefaultIoc_WithAutoDiscovery_DataTemplate()
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.DataTemplates})
+            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
                 .UseIoc()
                 .Resolve<DataTemplateService>();
-            
+
             var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             Assert.IsNotNull(dataTemplate);
         });
     }
-    
+
     [Test]
     public void DefaultIoc_WithAutoDiscovery_All()
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() {AutoDiscovery = AutoDiscovery.All})
+            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
                 .UseIoc()
                 .Resolve<DataTemplateService>();
-            
+
             var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
             Assert.IsNotNull(dataTemplate);
         });
     }
-    
+
     [Test]
     public void DefaultIoc_WithAutoDiscovery_WithSpecificAssemblies()
     {
         var options = new ConfigOptions()
         {
             // Not expecting any custom builders or data templates to be found in this assembly.
-            Assemblies = new List<Assembly> {typeof(TestScaffold).Assembly},
+            Assemblies = new List<Assembly> { typeof(TestScaffold).Assembly },
             AutoDiscovery = AutoDiscovery.All
         };
-        
+
         Assert.Throws<InvalidOperationException>(() =>
         {
             new TestScaffold(options)
                 .UseIoc()
                 .Resolve<InventoryBuilder>();
         });
-        
+
         //Service is still initialized but should have nothing cached
         var dataTemplateService = new TestScaffold(options)
             .UseIoc()
             .Resolve<DataTemplateService>();
         Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
     }
-    
+
     [Test]
     public void DefaultIoc_WithMock()
     {
@@ -448,7 +448,7 @@ public class DotnetServiceBuilderTests
                     });
                 })
                 .Resolve<ITimeService>();
-            
+
             var time = timeService.GetTime();
             Assert.AreEqual(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture), time);
         });

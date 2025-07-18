@@ -1,11 +1,11 @@
 namespace FluentTestScaffold.Core;
 
-public interface IIocServiceServiceCollection<TContainer>: IIocServiceProviderFactory
+public interface IIocServiceServiceCollection<TContainer> : IIocServiceProviderFactory
 {
-    TContainer RegisterScoped<TService>() 
+    TContainer RegisterScoped<TService>()
         where TService : class;
 
-    TContainer RegisterScoped<TService>(Func<IServiceProvider, TService> implementationFactory) 
+    TContainer RegisterScoped<TService>(Func<IServiceProvider, TService> implementationFactory)
         where TService : class;
 
     TContainer RegisterScopedAs<TService, TInterface>()
@@ -15,10 +15,10 @@ public interface IIocServiceServiceCollection<TContainer>: IIocServiceProviderFa
     TContainer RegisterScopedAs<TInterface>(Func<IServiceProvider, object> implementationFactory)
         where TInterface : class;
 
-    TContainer RegisterTransient<TService>() 
+    TContainer RegisterTransient<TService>()
         where TService : class;
 
-    TContainer RegisterTransient<TService>(Func<IServiceProvider, TService> implementationFactory) 
+    TContainer RegisterTransient<TService>(Func<IServiceProvider, TService> implementationFactory)
         where TService : class;
 
     TContainer RegisterTransientAs<TService, TInterface>()
@@ -28,10 +28,10 @@ public interface IIocServiceServiceCollection<TContainer>: IIocServiceProviderFa
     TContainer RegisterTransientAs<TInterface>(Func<IServiceProvider, object> implementationFactory)
         where TInterface : class;
 
-    TContainer RegisterSingleton<TService>() 
+    TContainer RegisterSingleton<TService>()
         where TService : class;
 
-    TContainer RegisterSingleton<TService>(Func<IServiceProvider, TService> implementationFactory) 
+    TContainer RegisterSingleton<TService>(Func<IServiceProvider, TService> implementationFactory)
         where TService : class;
 
     TContainer RegisterSingletonAs<TService, TInterface>()

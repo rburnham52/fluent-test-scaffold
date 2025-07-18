@@ -30,7 +30,7 @@ public class IntegrationTest
     {
         var email = "Jim@test.com";
         var password = "SupperSecretPa$$word";
-        
+
         // Arrange
         var userId = Guid.Parse("A5A743C3-A02F-4CA3-94F8-B0ECAF4A6345");
         var testScaffold = new TestScaffold()
@@ -38,7 +38,7 @@ public class IntegrationTest
             {
                 // Custom App Service Builder to register common services. 
                 serviceBuilder.RegisterAppServices(requestContext => requestContext.AuthenticateUser(email, password));
-                
+
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
                 serviceBuilder.WithMock<ITimeService>(mock =>
@@ -60,21 +60,21 @@ public class IntegrationTest
             ))
             .WithShoppingCart(userId)
             .Build();
-        
+
         //Resolved the dbContext registered by the AutofacAppServicesBuilder
         var dbContext = testScaffold.Resolve<TestDbContext>();
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
+
         // Act
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         shoppingCartService.AddItemToCart(item!.Id);
-        
+
         // Assert
         var cart = dbContext.ShoppingCart.Include(s => s.Inventory).FirstOrDefault(u => u.UserId == userId);
         Assert.IsTrue(cart?.Inventory.Any(i => i.Id == item.Id));
     }
 
-    
+
     [Test]
     public void ComponentIntegrationTest_UsingDataTemplates_UnderAged()
     {
@@ -87,20 +87,20 @@ public class IntegrationTest
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-        
+
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
         requestContext.AuthenticateUser(UserBuilder.Under18User.Email, UserBuilder.Under18User.Password);
-        
+
         //Resolved the dbContext registered by the AutofacAppServicesBuilder
         var dbContext = testScaffold.Resolve<TestDbContext>();
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
+
         // Attempt to add age restricted content with under age user
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         Assert.Throws<InvalidOperationException>(() => shoppingCartService.AddItemToCart(item!.Id));
     }
-    
+
     [Test]
     public void ComponentIntegrationTest_UsingDataTemplates_OverAged()
     {
@@ -113,24 +113,24 @@ public class IntegrationTest
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-        
+
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
         requestContext.AuthenticateUser(UserBuilder.Over18User.Email, UserBuilder.Over18User.Password);
-        
+
         //Resolved the dbContext registered by the AutofacAppServicesBuilder
         var dbContext = testScaffold.Resolve<TestDbContext>();
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
+
         // Attempt to add age restricted content with under age user
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         shoppingCartService.AddItemToCart(item!.Id);
 
         // Get the UserId stored by the DataTemplate
         var userId = testScaffold.TestScaffoldContext.Get<Guid>("Over18UserId");
-    
+
         var cart = dbContext.ShoppingCart.Include(s => s.Inventory).FirstOrDefault(u => u.UserId == userId);
         Assert.IsTrue(cart?.Inventory.Any(i => i.Id == item.Id));
     }
-    
+
 }

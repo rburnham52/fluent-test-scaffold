@@ -27,6 +27,7 @@
 
     <ItemGroup>
         <None Include="Features\ShoppingCart.feature" />
+        <None Remove="docs\README.md" />
     </ItemGroup>
 
     <ItemGroup>

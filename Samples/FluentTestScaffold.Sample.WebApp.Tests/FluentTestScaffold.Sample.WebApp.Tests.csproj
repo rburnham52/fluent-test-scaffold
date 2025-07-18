@@ -29,4 +29,8 @@
     <ProjectReference Include="..\..\FluentTestScaffold.AspNetCore\FluentTestScaffold.AspNetCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="docs\README.md" />
+  </ItemGroup>
+
 </Project>

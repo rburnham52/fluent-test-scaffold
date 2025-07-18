@@ -14,11 +14,11 @@ public class AutofacAppServicesBuilder : AutofacServiceBuilder<AutofacAppService
     {
         // Auto Discovery any Builders and DataTemplates in the calling assembly
         AutoDiscovery = AutoDiscovery.All,
-        Assemblies = new List<Assembly> {Assembly.GetCallingAssembly()}
+        Assemblies = new List<Assembly> { Assembly.GetCallingAssembly() }
     };
-    
-    public AutofacAppServicesBuilder(): base(ConfigOptions) { }
-    
+
+    public AutofacAppServicesBuilder() : base(ConfigOptions) { }
+
     public AutofacAppServicesBuilder RegisterAppServices(Func<UserRequestContext, User?>? authenticateUser = null)
     {
         Container.Register<TestDbContext>(_ => TestDbContextFactory.Create()).SingleInstance();

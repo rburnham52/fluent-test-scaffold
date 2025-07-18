@@ -104,7 +104,7 @@ public class EfBuilderTests
             .With(new User(userId, "Bob", "bob@test.com", "SuperSecret123",
                 DateTime.Now.AddYears(-12)))
             .Build();
-        
+
         var hasItem = dbContext.Items.Any(i => i.Title == Defaults.CatalogueItems.Avengers);
         var hasUser = dbContext.Users.Any(i => i.Id == userId);
         Assert.Multiple(() =>
@@ -116,17 +116,17 @@ public class EfBuilderTests
 
     [Test]
     public void EBBuilder_Can_Use_EFBuilder_In_DataTemplate()
-    {        
+    {
         var testScaffold = new TestScaffold()
-            .UseIoc(new DotnetIocAppServicesBuilder(), 
+            .UseIoc(new DotnetIocAppServicesBuilder(),
                 ctx =>
                 {
-                    ctx.Container.AddSingleton(_ =>  TestDbContextFactory.Create());
+                    ctx.Container.AddSingleton(_ => TestDbContextFactory.Create());
                     ctx.RegisterAppServices();
                 })
             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
 
-        
+
         var dbContext = testScaffold.Resolve<TestDbContext>();
 
         var hasItem = dbContext.Items.Any(i => i.Title == Defaults.CatalogueItems.Avengers);
@@ -137,10 +137,10 @@ public class EfBuilderTests
             Assert.IsTrue(hasUser, "DbContext was not seeded from Template.");
         });
     }
-    
+
     [Test]
     public void EBBuilder_Can_Conditionally_Build_Data()
-    {        
+    {
         var dbContext = TestDbContextFactory.Create();
         var userId = Guid.Parse("36A6736A-F8AC-4FA2-B33E-0ACB14776C0F");
         var itemToAdd = new Item()
@@ -168,12 +168,12 @@ public class EfBuilderTests
             ))
             .WithShoppingCart(userId)
             .Build(); //Build to ensure the Shopping cart is created
-        
+
         testScaffold
             .UsingBuilder<UserBuilder>()
             .If(false, builder => builder.WithItem(userId, itemToAdd))
             .Build();
-        
+
         var user = dbContext.Users.Include(user => user.ShoppingCart)
             .ThenInclude(shoppingCart => shoppingCart.Inventory).FirstOrDefault(u => u.Id == userId);
         var hasItemInCart = user?.ShoppingCart.Inventory.Exists(i => i.Id == itemToAdd.Id);
@@ -187,13 +187,13 @@ public class EfBuilderTests
 
         hasItemInCart = user?.ShoppingCart.Inventory.Exists(i => i.Id == itemToAdd.Id);
         // Ensure the item was added to the users shopping cart
-        
+
         Assert.IsTrue(hasItemInCart, "Item has not been added to the users shopping cart.");
     }
-    
+
     [Test]
     public void EBBuilder_Switching_Builders_Triggers_Build()
-    {        
+    {
         var dbContext = TestDbContextFactory.Create();
         var itemToAdd = new Item()
         {
@@ -210,15 +210,15 @@ public class EfBuilderTests
             .UsingBuilder<InventoryBuilder>()
             .With(itemToAdd)
             .UsingBuilder<UserBuilder>();
-        
+
         var item = dbContext.Items.FirstOrDefault(i => i.Id == itemToAdd.Id);
         //Ensure the item was not added to the users shopping cart
         Assert.IsNotNull(item, "Build has not been called to trigger SaveChanges");
     }
-    
+
     [Test]
     public void EBBuilder_Switching_To_TestScaffold_Triggers_Build()
-    {        
+    {
         var dbContext = TestDbContextFactory.Create();
         var itemToAdd = new Item()
         {
@@ -235,16 +235,16 @@ public class EfBuilderTests
             .UsingBuilder<InventoryBuilder>()
             .With(itemToAdd)
             .UsingTestScaffold();
-        
+
         var item = dbContext.Items.FirstOrDefault(i => i.Id == itemToAdd.Id);
         //Ensure the item was not added to the users shopping cart
         Assert.IsNotNull(item, "Build has not been called to trigger SaveChanges");
     }
-    
-    
+
+
     [Test]
     public void EBBuilder_Can_Merge_Into_Existing_Entity()
-    {        
+    {
         var dbContext = TestDbContextFactory.Create();
 
         var itemId = Guid.NewGuid();
@@ -256,19 +256,19 @@ public class EfBuilderTests
             })
             .UsingBuilder<InventoryBuilder>()
             .With(new Item()
-            { 
+            {
                 Id = itemId,
-                Title = Defaults.CatalogueItems.Avengers, 
+                Title = Defaults.CatalogueItems.Avengers,
                 Price = 24
             })
             .Build();
-        
+
         var updatedItem = new Item { Id = itemId, Price = 30 };
         testScaffold
             .UsingBuilder<InventoryBuilder>()
             .Merge(updatedItem)
             .Build();
-        
+
         var item = dbContext.Items.FirstOrDefault(u => u.Id == itemId);
 
         item.Should().NotBeNull().And.BeEquivalentTo(updatedItem,

@@ -7,11 +7,40 @@
     <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    
+    <!-- Version Management -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedAllSources>true</EmbedAllSources>
+    <DebugType>Embedded</DebugType>
+    
+    <!-- Package Metadata -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Assembly Version Management -->
+    <AssemblyVersion>$(GitVersionAssemblySemVer)</AssemblyVersion>
+    <FileVersion>$(GitVersionAssemblySemFileVer)</FileVersion>
+    <InformationalVersion>$(GitVersionInformationalVersion)</InformationalVersion>
+    <PackageVersion>$(GitVersionNuGetVersion)</PackageVersion>
+    
+    <!-- Ensure version consistency -->
+    <Version>$(GitVersionNuGetVersion)</Version>
+    <VersionPrefix>$(GitVersionMajorMinorPatch)</VersionPrefix>
+    <VersionSuffix>$(GitVersionPreReleaseTag)</VersionSuffix>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
       <PrivateAssets>all</PrivateAssets>
       <Version>3.6.133</Version>
     </PackageReference>
+  </ItemGroup>
+  
+  <!-- Include README in packages -->
+  <ItemGroup>
+    <None Include="docs/README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

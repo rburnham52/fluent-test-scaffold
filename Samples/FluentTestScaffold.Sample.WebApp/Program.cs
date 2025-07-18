@@ -54,4 +54,4 @@ app.Run();
 /// <summary>
 /// Required when used with a WebApplicationFactory for testing
 /// </summary>
-public partial class Program {}
+public partial class Program { }

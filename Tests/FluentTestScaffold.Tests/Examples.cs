@@ -40,7 +40,7 @@ public class Examples
                 serviceBuilder.Container.AddTransient<IAuthService, AuthService>();
                 serviceBuilder.Container.AddTransient<ShoppingCart>();
             });
-        
+
         // Autofac IOC
         new TestScaffold()
             .UseAutofac(serviceBuilder =>
@@ -80,7 +80,7 @@ public class Examples
                     serviceBuilder.Container.RegisterType<ShoppingCartService>();
                 });
 
-        
+
         // Adding data using the default EF Core Builder
         testScaffold
             .UsingBuilder<EfCoreBuilder<TestDbContext>>()
@@ -92,14 +92,14 @@ public class Examples
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.DeadPool, Price = 14, AgeRestriction = 15}
             })
             .Build();
-            
-        
+
+
         // Adding data using a custom builder
         testScaffold.UsingBuilder<InventoryBuilder>()
             .With(user)
             .WithDefaultCatalogue()
             .Build();
-        
+
         // Chaining Builders
         testScaffold.UsingBuilder<UserBuilder>()
             //Setup standard users
@@ -117,7 +117,7 @@ public class Examples
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.Avengers, Price = 24},
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.DeadPool, Price = 14, AgeRestriction = 15}
             }).Build();
-        
+
     }
 
     /// <summary>
@@ -130,38 +130,38 @@ public class Examples
         var param3 = "Hello World";
         // Config options can be passed to the Service Builder to control Auto Discovery
         new TestScaffold(new ConfigOptions
-            {
-                // Enabled by default
-                AutoDiscovery = AutoDiscovery.Builders | AutoDiscovery.DataTemplates,
-                Assemblies = new List<Assembly> {typeof(TestScaffoldDataTemplates).Assembly}
-            })
+        {
+            // Enabled by default
+            AutoDiscovery = AutoDiscovery.Builders | AutoDiscovery.DataTemplates,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), 
+            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters),
                 param1, param2, param3);
-        
-        
+
+
         // Using custom service builder to enable Auto Discovery
         new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder())
             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
 
     }
-    
+
     /// <summary>
     /// Demonstrates how to use the TestContext to store and retrieve data for later use in your tests
     /// </summary>
     public void TestContext()
     {
         // Builders and DataTemplates can set test context for use in tests
-       var testScaffold = new TestScaffold()
-            .UseIoc()
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-       
-       // This data template stores the UserId in the TestContext
-       // Grab the Over18UserId
-       var userId = testScaffold.TestScaffoldContext.Get<Guid>("Over18UserId");
+        var testScaffold = new TestScaffold()
+             .UseIoc()
+             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+
+        // This data template stores the UserId in the TestContext
+        // Grab the Over18UserId
+        var userId = testScaffold.TestScaffoldContext.Get<Guid>("Over18UserId");
     }
-    
+
     /// <summary>
     /// Demonstrates it all together in a Test
     /// </summary>
@@ -169,7 +169,7 @@ public class Examples
     public void IntegrationTest()
     {
         // Test Adding Age Restricted Content
-        
+
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
@@ -179,22 +179,22 @@ public class Examples
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-        
+
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
         requestContext.AuthenticateUser(UserBuilder.Over18User.Email, UserBuilder.Over18User.Password);
-        
+
         //Resolved the dbContext registered by the AutofacAppServicesBuilder
         var dbContext = testScaffold.Resolve<TestDbContext>();
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
+
         // Attempt to add age restricted content with under age user
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         shoppingCartService.AddItemToCart(item!.Id);
 
         // Get the UserId stored by the DataTemplate
         var userId = testScaffold.TestScaffoldContext.Get<Guid>("Over18UserId");
-    
+
         var cart = dbContext.ShoppingCart.Include(s => s.Inventory).FirstOrDefault(u => u.UserId == userId);
         Assert.IsTrue(cart?.Inventory.Any(i => i.Id == item.Id));
     }

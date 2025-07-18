@@ -30,7 +30,7 @@ public class ApplicationDataTemplates
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.Avengers, Price = 24},
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.DeadPool, Price = 14, AgeRestriction = 15}
             }).Build();
-        
+
         return testScaffold;
     }
 }

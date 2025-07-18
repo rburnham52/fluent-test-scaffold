@@ -9,19 +9,19 @@ namespace FluentTestScaffold.Core;
 /// </summary>
 public class DotnetServiceBuilder : DotnetServiceBuilder<DotnetServiceBuilder>
 {
-    public DotnetServiceBuilder() : base(ConfigOptions.Default) {}
-    public DotnetServiceBuilder(ConfigOptions configOptions) : base(configOptions) {}
+    public DotnetServiceBuilder() : base(ConfigOptions.Default) { }
+    public DotnetServiceBuilder(ConfigOptions configOptions) : base(configOptions) { }
 }
 
 /// <summary>
 /// Default .net IOC Service Builder used to create customer Service Builders. 
 /// </summary>
 /// <typeparam name="TServiceBuilder">Your custom Service Builder type</typeparam>
-public class DotnetServiceBuilder<TServiceBuilder> : IocServiceBuilder<IServiceCollection, TServiceBuilder> 
+public class DotnetServiceBuilder<TServiceBuilder> : IocServiceBuilder<IServiceCollection, TServiceBuilder>
     where TServiceBuilder : IocServiceBuilder<IServiceCollection, TServiceBuilder>
 {
     public DotnetServiceBuilder(ConfigOptions configOptions) : base(new DefaultServiceProviderFactory(), configOptions) { }
-    
+
     /// <summary>
     /// Allows mocking a Service and Registering ith with the container.
     /// </summary>
@@ -33,7 +33,7 @@ public class DotnetServiceBuilder<TServiceBuilder> : IocServiceBuilder<IServiceC
         var mock = new Mock<TService>();
         config(mock);
         Container.AddTransient<TService>(_ => mock.Object);
-        return (this as TServiceBuilder)! ;
+        return (this as TServiceBuilder)!;
     }
 
     /// <summary>

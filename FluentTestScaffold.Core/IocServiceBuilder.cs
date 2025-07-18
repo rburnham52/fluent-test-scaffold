@@ -4,9 +4,9 @@ using Moq;
 
 namespace FluentTestScaffold.Core;
 
-public abstract class IocServiceBuilder<TContainerBuilder, TServiceBuilder>: IServiceProviderFactory<TContainerBuilder> 
+public abstract class IocServiceBuilder<TContainerBuilder, TServiceBuilder> : IServiceProviderFactory<TContainerBuilder>
     where TContainerBuilder : notnull
-    where TServiceBuilder: IocServiceBuilder<TContainerBuilder, TServiceBuilder>
+    where TServiceBuilder : IocServiceBuilder<TContainerBuilder, TServiceBuilder>
 {
     private readonly IServiceProviderFactory<TContainerBuilder> _serviceProviderFactory;
     private readonly ConfigOptions _configOptions;
@@ -36,27 +36,27 @@ public abstract class IocServiceBuilder<TContainerBuilder, TServiceBuilder>: ISe
     /// Called internally to register the TestScaffold, Builders and Data Templates with the IOC container.
     /// </summary>
     public abstract void RegisterSingleton<TSerivce>(TSerivce service) where TSerivce : class;
-    
+
     /// <summary>
     /// Called internally to register the TestScaffold, Builders and Data Templates with the IOC container.
     /// </summary>
     public abstract void RegisterSingleton(params Type[] services);
 
-    
+
     /// <summary>
     /// Registers all builders in the specified assemblies to the IOC container if EnableAutoDiscovery is true.
     /// </summary>
     public void RegisterBuildersWithAutoDiscovery()
     {
-        if(!_configOptions.AutoDiscovery.HasFlag(AutoDiscovery.Builders)) return;
+        if (!_configOptions.AutoDiscovery.HasFlag(AutoDiscovery.Builders)) return;
         foreach (var assembly in _configOptions.Assemblies)
         {
             var builderTypes = assembly.GetTypes()
                 .Where(t => t.IsAssignableToGenericType(typeof(Builder<>)))
                 .Where(t => t != typeof(Builder<>)) // ignore base builder for internal testing
                 .ToArray();
-                if(builderTypes.Length > 0)
-                    RegisterSingleton(builderTypes);
+            if (builderTypes.Length > 0)
+                RegisterSingleton(builderTypes);
         }
     }
 

@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace FluentTestScaffold.Nunit;
 
-public class NunitTestScaffoldLogger: ITestScaffoldLogger
+public class NunitTestScaffoldLogger : ITestScaffoldLogger
 {
     public void Info(string message)
     {

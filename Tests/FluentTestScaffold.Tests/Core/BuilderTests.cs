@@ -72,29 +72,29 @@ public class BuilderTests
         Assert.AreEqual("5", firstAdded!);
         Assert.AreEqual("3", lastAdded!);
     }
-    
+
     [Test]
     public void Builder_If_Conditionally_Applies_Action()
     {
-       var testScaffold = new TestScaffold()
-            .UseIoc()
-            .UsingBuilder<MockBuilder>()
-            .If(false, b => b.Enqueue("5"))
-            .Enqueue("6")
-            .If(true, b => b.Enqueue("1"))
-            .Enqueue("3")
-            .Build();
+        var testScaffold = new TestScaffold()
+             .UseIoc()
+             .UsingBuilder<MockBuilder>()
+             .If(false, b => b.Enqueue("5"))
+             .Enqueue("6")
+             .If(true, b => b.Enqueue("1"))
+             .Enqueue("3")
+             .Build();
 
-       var builder = testScaffold
-           .UsingBuilder<MockBuilder>();
-       
+        var builder = testScaffold
+            .UsingBuilder<MockBuilder>();
+
         Assert.IsNotEmpty(builder.AppliedOrder);
         Assert.AreEqual(builder.AppliedOrder.Contains("5"), false);
         Assert.AreEqual(builder.AppliedOrder.Contains("6"), true);
         Assert.AreEqual(builder.AppliedOrder.Contains("1"), true);
         Assert.AreEqual(builder.AppliedOrder.Contains("3"), true);
     }
-    
+
     [Test]
     [TestCase(true, "was true")]
     [TestCase(false, "was false")]
@@ -108,7 +108,7 @@ public class BuilderTests
 
         var builder = testScaffold
             .UsingBuilder<MockBuilder>();
-       
+
         Assert.IsNotEmpty(builder.AppliedOrder);
         Assert.IsTrue(builder.AppliedOrder.Count == 1);
         Assert.AreEqual(builder.AppliedOrder.First(), expected);

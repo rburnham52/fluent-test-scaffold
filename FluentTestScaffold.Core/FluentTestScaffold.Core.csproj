@@ -29,4 +29,8 @@
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="docs\README.md" />
+    </ItemGroup>
+
 </Project>
