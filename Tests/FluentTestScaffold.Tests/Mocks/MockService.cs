@@ -20,7 +20,7 @@ interface IMockService
     void Increment();
 }
 
-public class MockBuilder: Builder<MockBuilder>
+public class MockBuilder : Builder<MockBuilder>
 {
     public MockBuilder(IServiceProvider serviceProvider) : base(serviceProvider)
     {

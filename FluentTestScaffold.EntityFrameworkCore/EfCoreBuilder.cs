@@ -21,7 +21,7 @@ public class EfCoreBuilder<TDbContext> : EfCoreBuilder<TDbContext, EfCoreBuilder
 }
 
 /// <summary>
-/// Base builder for custom builder implementations. 
+/// Base builder for custom builder implementations.
 /// </summary>
 /// <typeparam name="TDbContext">The DBContext to build</typeparam>
 /// <typeparam name="TBuilder">The type of the Custom Builder</typeparam>
@@ -46,7 +46,7 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
     public TBuilder With<TEntity>(TEntity entity) where TEntity : class
     {
         Enqueue(serviceProvider =>
-        {   
+        {
             var dbContext = serviceProvider.GetRequiredService<TDbContext>();
 
             if (entity == null) return;
@@ -54,7 +54,7 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
             dbContext.SaveChanges();
         });
 
-        return (TBuilder) this;
+        return (TBuilder)this;
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
             dbContext.SaveChanges();
         });
 
-        return (TBuilder) this;
+        return (TBuilder)this;
     }
 
 
@@ -113,14 +113,14 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
 
     private object[] GetKey<T>(T entity, TDbContext dbContext)
     {
-        if(entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
-        
+        if (entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
+
         var entry = dbContext.Entry(entity);
         object[] keyParts = entry.Metadata.FindPrimaryKey()
             .Properties
             .Select(p => entry.Property(p.Name).CurrentValue)
             .ToArray();
-        
+
         return keyParts;
     }
 }

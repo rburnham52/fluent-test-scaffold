@@ -10,28 +10,28 @@ flowchart TB
         TS[TestScaffold] --> CHOOSE{IOC Choice}
         CHOOSE -->|Default| DOTNET[UseIoc<br/>.NET Container]
         CHOOSE -->|Autofac| AUTOFAC[UseAutofac<br/>Autofac Container]
-        
+
         DOTNET --> REGISTER1[Register Services<br/>AddSingleton/AddTransient]
         AUTOFAC --> REGISTER2[Register Services<br/>RegisterType/Register]
-        
+
         REGISTER1 --> AUTO1[Auto-Register Builders]
         REGISTER2 --> AUTO2[Auto-Register Builders]
-        
+
         AUTO1 --> BUILD1[Build ServiceProvider]
         AUTO2 --> BUILD2[Build ServiceProvider]
     end
-    
+
     subgraph "Service Resolution"
         BUILD1 --> SP[IServiceProvider]
         BUILD2 --> SP
-        
+
         SP --> RESOLVE[Resolve T]
         SP --> BUILDER[UsingBuilder T]
-        
+
         RESOLVE --> SERVICE[Your Service]
         BUILDER --> BUILDERINSTANCE[Builder Instance]
     end
-    
+
     style DOTNET fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
     style AUTOFAC fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
     style SP fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
@@ -43,7 +43,7 @@ flowchart TB
 
 The IOC can be used to register and construct any services under test.
 The container is built after calling UseIoc which takes an optional parameter that exposes a Service Builder.
-The Service Builder exposes the underlying IOC's Container Builder & Provides some helpful methods to register Builders. 
+The Service Builder exposes the underlying IOC's Container Builder & Provides some helpful methods to register Builders.
 
 ## Setup
 The default .net IOC implementation requires a reference to `Microsoft.Extensions.DependencyInjection`
@@ -128,25 +128,25 @@ classDiagram
         +RegisterSingleton T()
         +CreateServiceProvider()
     }
-    
+
     class DotnetServiceBuilder {
         +Container IServiceCollection
         +RegisterAppServices()
     }
-    
+
     class AutofacServiceBuilder {
         +Container ContainerBuilder
         +RegisterAppServices()
     }
-    
+
     class AppServicesBuilder {
         +RegisterAppServices()
     }
-    
+
     class AutofacAppServicesBuilder {
         +RegisterAppServices()
     }
-    
+
     IocServiceBuilder <|-- DotnetServiceBuilder
     IocServiceBuilder <|-- AutofacServiceBuilder
     DotnetServiceBuilder <|-- AppServicesBuilder

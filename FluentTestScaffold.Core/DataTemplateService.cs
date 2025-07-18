@@ -10,7 +10,7 @@ public class DataTemplateService
     {
         _dataTemplateMethodInfo = dataTemplateMethodInfo;
     }
-    
+
     /// <summary>
     /// Finds a Data Template MethodInfo by Name.
     /// </summary>

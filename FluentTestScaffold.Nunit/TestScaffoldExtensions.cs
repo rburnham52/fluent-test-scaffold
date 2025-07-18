@@ -10,6 +10,6 @@ namespace FluentTestScaffold.Core
             DefaultLogger.Logger = new NunitTestScaffoldLogger();
             return testScaffold;
         }
-    
+
     }
 }

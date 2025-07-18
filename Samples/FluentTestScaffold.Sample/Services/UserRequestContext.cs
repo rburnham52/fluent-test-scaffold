@@ -7,7 +7,7 @@ public class UserRequestContext : IUserRequestContext
 {
     private readonly IAuthService _authService;
     private User? _user;
-    
+
 
     public User? CurrentUser => _user;
 
@@ -15,7 +15,7 @@ public class UserRequestContext : IUserRequestContext
     {
         _authService = authService;
     }
-    
+
     public void SignOut()
     {
         _user = null;
@@ -35,6 +35,6 @@ public interface IUserRequestContext
     User? AuthenticateUser(string? email, string? password);
 
     void SignOut();
-    
+
     User? CurrentUser { get; }
 }

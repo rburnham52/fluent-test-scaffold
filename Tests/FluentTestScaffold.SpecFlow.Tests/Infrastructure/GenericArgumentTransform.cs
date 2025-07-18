@@ -19,11 +19,11 @@
 //     //     var testScaffold = _scenarioContext.Get<TestScaffold>(nameof(TestScaffold));
 //     //
 //     //     var config = testScaffold.Resolve<SpecflowBuilderConfig>();
-//     //     
+//     //
 //     //     var type = config.Assembly?.
 //     //     var u1 = table.CreateInstance<AuthManagerSteps.TestEmployee>();
-//     //         
-//     //     //use mock data for other properties 
+//     //
+//     //     //use mock data for other properties
 //     //     var user = new Fixture()
 //     //         .Build<AuthManagerSteps.TestEmployee>()
 //     //         .With(u => u.FirstName, u1.FirstName)

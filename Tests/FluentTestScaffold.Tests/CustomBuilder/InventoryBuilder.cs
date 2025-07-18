@@ -9,7 +9,7 @@ namespace FluentTestScaffold.Tests.CustomBuilder;
 public class InventoryBuilder : EfCoreBuilder<TestDbContext, InventoryBuilder>
 {
     public InventoryBuilder(IServiceProvider serviceProvider) : base(serviceProvider) { }
-    
+
     /// <summary>
     /// Adds a set of sample Items to the DBContext
     /// </summary>

@@ -10,32 +10,27 @@ It allows for storing data between Builders, Data Templates and Tests.
 flowchart TB
     subgraph "Context Sharing"
         TSC[TestScaffoldContext<br/>Dictionary string object]
-        
         TS[TestScaffold] --> TSC
         B1[Builder A] --> TSC
         B2[Builder B] --> TSC
         DT[Data Template] --> TSC
         TEST[Integration Test] --> TSC
-        
         TSC --> TS
         TSC --> B1
         TSC --> B2
         TSC --> DT
         TSC --> TEST
     end
-    
     subgraph "Context Operations"
         SET[Set T value key]
         GET[Get T key]
         TRY[TryGetValue T key]
         FACTORY[Set T Func T]
-        
         SET --> STORE[Store in Dictionary]
         GET --> RETRIEVE[Retrieve & Cast]
         TRY --> SAFE[Safe Retrieval]
         FACTORY --> LAZY[Lazy Evaluation]
     end
-    
     style TSC fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
     style TS fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
     style B1 fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
@@ -57,11 +52,9 @@ A custom builder can set the context directly via the `TestScaffoldContext` prop
         {
             base.Enqueue(_ => AppliedOrder.Add(actionName));
             var hasValue = TestScaffoldContext.ContainsKey("LastAdded");
-            
             // Add to context Directly
             if(!hasValue)
                 TestScaffoldContext["FirstAdded"] = actionName;
-            
             // Add to context with fluent API
             SetTestContext("LastAdded", actionName);
             return this;
@@ -95,7 +88,6 @@ Data Templates can set the context using the`SetTestContext` method of a Builder
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.Avengers, Price = 24},
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.DeadPool, Price = 14, AgeRestriction = 15}
             }).Build();
-        
         return testScaffold;
     }
 ```
@@ -113,28 +105,24 @@ Values stored in the Test Context can be accesed from the `TestScaffoldContext` 
         var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
-                // Custom App Service Builder to register common services. 
+                // Custom App Service Builder to register common services.
                 serviceBuilder.RegisterAppServices();
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
             .WithTemplate(ApplicationTemplates.DefaultCatalogueTemplate);
-        
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
         requestContext.AuthenticateUser(UserBuilder.Over18User.Email, UserBuilder.Over18User.Password);
-        
         //Resolved the dbContext registered by the AutofacAppServicesBuilder
         var dbContext = testScaffold.Resolve<TestDbContext>();
         var item = dbContext.Items.FirstOrDefault(i => i.Title == Defaults.CatalogueItems.DeadPool);
-        
         // Attempt to add age restricted content with under age user
         var shoppingCartService = testScaffold.Resolve<ShoppingCartService>();
         shoppingCartService.AddItemToCart(item!.Id);
 
         // Get the UserId stored by the DataTemplate
         var userId = testScaffold.TestScaffoldContext.Get<Guid>("Over18UserId");
-    
         var cart = dbContext.ShoppingCart.Include(s => s.Inventory).FirstOrDefault(u => u.UserId == userId);
         Assert.IsTrue(cart?.Inventory.Any(i => i.Id == item.Id));
     }

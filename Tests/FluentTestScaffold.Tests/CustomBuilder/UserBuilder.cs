@@ -22,7 +22,7 @@ public class UserBuilder(IServiceProvider serviceProvider) : EfCoreBuilder<TestD
             .Build();
         return this;
     }
-    
+
     public UserBuilder WithOver18User(out Guid userId)
     {
         userId = Over18User.Id;
@@ -30,7 +30,7 @@ public class UserBuilder(IServiceProvider serviceProvider) : EfCoreBuilder<TestD
             .Build();
         return this;
     }
-    
+
     /// <summary>
     /// Adds a user to the DBContext
     /// </summary>
@@ -39,7 +39,7 @@ public class UserBuilder(IServiceProvider serviceProvider) : EfCoreBuilder<TestD
         With(user);
         return this;
     }
-    
+
     /// <summary>
     /// Adds a Shopping cart for the User
     /// </summary>
@@ -53,7 +53,7 @@ public class UserBuilder(IServiceProvider serviceProvider) : EfCoreBuilder<TestD
 
         return this;
     }
-    
+
     /// <summary>
     /// Adds an item to the users shopping cart
     /// </summary>
@@ -67,13 +67,13 @@ public class UserBuilder(IServiceProvider serviceProvider) : EfCoreBuilder<TestD
             var dbContext = s.GetRequiredService<TestDbContext>();
             var shoppingCart = dbContext.ShoppingCart
                 .Include(s => s.Inventory)
-                .First( x => x.UserId == userId);
+                .First(x => x.UserId == userId);
 
             shoppingCart.Inventory.Add(item);
             dbContext.SaveChanges();
         });
-        
+
         return this;
     }
-    
+
 }

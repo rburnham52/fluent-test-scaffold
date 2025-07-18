@@ -1,0 +1,56 @@
+# Configuration file for GitHub Actions workflows
+# This file contains common variables and settings used across all workflows
+
+# .NET versions to test against
+dotnet-versions:
+  - '6.0.x'
+  - '7.0.x'
+  - '8.0.x'
+
+# Primary .NET version for publishing
+primary-dotnet-version: '8.0.x'
+
+# Package names for publishing
+packages:
+  - FluentTestScaffold.Core
+  - FluentTestScaffold.AspNetCore
+  - FluentTestScaffold.Autofac
+  - FluentTestScaffold.Bdd
+  - FluentTestScaffold.EntityFrameworkCore
+  - FluentTestScaffold.Nunit
+
+# Test projects
+test-projects:
+  - Tests/FluentTestScaffold.Tests
+  - Tests/FluentTestScaffold.SpecFlow.Tests
+  - Samples/FluentTestScaffold.Sample.WebApp.Tests
+
+# Code coverage threshold (percentage)
+coverage-threshold: 80
+
+# Security scan settings
+security:
+  fail-on-cvss: 7
+  dependency-check-version: '8.4.0'
+
+# Release settings
+release:
+  draft: false
+  prerelease: false
+  generate-release-notes: true
+
+# Artifact retention settings
+artifacts:
+  test-results-days: 30
+  packages-days: 30
+  coverage-report-days: 30
+  performance-results-days: 30
+
+# Scheduled maintenance settings
+maintenance:
+  schedule: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+  create-issues: true
+  check-dependencies: true
+  security-scan: true
+  performance-test: true
+  documentation-check: true 

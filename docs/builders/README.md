@@ -7,11 +7,9 @@ Builders enabled the Fluent API and control the Setup for the specific framework
 flowchart TD
     START[TestScaffold.UsingBuilder&lt;T&gt;] --> RESOLVE[IOC Resolves Builder]
     RESOLVE --> FLUENT[Builder Fluent API Available]
-    
     FLUENT --> WITH[With/WithRange Methods]
     FLUENT --> COND[If/IfElse Methods]
     FLUENT --> CONTEXT[SetTestContext Methods]
-    
     WITH --> ENQUEUE[Actions Enqueued]
     COND --> ENQUEUE
     CONTEXT --> ENQUEUE
@@ -68,7 +66,7 @@ Builders are registered with the IOC using AutoDiscovery. Any Builder Dependenci
 ```
 ### Builder Dependencies
 If a Builder has any Constructor dependencies they can be registered into the IOC Container.
-The IOC Container will resolve these dependencies when using the builder. 
+The IOC Container will resolve these dependencies when using the builder.
 eg. The EFCoreBuilder has a dependency on TestDbContext
 
 ## Using Builders
@@ -113,11 +111,9 @@ flowchart LR
         COND -->|true| TRUE[Execute True Action]
         COND -->|false| FALSE[Execute False Action]
         COND -->|false + If only| SKIP[Skip Action]
-        
         TRUE --> ENQUEUE1[Enqueue Action]
         FALSE --> ENQUEUE2[Enqueue Alternative]
         SKIP --> CONTINUE[Continue Chain]
-        
         ENQUEUE1 --> CONTINUE
         ENQUEUE2 --> CONTINUE
     end
@@ -138,13 +134,12 @@ new TestScaffold()
     .If(true, b => b.With(new User(
         id: userId,
         email: "test@email.com"
-    ))      
-        
+    )))
 //This will only enqueue and action if true and an alternative when false.
 new TestScaffold()
     .UseIoc(ctx => ctx.Container.RegisterSingleton(_ => dbContext))
     .UsingBuilder<UserBuilder>()
-    .IfElse(IsAdmin, 
+    .IfElse(IsAdmin,
         b => b.With(new User {
             Id: userId,
             Amail: "test@email.com",
@@ -152,16 +147,16 @@ new TestScaffold()
         }),
         b => b.With(new User(
             Id: userId,
-            Email: "test@email.com", 
+            Email: "test@email.com",
         )
 ```
 
 ## Custom Builders
-To implement your own Builder they should inherit at minimum the `Builder` class or one of the derived classes. 
+To implement your own Builder they should inherit at minimum the `Builder` class or one of the derived classes.
 
 This will allow you extend the Fluent APi and group common Builder logic.
 
-A Builder method should return `this` to continue the Fluent API 
+A Builder method should return `this` to continue the Fluent API
 
 ```csharp
 public class MockBuilder: Builder

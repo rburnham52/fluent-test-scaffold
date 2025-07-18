@@ -13,7 +13,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
     public UnderAgedUserSteps(ScenarioContext scenarioContext) : base(scenarioContext)
     {
     }
-    
+
     [Given(@"the logged in user is under (\d+)")]
     public async Task GivenTheLoggedInUserIsUnder(int age)
     {
@@ -22,7 +22,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var httpCLient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
         await httpCLient.PostAsJsonAsync(
-            "/Authentication/login", 
+            "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
     }
 
@@ -34,7 +34,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var httpClient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
         await httpClient.PostAsJsonAsync(
-            "/Authentication/login", 
+            "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
     }
 
@@ -46,7 +46,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var httpClient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
         await httpClient.PostAsJsonAsync(
-            "/Authentication/login", 
+            "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
     }
 
@@ -60,7 +60,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
             DateTime.Today.AddYears(-age));
 
         TestScaffold.WithData<TestDbContext, User>(user);
-        
+
         TestScaffold.TestScaffoldContext.Set(user);
         return user;
     }

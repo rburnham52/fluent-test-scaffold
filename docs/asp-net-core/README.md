@@ -13,7 +13,7 @@ sequenceDiagram
     participant CLIENT as HttpClient
     participant CTRL as Controller
     participant SVC as Services
-    
+
     Test->>TS: UseAspNetCore()
     TS->>WHF: Configure WebHost
     WHF->>APP: Start Test Server
@@ -25,7 +25,7 @@ sequenceDiagram
     SVC-->>CTRL: Return Data
     CTRL-->>CLIENT: HTTP Response
     CLIENT-->>Test: Response for Assertion
-    
+
     Note over Test,SVC: Full ASP.NET pipeline with real services
 ```
 
@@ -81,7 +81,7 @@ public class MyWebApplicationFactory: WebApplicationFactory<Program>
         {
             // override configurations
         });
-        
+
         builder.ConfigureTestServices(services =>
         {
             // override service registrations, eg. replace registration of interfaces to concrete types with mocks.
@@ -126,14 +126,14 @@ public class MyWebApplicationFactory: WebApplicationFactory<Program>
 {
     // Make sure your mocks are public so you can easily access them for Setup or Verifications steps in your tests
     public Mock<IEmailService> mockEmailService = new Mock<IEmailService>()
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
         {
             // replacing a service registration with a mock
             services.ReplaceServiceWithMock<IEmailService>(mockEmailService);
-            
+
             // replacing an DbContext registration with an inmemory daabase
             services.ReplaceDbContextWithInMemoryProvider<MyApplicationDbContext>();
         });
@@ -152,7 +152,7 @@ private TestScaffold testScaffold;
 public void Setup()
 {
     var webFactory = new MyWebApplicationFactory();
-    
+
     testScaffold = new TestScaffold()
         .WithWebApplicationFactory<MyWebApplicationFactory, Program>(webFactory);
 }
@@ -166,7 +166,7 @@ If you have replaced your dbcontext registration with an in-memory database, you
 
 ```csharp
 testScaffold.WithData<MyApplicationDbContext, Employee>(
-    new Employee 
+    new Employee
     {
         Id = 1,
         Name = "John Doe"
@@ -176,7 +176,7 @@ testScaffold.WithData<MyApplicationDbContext, Employee>(
 
 ### Performing an action to test and asserting
 
-You can now test api calls to your Web Application using the Test Scaffold.  To do this you will need to get a Http Client 
+You can now test api calls to your Web Application using the Test Scaffold.  To do this you will need to get a Http Client
 which is used to talk to the Web Application.
 
 ```csharp
@@ -184,7 +184,7 @@ var httpClient = testScaffold.GetWebApplicationHttpClient<MyWebApplicationFactor
 
 var response = await httpClient.PostAsJsonAsync<AddNumbers>(
     "/maths/add",
-    new AddNumbers 
+    new AddNumbers
     {
         A = 12,
         B = 2
@@ -226,11 +226,11 @@ var httpClient = testScaffold.GetWebApplicationHttpClient<MyWebApplicationFactor
 // Perform an action to test
 var response = await httpClient.PostAsJsonAsync<RegisterUser>(
     "/user/register",
-    new RegisterUser 
+    new RegisterUser
     {
         Email = "testuser@email.com"
-    } 
-); 
+    }
+);
 
 var webApplicationFactory = testScaffold.TestScaffoldContext.Get<MyWebApplicationFactory>();
 
@@ -260,8 +260,8 @@ response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 // Perform a successful login request to set the Authentication cookie
 await httpClient.PostAsJson<Login>(
     "/authentication/login",
-    new Login 
-    {  
+    new Login
+    {
         Username = "testuser",
         Password = "Password123!"
     }

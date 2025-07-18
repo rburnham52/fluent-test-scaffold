@@ -27,9 +27,9 @@ public class ShoppingCartSteps : TestScaffoldStep
         {
             item.Id = Guid.NewGuid();
         }
-        
+
         TestScaffold.WithData<TestDbContext, Item>(items.ToArray());
-        
+
         TestScaffold.TestScaffoldContext.Set(items);
     }
 
@@ -39,7 +39,7 @@ public class ShoppingCartSteps : TestScaffoldStep
         var items = TestScaffold.TestScaffoldContext.Get<List<Item>>();
 
         var item = items.Single(i => i.Title == itemTitle);
-        
+
         TestScaffold.TestScaffoldContext.Set(item);
     }
 
@@ -53,7 +53,7 @@ public class ShoppingCartSteps : TestScaffoldStep
         var response = await httpClient.PostAsJsonAsync(
             "/ShoppingCart",
             new AddItemToShoppingCartRequest(item.Id));
-        
+
         TestScaffold.TestScaffoldContext.Set(response);
     }
 
@@ -90,7 +90,7 @@ public class ShoppingCartSteps : TestScaffoldStep
             await dbContext.ShoppingCart
                 .Include(sc => sc.Inventory)
                 .SingleOrDefaultAsync(sc => sc.UserId == user.Id);
-        
+
         // If there is never any item added to the shopping cart, then the shopping cart will never exist so valid
         // assertion for a null shopping cart
         // If there are already other items added to the shopping cart, then the assertion passes if none of the items

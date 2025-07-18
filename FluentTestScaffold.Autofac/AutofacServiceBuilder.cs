@@ -11,11 +11,11 @@ namespace FluentTestScaffold.Core;
 /// </summary>
 public class AutofacServiceBuilder : AutofacServiceBuilder<AutofacServiceBuilder>
 {
-    public AutofacServiceBuilder(): base(ConfigOptions.Default) { }
-    public AutofacServiceBuilder(ConfigOptions configOptions): base(configOptions) { }
+    public AutofacServiceBuilder() : base(ConfigOptions.Default) { }
+    public AutofacServiceBuilder(ConfigOptions configOptions) : base(configOptions) { }
 }
 /// <summary>
-/// Autofac Service Builder used to create customer Service Builders. 
+/// Autofac Service Builder used to create customer Service Builders.
 /// </summary>
 /// <typeparam name="TServiceBuilder">Your custom Service Builder type</typeparam>
 public class AutofacServiceBuilder<TServiceBuilder> : IocServiceBuilder<ContainerBuilder, TServiceBuilder>
@@ -24,13 +24,13 @@ public class AutofacServiceBuilder<TServiceBuilder> : IocServiceBuilder<Containe
     private static readonly ConfigOptions Options = new()
     {
         AutoDiscovery = AutoDiscovery.All,
-        Assemblies = new List<Assembly>(){Assembly.GetCallingAssembly()}
+        Assemblies = new List<Assembly>() { Assembly.GetCallingAssembly() }
     };
-    
-    public AutofacServiceBuilder() : base(new AutofacServiceProviderFactory(), Options) {}
-    
-    public AutofacServiceBuilder(ConfigOptions configOptions) : base(new AutofacServiceProviderFactory(), configOptions) {}
-    
+
+    public AutofacServiceBuilder() : base(new AutofacServiceProviderFactory(), Options) { }
+
+    public AutofacServiceBuilder(ConfigOptions configOptions) : base(new AutofacServiceProviderFactory(), configOptions) { }
+
     /// <summary>
     /// Allows mocking a Service and Registering ith with the container.
     /// </summary>
@@ -42,7 +42,7 @@ public class AutofacServiceBuilder<TServiceBuilder> : IocServiceBuilder<Containe
         var mock = new Mock<TService>();
         config(mock);
         Container.RegisterInstance(mock.Object).As<TService>();
-        return (this as TServiceBuilder)! ;
+        return (this as TServiceBuilder)!;
     }
 
     /// <summary>

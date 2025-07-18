@@ -8,20 +8,16 @@ flowchart TB
     subgraph "Core Package"
         CORE[FluentTestScaffold.Core<br/>Required Base Package]
     end
-    
     subgraph "IOC Extensions"
         AUTOFAC[FluentTestScaffold.Autofac<br/>Autofac Container Support]
     end
-    
     subgraph "Database Extensions"
         EF[FluentTestScaffold.EntityFrameworkCore<br/>EF Core Builder Support]
     end
-    
     subgraph "Testing Extensions"
         BDD[FluentTestScaffold.Bdd<br/>BDD Style API]
         ASPNET[FluentTestScaffold.AspNetCore<br/>Controller Integration Tests]
     end
-    
     CORE --> AUTOFAC
     CORE --> EF
     CORE --> BDD

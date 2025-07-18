@@ -4,7 +4,7 @@
 	so I can purchase the items
 
 
-Background: 
+Background:
 	Given the following user has been registered into the system
 		| name          | value                  |
 		| Name          | Peter Parker           |
@@ -17,7 +17,6 @@ Background:
 		| Cigarettes | A packet of smokes       | $20.00 | 18              |
 		| Lollipop   | A ball candy on a stick  | $2.00  |                 |
 		| Chips      | A bag of crispy potatoes | $4.00  |                 |
-	
 Scenario: A registered user can add items to his shopping cart
 	Given the user has selected the item "Lollipop"
 	When the item is added to the shopping cart

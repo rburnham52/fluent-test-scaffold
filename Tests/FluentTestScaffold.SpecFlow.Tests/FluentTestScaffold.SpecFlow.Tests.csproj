@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net8.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
 
@@ -16,17 +16,15 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
-        <PackageReference Include="nunit" Version="3.13.3" />
+        <PackageReference Include="nunit" Version="3.14.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
-        <PackageReference Update="Nerdbank.GitVersioning">
-          <Version>3.6.133</Version>
-        </PackageReference>
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="Features\ShoppingCart.feature" />
+        <None Remove="docs\README.md" />
     </ItemGroup>
 
     <ItemGroup>

@@ -12,7 +12,7 @@ public class WebRequestSteps : TestScaffoldStep
     public WebRequestSteps(ScenarioContext scenarioContext) : base(scenarioContext)
     {
     }
-    
+
     [Then(@"request should be successful")]
     public void ThenRequestShouldBeSuccessful()
     {

@@ -24,7 +24,7 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     }
 
     /// <summary>
-    /// Enqueue an action to be applied when Build is called. 
+    /// Enqueue an action to be applied when Build is called.
     /// </summary>
     /// <param name="action"></param>
     protected void Enqueue(Action<IServiceProvider> action)
@@ -58,26 +58,26 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     /// <returns></returns>
     public TBuilder SetTestContext(string key, object value)
     {
-        var testContext =  _serviceProvider.GetRequiredService<TestScaffoldContext>();
+        var testContext = _serviceProvider.GetRequiredService<TestScaffoldContext>();
         testContext[key] = value;
-        
+
         return (TBuilder)this;
     }
-    
+
     /// <summary>
     /// Conditionally applies an action to the builder.
     /// </summary>
     /// <param name="condition">The condition for applying the action</param>
     /// <param name="action">The action used to apply to the Builder</param>
     /// <returns></returns>
-    public TBuilder If(bool condition, Action<TBuilder> action) 
+    public TBuilder If(bool condition, Action<TBuilder> action)
     {
         if (condition)
             action((TBuilder)this);
-        
+
         return (TBuilder)this;
     }
-    
+
     /// <summary>
     /// Conditionally applies an action to the builder.
     /// </summary>
@@ -85,18 +85,18 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     /// <param name="trueAction">The action used to apply to the Builder when the condition is true</param>
     /// <param name="falseAction">The action used to apply to the Builder when the condition is false</param>
     /// <returns></returns>
-    public TBuilder IfElse(bool condition, Action<TBuilder> trueAction, Action<TBuilder> falseAction) 
+    public TBuilder IfElse(bool condition, Action<TBuilder> trueAction, Action<TBuilder> falseAction)
     {
         if (condition)
             trueAction((TBuilder)this);
         else
             falseAction((TBuilder)this);
-        
+
         return (TBuilder)this;
     }
 
     /// <summary>
-    /// Build the current builder actions and return the TestScaffold context. 
+    /// Build the current builder actions and return the TestScaffold context.
     /// </summary>
     /// <returns></returns>
     public virtual TestScaffold Build()
@@ -127,7 +127,7 @@ public interface IBuilder
     TNewBuilder UsingBuilder<TNewBuilder>() where TNewBuilder : IBuilder;
 
     /// <summary>
-    /// Build the current builder actions and return the TestScaffold context. 
+    /// Build the current builder actions and return the TestScaffold context.
     /// </summary>
     /// <returns></returns>
     TestScaffold Build();

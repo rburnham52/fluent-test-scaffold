@@ -11,17 +11,17 @@ flowchart LR
         GIVEN[Given<br/>Setup Context] --> WHEN[When<br/>Execute Action]
         WHEN --> THEN[Then<br/>Assert Results]
     end
-    
+
     subgraph "FluentTestScaffold BDD"
         SETUP[TestScaffold Setup] --> BDD_GIVEN[Given - WithBuilder]
         BDD_GIVEN --> BDD_WHEN[When - ExecuteAction]
         BDD_WHEN --> BDD_THEN[Then - AssertResult]
     end
-    
+
     GIVEN -.-> BDD_GIVEN
     WHEN -.-> BDD_WHEN
     THEN -.-> BDD_THEN
-    
+
     style GIVEN fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
     style WHEN fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000
     style THEN fill:#ffebee,stroke:#000,stroke-width:2px,color:#000
@@ -33,7 +33,7 @@ flowchart LR
 
 ## Behaviour Driven Development API
 
-`TestScaffold.Bdd` adds basic support for BDD style tests to the TestScaffold. 
+`TestScaffold.Bdd` adds basic support for BDD style tests to the TestScaffold.
 It exposes a Fluent API to be able to define your Test using BDD style syntax.
 
 After your Test Scaffold is built, use the BDD API to define your tests
@@ -90,12 +90,12 @@ When an exception is expected to be through the BDD API exposes some methods on 
                     Assert.AreEqual($"You must be over 15 to add this item", ex.Message);
                 });
             });
-```  
+```
 
 ### What's Next??
 
 - [x] Add Basic Fluent BDD API
-- [x] Add Basic Exception Handling 
+- [x] Add Basic Exception Handling
 - [ ] Improve Exception Handling by auto catching exceptions by the BDD methods
 - [ ] Add support for BDD Tables/Data Driven tests
 - [ ] Add support Better Debug Reporting

@@ -14,8 +14,8 @@ public class AuthService : IAuthService
 
     public User? AuthenticateUser(string email, string password)
     {
-  
-        // Mock auth 
+
+        // Mock auth
         var user = _dbContext.Users
             .Where(c => c.Password != null)
             .Where(u => u.Email.ToLower(CultureInfo.InvariantCulture) == email.ToLower(CultureInfo.InvariantCulture))

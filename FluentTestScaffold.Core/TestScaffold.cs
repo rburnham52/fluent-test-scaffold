@@ -9,12 +9,12 @@ namespace FluentTestScaffold.Core;
 public class TestScaffold
 {
     public readonly ConfigOptions Options;
-    
+
     /// <summary>
     /// Provides access to the IOC container.
     /// </summary>
     public IServiceProvider? ServiceProvider { get; private set; }
-    
+
     /// <summary>
     /// Provides a places to store data during setup that can be accesses later.
     /// </summary>
@@ -27,7 +27,7 @@ public class TestScaffold
     {
         Options = ConfigOptions.Default;
     }
-    
+
     /// <summary>
     /// Creates an instance of TestScaffold with config
     /// </summary>
@@ -52,16 +52,16 @@ public class TestScaffold
     /// <param name="configureServices">Allows you to configure the IOC setup</param>
     public TestScaffold UseIoc<TContainerBuilder, TServiceBuilder>(
         IocServiceBuilder<TContainerBuilder, TServiceBuilder> serviceBuilder,
-        Action<TServiceBuilder>? configureServices = null) 
+        Action<TServiceBuilder>? configureServices = null)
         where TServiceBuilder : IocServiceBuilder<TContainerBuilder, TServiceBuilder>
-        where TContainerBuilder: notnull
+        where TContainerBuilder : notnull
 
     {
         return UseServiceProviderFactory(serviceBuilder, configureServices);
     }
 
     /// <summary>
-    /// Resolves and switches the Fluent API to a Builder. 
+    /// Resolves and switches the Fluent API to a Builder.
     /// </summary>
     /// <typeparam name="TBuilder">Type of Builder to Resolve</typeparam>
     /// <returns>The resolved builder</returns>
@@ -121,7 +121,7 @@ public class TestScaffold
             if (methodInfo.DeclaringType == null)
                 throw new InvalidOperationException("Failed to Invoke Data Template. Unknown Declaring Type");
             var instance = Activator.CreateInstance(methodInfo.DeclaringType);
-            var paramsArray = (new object?[] {this}).Concat(parameters).ToArray();
+            var paramsArray = (new object?[] { this }).Concat(parameters).ToArray();
 
             methodInfo.Invoke(instance, paramsArray);
 
@@ -141,17 +141,17 @@ public class TestScaffold
     {
         if (this.ServiceProvider != null)
             throw new InvalidOperationException("A service provider has already been initialised");
-        
+
         this.ServiceProvider = serviceProvider;
 
         return this;
     }
-    
-    
+
+
     private TestScaffold UseServiceProviderFactory<TContainerBuilder, TServiceBuilder>(
-        IocServiceBuilder<TContainerBuilder, TServiceBuilder> serviceBuilder, 
-        Action<TServiceBuilder>? configureServices = null) 
-        where TContainerBuilder : notnull 
+        IocServiceBuilder<TContainerBuilder, TServiceBuilder> serviceBuilder,
+        Action<TServiceBuilder>? configureServices = null)
+        where TContainerBuilder : notnull
         where TServiceBuilder : IocServiceBuilder<TContainerBuilder, TServiceBuilder>
     {
         if (serviceBuilder is null)
@@ -159,8 +159,8 @@ public class TestScaffold
             throw new ArgumentNullException(nameof(serviceBuilder));
         }
         if (ServiceProvider != null) return this;
-        
-        if(configureServices != null)
+
+        if (configureServices != null)
             configureServices((TServiceBuilder)serviceBuilder);
 
         serviceBuilder.RegisterSingleton(this);
@@ -168,7 +168,7 @@ public class TestScaffold
         serviceBuilder.RegisterSingleton(DefaultLogger.Logger);
         serviceBuilder.RegisterBuildersWithAutoDiscovery();
         serviceBuilder.RegisterDataTemplatesWithAutoDiscovery();
-        
+
         ServiceProvider = serviceBuilder.CreateServiceProvider(serviceBuilder.Container);
         return this;
     }
