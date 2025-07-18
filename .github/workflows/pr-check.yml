@@ -68,8 +68,8 @@ jobs:
         # Build and capture warnings
         dotnet build --configuration Release --verbosity normal 2>&1 | tee build.log
         
-        # Check if there are any warnings (excluding known acceptable warnings)
-        if grep -i "warning" build.log | grep -v "NU1605\|NU1701\|CS8618\|CS8600\|CS8601\|CS8602\|CS8603\|CS8604\|CS8619\|NETSDK1138\|Microsoft.Extensions.DependencyInjection"; then
+        # Check if there are any warnings (excluding known acceptable warnings and build summary)
+        if grep -i "warning" build.log | grep -v "NU1605\|NU1701\|CS8618\|CS8600\|CS8601\|CS8602\|CS8603\|CS8604\|CS8619\|NETSDK1138\|Microsoft.Extensions.DependencyInjection\|Warning(s)" | grep -v "^\s*[0-9]\+\s\+Warning(s)"; then
           echo "Error: Found compiler warnings"
           cat build.log
           exit 1
@@ -149,4 +149,4 @@ jobs:
       with:
         name: coverage-report-pr
         path: ./coverage-report/
-        retention-days: 7                                                                                                                                                
+        retention-days: 7                                                                                                                                                            
