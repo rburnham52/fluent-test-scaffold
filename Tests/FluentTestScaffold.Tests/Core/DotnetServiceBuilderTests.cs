@@ -328,7 +328,7 @@ public class DotnetServiceBuilderTests
             Assert.NotNull(timeService1);
             Assert.NotNull(timeService2);
 
-            //should return the same object reference 
+            //should return the same object reference
             Assert.AreSame(timeService1, timeService2, "Object reference should match for InstancePerLifetimeScope.");
         });
     }
