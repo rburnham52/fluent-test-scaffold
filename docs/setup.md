@@ -21,7 +21,9 @@ flowchart TB
     CORE --> AUTOFAC
     CORE --> EF
     CORE --> BDD
-    CORE --> ASPNETstyle CORE fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
+    CORE --> ASPNET
+    
+    style CORE fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
     style AUTOFAC fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
     style EF fill:#e8f5e8,stroke:#000,stroke-width:2px,color:#000
     style BDD fill:#fff3e0,stroke:#000,stroke-width:2px,color:#000

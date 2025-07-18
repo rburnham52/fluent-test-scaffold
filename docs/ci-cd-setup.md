@@ -9,8 +9,7 @@ The CI/CD pipeline consists of several GitHub Actions workflows that handle diff
 - **CI**: Continuous Integration - builds, tests, and validates code
 - **CD**: Continuous Deployment - publishes packages and creates releases
 - **PR Check**: Pull Request validation - ensures code quality
-- **NuGet Publish**: Publishes packages to NuGet.org
-- **Scheduled Maintenance**: Weekly maintenance tasks
+- **Performance Testing**: Integrated into PR validation
 
 ## Prerequisites
 
@@ -57,11 +56,12 @@ To publish to NuGet.org:
 
 ### 4. Version Management
 
-The project uses [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) for version management:
+The project uses **release tag-based versioning** for version management:
 
-- **`version.json`**: Main version configuration
-- **`Directory.Build.props`**: Common build properties with version synchronization
-- **Git tags**: Used for releases
+- **Git release tags**: Primary source of version information (e.g., `v1.0.0`)
+- **GitHub Actions**: Extracts version from release tags during CD workflow
+- **Assembly versioning**: Set dynamically during build from release tag
+- **NuGet packages**: Versioned using extracted tag version
 
 ### 5. Manual Intervention Process
 
@@ -77,23 +77,31 @@ The CI/CD pipeline includes manual intervention steps to ensure quality:
 #### Version Synchronization
 
 The pipeline ensures version consistency across:
-- Git tags (e.g., `v1.0.0`)
-- Assembly versions (calculated by GitVersion)
+- Git release tags (e.g., `v1.0.0`)
+- Assembly versions (extracted from release tag)
 - Package versions (NuGet packages)
 - Release versions (GitHub releases)
 
 #### Creating a Release
 
 ```bash
+# Ensure you're on main branch
+git checkout main
+git pull origin main
+
 # Create and push a tag
 git tag v1.0.0
 git push origin v1.0.0
+
+# Create GitHub release (triggers CD workflow)
+gh release create v1.0.0 --title "Release v1.0.0" --notes "Release notes here"
 ```
 
 This will trigger:
-1. CI workflow (build and test)
-2. CD workflow (publish to GitHub Packages and create draft release)
-3. Manual approval required for NuGet.org publishing
+1. CD workflow validation (ensures release is from main branch)
+2. Build and test with version extracted from tag
+3. Manual approval required via GitHub environments
+4. NuGet.org publishing after approval
 
 ## Workflow Details
 
@@ -109,11 +117,11 @@ This will trigger:
 
 ### CD Workflow (`cd.yml`)
 
-**Triggers**: Push tags (v*)
+**Triggers**: Published releases, manual workflow dispatch
 
 **Jobs**:
-1. **Publish**: Publishes packages to GitHub Packages
-2. **Create Release**: Creates GitHub release with artifacts
+1. **Validate and Prepare**: Validates release is from main branch, extracts version from tag
+2. **Publish to NuGet**: Builds packages and publishes to NuGet.org (requires manual approval)
 
 ### PR Check Workflow (`pr-check.yml`)
 
@@ -123,7 +131,8 @@ This will trigger:
 1. **Format Check**: Validates code formatting
 2. **Lint Check**: Runs code analyzers
 3. **Dependency Check**: Checks for outdated/vulnerable packages
-4. **Test Coverage**: Ensures minimum coverage (80%)
+4. **Test Coverage**: Ensures minimum coverage (48%)
+5. **Performance Test**: Runs performance tests for regression detection
 
 ### NuGet Publish Workflow (`nuget-publish.yml`)
 
@@ -141,15 +150,14 @@ This will trigger:
 1. **Validate Release Approval**: Validates release and creates approval record
 2. **Reject Release**: Creates rejection record if not approved
 
-### Scheduled Maintenance Workflow (`scheduled-maintenance.yml`)
+### Performance Testing
 
-**Triggers**: Weekly (Sundays at 2 AM UTC), manual dispatch
+**Integration**: Built into PR Check workflow
 
-**Jobs**:
-1. **Dependency Updates**: Checks for outdated packages
-2. **Security Scan**: Runs comprehensive security analysis
-3. **Performance Test**: Runs performance tests
-4. **Documentation Check**: Validates documentation completeness
+**Features**:
+1. **Regression Detection**: Runs performance tests on every PR
+2. **Artifact Upload**: Stores performance results for comparison
+3. **Automated Execution**: No manual intervention required
 
 ## Configuration
 
@@ -277,4 +285,4 @@ For issues with the CI/CD setup:
 1. **Check Documentation**: Review this guide and GitHub Actions docs
 2. **Review Logs**: Examine workflow execution logs
 3. **Community**: Ask questions in GitHub Discussions
-4. **Issues**: Create GitHub issues for bugs or feature requests  
+4. **Issues**: Create GitHub issues for bugs or feature requests    

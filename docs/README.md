@@ -355,58 +355,59 @@ The current implementation supports `.net` & `Autofac` for IOC and `Entity Frame
 
 ## CI/CD Setup
 
-This project uses GitHub Actions for continuous integration and deployment. The CI/CD pipeline includes:
+This project uses GitHub Actions for continuous integration and deployment with release tag-based versioning. The CI/CD pipeline includes:
 
 ### Workflows
 
-1. **CI (`ci.yml`)**: Runs on every push and pull request
-   - Builds and tests on multiple .NET versions (6.0, 7.0, 8.0)
-   - Validates package structure
-   - Generates code coverage reports
-   - Runs security scans
+1. **PR Check (`pr-check.yml`)**: Runs on pull requests
+   - Checks code formatting and linting rules
+   - Builds and tests on .NET 8.0 with multi-targeting (6.0, 7.0, 8.0)
+   - Validates package dependencies and checks for vulnerabilities
+   - Ensures minimum code coverage (48%)
+   - Runs performance tests for regression detection
 
-2. **CD (`cd.yml`)**: Runs on tag pushes
-   - Publishes packages to GitHub Packages
-   - Creates GitHub releases
-   - Uploads package artifacts
+2. **CD (`cd.yml`)**: Runs on published releases
+   - Extracts version from release tag (e.g., `v1.0.0`)
+   - Builds and validates packages with tag-based versioning
+   - **Requires manual approval** via GitHub environments before publishing
+   - Publishes to NuGet.org (not GitHub Packages)
+   - Updates release status after successful deployment
 
-3. **PR Check (`pr-check.yml`)**: Runs on pull requests
-   - Checks code formatting
-   - Validates linting rules
-   - Checks for outdated dependencies
-   - Ensures minimum code coverage (80%)
+3. **CodeQL**: Automated security scanning
+   - Runs static analysis for security vulnerabilities
+   - Integrated with GitHub Security tab
 
-4. **NuGet Publish (`nuget-publish.yml`)**: Publishes to NuGet.org
-   - Publishes packages to NuGet.org when tags are pushed
-   - Requires `NUGET_API_KEY` secret
+### Required Secrets & Environment Setup
 
-5. **Scheduled Maintenance (`scheduled-maintenance.yml`)**: Weekly maintenance
-   - Checks for dependency updates
-   - Runs security scans
-   - Validates documentation
-   - Performance testing
+To use the CI/CD pipeline, you need to configure:
 
-### Required Secrets
-
-To use the CI/CD pipeline, you need to set up the following secrets in your GitHub repository:
-
-1. **`NUGET_API_KEY`**: Your NuGet.org API key for publishing packages
-2. **`GITHUB_TOKEN`**: Automatically provided by GitHub Actions
+1. **GitHub Environments**: Create `production` and `nuget-production` environments with protection rules requiring manual approval
+2. **`NUGET_API_KEY`**: Your NuGet.org API key for publishing packages
+3. **`GITHUB_TOKEN`**: Automatically provided by GitHub Actions
 
 ### Release Process
 
-1. **Create a release**:
+1. **Create a release from main branch**:
    ```bash
+   # Ensure you're on main branch
+   git checkout main
+   git pull origin main
+   
+   # Create and push release tag
    git tag v1.0.0
    git push origin v1.0.0
+   
+   # Create GitHub release (triggers CD workflow)
+   gh release create v1.0.0 --title "Release v1.0.0" --notes "Release notes here"
    ```
 
 2. **The CI/CD pipeline will**:
-   - Build all packages
-   - Run all tests
-   - Publish to GitHub Packages
-   - Create a GitHub release
-   - Publish to NuGet.org (if `NUGET_API_KEY` is configured)
+   - Validate the release is from main branch
+   - Build all packages with version extracted from tag
+   - Run all tests and security scans
+   - **Wait for manual approval** via GitHub environments
+   - Publish to NuGet.org after approval
+   - Update release status
 
 For detailed CI/CD setup instructions, see [CI/CD Setup Guide](ci-cd-setup.md).
 
