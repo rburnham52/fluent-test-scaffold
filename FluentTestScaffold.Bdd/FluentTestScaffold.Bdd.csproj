@@ -6,14 +6,14 @@
         <AssemblyName>FluentTestScaffold.Bdd</AssemblyName>
         <RootNamespace>FluentTestScaffold.Bdd</RootNamespace>
         <LangVersion>latest</LangVersion>
-        <DebugType>Embedded</DebugType>
+        <DebugType>portable</DebugType>
         <EmbedAllSources>true</EmbedAllSources>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <PackageId>FluentTestScaffold.Bdd</PackageId>
         <Authors>Ryan Burnham</Authors>
-        <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
+        <PackageDescription>FluentTestScaffold Bdd</PackageDescription>
         <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
         <IsPackable>true</IsPackable>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
