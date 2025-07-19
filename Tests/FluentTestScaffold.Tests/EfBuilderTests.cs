@@ -175,8 +175,8 @@ public class EfBuilderTests
             .Build();
 
         var user = dbContext.Users.Include(user => user.ShoppingCart)
-            .ThenInclude(shoppingCart => shoppingCart.Inventory).FirstOrDefault(u => u.Id == userId);
-        var hasItemInCart = user?.ShoppingCart.Inventory.Exists(i => i.Id == itemToAdd.Id);
+            .ThenInclude(shoppingCart => shoppingCart!.Inventory).FirstOrDefault(u => u.Id == userId);
+        var hasItemInCart = user?.ShoppingCart?.Inventory?.Exists(i => i.Id == itemToAdd.Id) ?? false;
         //Ensure the item was not added to the users shopping cart
         Assert.IsFalse(hasItemInCart, "Item has not been added to the users shopping cart.");
 
@@ -185,7 +185,7 @@ public class EfBuilderTests
             .If(true, builder => builder.WithItem(userId, itemToAdd))
             .Build();
 
-        hasItemInCart = user?.ShoppingCart.Inventory.Exists(i => i.Id == itemToAdd.Id);
+        hasItemInCart = user?.ShoppingCart?.Inventory?.Exists(i => i.Id == itemToAdd.Id) ?? false;
         // Ensure the item was added to the users shopping cart
 
         Assert.IsTrue(hasItemInCart, "Item has not been added to the users shopping cart.");
@@ -273,6 +273,6 @@ public class EfBuilderTests
 
         item.Should().NotBeNull().And.BeEquivalentTo(updatedItem,
             options => options.Excluding(x => x.Title));
-        item.Title.Should().Be(Defaults.CatalogueItems.Avengers);
+        item!.Title.Should().Be(Defaults.CatalogueItems.Avengers);
     }
 }

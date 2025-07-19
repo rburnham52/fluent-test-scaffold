@@ -20,5 +20,5 @@ public class User
     public string Password { get; set; }
     public DateTime DateOfBirth { get; set; }
 
-    public ShoppingCart ShoppingCart { get; set; }
+    public ShoppingCart? ShoppingCart { get; set; }
 }

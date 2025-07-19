@@ -4,6 +4,7 @@ using FluentTestScaffold.Sample.Services;
 using FluentTestScaffold.Sample.WebApp.Exceptions.Filters;
 using FluentTestScaffold.Sample.WebApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ShoppingCartService>();
-builder.Services.AddSqlServer<TestDbContext>(
-    builder.Configuration.GetConnectionString("Sample"),
-    options => options.MigrationsAssembly(typeof(ShoppingCart).Assembly.FullName));
+
+// Only add database context if connection string is available
+var connectionString = builder.Configuration.GetConnectionString("Sample");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    builder.Services.AddSqlServer<TestDbContext>(
+        connectionString,
+        options => options.MigrationsAssembly(typeof(ShoppingCart).Assembly.FullName));
+}
+else
+{
+    // Add in-memory database for build-time scenarios
+    builder.Services.AddDbContext<TestDbContext>(options =>
+        options.UseInMemoryDatabase("SampleDb"));
+}
 
 builder.Services.AddControllers(
     options => options.Filters.Add<InvalidOperationsExceptionFilter>());

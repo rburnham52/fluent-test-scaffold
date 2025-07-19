@@ -446,9 +446,10 @@ public class AutofacServiceBuilderTests
                 .UseAutofac();
 
             Assert.IsTrue(configOptions.Assemblies.All(a =>
+                a.FullName != null && (
                 !a.FullName.StartsWith("FluentTestScaffold.Tests")
-                || !a.FullName.StartsWith("Microsoft")
-                || !a.FullName.StartsWith("System")));
+                && !a.FullName.StartsWith("Microsoft")
+                && !a.FullName.StartsWith("System"))));
 
             var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
             Assert.Throws<MissingMethodException>(() =>
