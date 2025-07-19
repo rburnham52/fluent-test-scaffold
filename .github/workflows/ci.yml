@@ -83,10 +83,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          8.0.x
 
     - name: Run code analysis
       run: dotnet build --configuration Release --verbosity minimal
 
     - name: Run style analysis
-      run: dotnet format --verify-no-changes                                                                                
+      run: dotnet format --verify-no-changes                                                                                                                                                                

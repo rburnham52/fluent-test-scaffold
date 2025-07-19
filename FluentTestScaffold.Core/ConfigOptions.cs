@@ -34,7 +34,7 @@ public class ConfigOptions
     private ICollection<Assembly> ApplyFilter(ICollection<Assembly> assemblies)
     {
         if (_ignoredAssemblyRegex.Length == 0) return assemblies;
-        return assemblies.Where(a => _ignoredAssemblyRegex.Length > 0 && _ignoredAssemblyRegex.All(r => !Regex.IsMatch(a.FullName, r))).ToList();
+        return assemblies.Where(a => a.FullName != null && _ignoredAssemblyRegex.Length > 0 && _ignoredAssemblyRegex.All(r => !Regex.IsMatch(a.FullName, r))).ToList();
     }
 
 
