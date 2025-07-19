@@ -13,7 +13,7 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <PackageId>FluentTestScaffold.AspNetCore</PackageId>
         <Authors>Ryan Burnham</Authors>
-        <PackageDescription>FluentTestScaffold Autofac</PackageDescription>
+        <PackageDescription>FluentTestScaffold AspNetCore</PackageDescription>
         <RepositoryUrl>https://github.com/rburnham52/fluent-test-scaffold</RepositoryUrl>
         <IsPackable>true</IsPackable>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
