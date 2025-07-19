@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      assembly-version: ${{ steps.version.outputs.assembly-version }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -46,6 +47,10 @@ jobs:
           VERSION="$TAG_VERSION"
         fi
         
+        # Extract base version for assembly version (numeric only)
+        BASE_VERSION=$(echo "$VERSION" | sed 's/-.*//')
+        ASSEMBLY_VERSION="${BASE_VERSION}.0"
+        
         # Add preview suffix for testing - use format compatible with .NET version requirements
         if [[ "${{ github.event.inputs.test_mode }}" == "true" ]] || [[ "${{ github.event.release.prerelease }}" == "true" ]] || [[ "${{ github.event.release.body }}" == *"[TEST]"* ]]; then
           # Use format: major.minor.build-preview-YYYYMMDD-HHMMSS
@@ -56,7 +61,9 @@ jobs:
         fi
         
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "assembly-version=$ASSEMBLY_VERSION" >> $GITHUB_OUTPUT
         echo "Extracted version: $VERSION"
+        echo "Assembly version: $ASSEMBLY_VERSION"
 
   validate-release:
     name: Validate Release
@@ -90,15 +97,15 @@ jobs:
     - name: Build and Pack
       run: |
         dotnet restore
-        dotnet build --configuration Release --no-restore --verbosity normal -p:Version=${{ needs.extract-version.outputs.version }}
+        dotnet build --configuration Release --no-restore --verbosity normal -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
         
         # Pack specific projects
-        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
-        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
-        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
-        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
-        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
-        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }}
+        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
 
     - name: Validate Package Versions
       run: |
