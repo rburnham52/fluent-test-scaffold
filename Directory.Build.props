@@ -27,6 +27,6 @@
   </PropertyGroup>
   <!-- Include README in packages -->
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)docs/README.md" Pack="true" PackagePath="README.md" />
+    <None Include="$(MSBuildThisFileDirectory)$(MSBuildProjectName)/README.md" Pack="true" PackagePath="README.md" Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildProjectName)/README.md')" />
   </ItemGroup>
 </Project>
