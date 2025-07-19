@@ -116,11 +116,11 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
         if (entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
 
         var entry = dbContext.Entry(entity);
-        object[] keyParts = entry.Metadata.FindPrimaryKey()
+        object?[] keyParts = entry.Metadata.FindPrimaryKey()!
             .Properties
             .Select(p => entry.Property(p.Name).CurrentValue)
             .ToArray();
 
-        return keyParts;
+        return keyParts!;
     }
 }

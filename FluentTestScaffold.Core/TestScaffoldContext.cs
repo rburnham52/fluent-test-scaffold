@@ -31,7 +31,9 @@ public class TestScaffoldContext : Dictionary<string, object>
 
     public void Set<T>(T data, string? key)
     {
-        if (key != null && data != null)
+        if (key == null)
+            throw new ArgumentNullException(nameof(key));
+        if (data != null)
             this[key] = data;
     }
 
