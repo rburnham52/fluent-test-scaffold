@@ -31,7 +31,8 @@ public class TestScaffoldContext : Dictionary<string, object>
 
     public void Set<T>(T data, string? key)
     {
-        this[key] = data;
+        if (key != null && data != null)
+            this[key] = data;
     }
 
     public void Set<T>(Func<T> func)
@@ -49,7 +50,7 @@ public class TestScaffoldContext : Dictionary<string, object>
         var value = this[key ?? throw new ArgumentNullException(nameof(key))];
         if (TheValueIsAFactoryMethod<T>(value))
             value = CallTheFactoryMethodToGetTheValue<T>(value);
-        return (T)value;
+        return (T)value!;
     }
 
     private static T CallTheFactoryMethodToGetTheValue<T>(object value)
