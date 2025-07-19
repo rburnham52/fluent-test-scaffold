@@ -78,7 +78,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          6.0.x
+          7.0.x
+          8.0.x
 
     - name: Validate release is from main branch
       run: |
@@ -94,18 +97,44 @@ jobs:
           echo "✅ Manual workflow dispatch - skipping branch validation"
         fi
 
-    - name: Build and Pack
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build and Pack for .NET 6
       run: |
-        dotnet restore
-        dotnet build --configuration Release --no-restore --verbosity normal -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        dotnet build --configuration Release --no-restore --verbosity normal --framework net6.0 -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
         
-        # Pack specific projects
-        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
-        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
-        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
-        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
-        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
-        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        # Pack specific projects for .NET 6
+        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net6.0
+
+    - name: Build and Pack for .NET 7
+      run: |
+        dotnet build --configuration Release --no-restore --verbosity normal --framework net7.0 -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        
+        # Pack specific projects for .NET 7
+        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net7.0
+
+    - name: Build and Pack for .NET 8
+      run: |
+        dotnet build --configuration Release --no-restore --verbosity normal --framework net8.0 -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }}
+        
+        # Pack specific projects for .NET 8
+        dotnet pack FluentTestScaffold.Core --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
+        dotnet pack FluentTestScaffold.AspNetCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
+        dotnet pack FluentTestScaffold.Autofac --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
+        dotnet pack FluentTestScaffold.Bdd --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
+        dotnet pack FluentTestScaffold.EntityFrameworkCore --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
+        dotnet pack FluentTestScaffold.Nunit --configuration Release --no-build --output ./artifacts -p:Version=${{ needs.extract-version.outputs.version }} -p:AssemblyVersion=${{ needs.extract-version.outputs.assembly-version }} --framework net8.0
 
     - name: Validate Package Versions
       run: |
