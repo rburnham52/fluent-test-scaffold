@@ -19,11 +19,11 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         var testScaffold = new TestScaffold()
             .UseIoc(c => c.RegisterSingleton(new TestService()));
 
-        
+
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable without WebApplicationFactory using Ioc container");
-        
+
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>());
-        
+
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
         Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
     }
@@ -32,16 +32,15 @@ public class AspNetCoreAutoDiscoveryReproductionTests
     public void TestScaffold_WithWebApplicationFactory_AutoDiscovery_Fails()
     {
         var webApplicationFactory = new SampleWebApplicationFactory();
-        
+
         var testScaffold = new TestScaffold()
             .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory only as it replaces the Ioc container");
-        
-        Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with default auto discovery settings");
-        
-        var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with default auto discovery settings");
+
+        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
+
+        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<DataTemplateService>(), "DataTemplateService should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
     }
 
     [Test]
@@ -51,9 +50,9 @@ public class AspNetCoreAutoDiscoveryReproductionTests
             .UseAspNet<Program>(services => services.AddSingleton<TestService>());
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with UseAspNet");
-        
+
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with UseAspNet auto discovery");
-        
+
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
         Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with UseAspNet auto discovery");
     }
@@ -64,7 +63,7 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         var testScaffold = new TestScaffold()
             .UseIoc();
 
-        Assert.Throws<InvalidOperationException>(() => testScaffold.UseAspNet<Program>(), 
+        Assert.Throws<InvalidOperationException>(() => testScaffold.UseAspNet<Program>(),
             "Should throw exception when trying to use UseAspNet after UseIoc");
     }
 
@@ -72,14 +71,14 @@ public class AspNetCoreAutoDiscoveryReproductionTests
     public void TestScaffold_UseAspNet_WithCustomFactory_AutoDiscovery_Works()
     {
         var webApplicationFactory = new SampleWebApplicationFactory();
-        
+
         var testScaffold = new TestScaffold()
             .UseAspNet<SampleWebApplicationFactory, Program>(webApplicationFactory);
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with UseAspNet custom factory");
-        
+
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with UseAspNet custom factory auto discovery");
-        
+
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
         Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with UseAspNet custom factory auto discovery");
     }

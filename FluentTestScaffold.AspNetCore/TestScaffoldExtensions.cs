@@ -39,14 +39,14 @@ public static class TestScaffoldExtensions
                 services.AddSingleton(testScaffold.Options);
                 services.AddSingleton(testScaffold.TestScaffoldContext);
                 services.AddSingleton(DefaultLogger.Logger);
-                
+
                 RegisterBuildersWithAutoDiscovery(services, testScaffold.Options);
                 RegisterDataTemplatesWithAutoDiscovery(services, testScaffold.Options);
-                
+
                 configureServices?.Invoke(services);
             });
         });
-        
+
         testScaffold.TestScaffoldContext.Set(enhancedFactory);
         return testScaffold.WithServiceProvider(enhancedFactory.Services);
     }

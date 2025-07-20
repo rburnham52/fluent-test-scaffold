@@ -26,10 +26,10 @@ internal class AspNetWebApplicationFactory<TEntryPoint> : WebApplicationFactory<
             services.AddSingleton(_configOptions);
             services.AddSingleton<TestScaffoldContext>();
             services.AddSingleton(DefaultLogger.Logger);
-            
+
             RegisterBuildersWithAutoDiscovery(services);
             RegisterDataTemplatesWithAutoDiscovery(services);
-            
+
             _configureServices?.Invoke(services);
         });
     }
