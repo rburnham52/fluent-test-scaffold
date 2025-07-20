@@ -19,7 +19,6 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         var testScaffold = new TestScaffold()
             .UseIoc(c => c.RegisterSingleton(new TestService()));
 
-
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable without WebApplicationFactory using Ioc container");
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>());
@@ -27,7 +26,6 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
         Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
     }
-
 
     [Test]
     public void TestScaffold_UseAspNet_AutoDiscovery_Works()
