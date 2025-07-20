@@ -33,8 +33,10 @@ public class AspNetCoreAutoDiscoveryReproductionTests
     {
         var webApplicationFactory = new SampleWebApplicationFactory();
 
+#pragma warning disable CS0618 // Type or member is obsolete
         var testScaffold = new TestScaffold()
             .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
+#pragma warning restore CS0618 // Type or member is obsolete
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory as it's manually registered");
 
