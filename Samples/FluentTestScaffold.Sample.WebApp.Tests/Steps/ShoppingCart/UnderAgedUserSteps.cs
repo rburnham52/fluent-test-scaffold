@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using FluentTestScaffold.AspNetCore;
 using FluentTestScaffold.EntityFrameworkCore;
 using FluentTestScaffold.Sample.Data;
@@ -21,9 +22,11 @@ public class UnderAgedUserSteps : TestScaffoldStep
 
         var httpCLient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
-        await httpCLient.PostAsJsonAsync(
+        var response = await httpCLient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
+        
+        response.EnsureSuccessStatusCode();
     }
 
     [Given(@"the logged in user is (\d+)")]
@@ -33,9 +36,11 @@ public class UnderAgedUserSteps : TestScaffoldStep
 
         var httpClient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
-        await httpClient.PostAsJsonAsync(
+        var response = await httpClient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
+        
+        response.EnsureSuccessStatusCode();
     }
 
     [Given(@"the logged in user is over (.*)")]
@@ -45,9 +50,11 @@ public class UnderAgedUserSteps : TestScaffoldStep
 
         var httpClient = TestScaffold.GetWebApplicationHttpClient<SampleWebApplicationFactory, Program>();
 
-        await httpClient.PostAsJsonAsync(
+        var response = await httpClient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
+        
+        response.EnsureSuccessStatusCode();
     }
 
     private User CreateUser(int age)
