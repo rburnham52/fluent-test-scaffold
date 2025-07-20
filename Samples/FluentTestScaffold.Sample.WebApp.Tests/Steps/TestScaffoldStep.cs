@@ -9,14 +9,10 @@ public class TestScaffoldStep
 
     public TestScaffold TestScaffold { get; }
 
-    public SampleWebApplicationFactory SampleWebApplicationFactory { get; }
-
     public TestScaffoldStep(ScenarioContext scenarioContext)
     {
         ScenarioContext = scenarioContext;
 
         TestScaffold = ScenarioContext.Get<TestScaffold>();
-
-        SampleWebApplicationFactory = TestScaffold.TestScaffoldContext.Get<SampleWebApplicationFactory>();
     }
 }

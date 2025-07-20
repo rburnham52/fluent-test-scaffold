@@ -68,11 +68,21 @@ public static class TestScaffoldExtensions
         where TWebApplicationFactory : WebApplicationFactory<TEntry>
         where TEntry : class
     {
-        if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var webApplicationFactory))
+        WebApplicationFactory<TEntry>? webApplicationFactory = null;
+        
+        // Try to get the original factory first (for backward compatibility with WithWebApplicationFactory)
+        if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var originalFactory))
         {
-            throw new InvalidOperationException(
-                "A call to testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" +
-                " to initialise the a web application factory before a HttpClient can be created");
+            if (!testScaffold.TestScaffoldContext.TryGetValue<WebApplicationFactory<TEntry>>(out webApplicationFactory))
+            {
+                throw new InvalidOperationException(
+                    "A call to testScaffold.UseAspNet<TEntryPoint>() or testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" +
+                    " to initialise a web application factory before a HttpClient can be created");
+            }
+        }
+        else
+        {
+            webApplicationFactory = originalFactory;
         }
 
         var key = CreateHttpClientKey<TWebApplicationFactory, TEntry>();
