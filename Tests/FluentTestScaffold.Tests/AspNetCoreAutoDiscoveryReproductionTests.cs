@@ -17,8 +17,11 @@ public class AspNetCoreAutoDiscoveryReproductionTests
     public void TestScaffold_WithoutWebApplicationFactory_AutoDiscovery_Works()
     {
         var testScaffold = new TestScaffold()
-            .UseIoc();
+            .UseIoc(c => c.RegisterSingleton(new TestService()));
 
+        
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable without WebApplicationFactory using Ioc container");
+        
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>());
         
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
@@ -33,10 +36,12 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         var testScaffold = new TestScaffold()
             .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
 
-        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<InventoryBuilder>());
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory only as it replaces the Ioc container");
+        
+        Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with default auto discovery settings");
         
         var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with default auto discovery settings");
     }
 }
 
