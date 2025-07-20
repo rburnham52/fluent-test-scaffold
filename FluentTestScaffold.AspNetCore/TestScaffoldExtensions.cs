@@ -28,9 +28,9 @@ public static class TestScaffoldExtensions
         {
             builder.ConfigureTestServices(services =>
             {
+                configureServices?.Invoke(services);
                 services.AddTestScaffoldServices(testScaffold);
                 services.AddSingleton<WebApplicationFactory<TEntryPoint>>(webApplicationFactory);
-                configureServices?.Invoke(services);
             });
         });
 
