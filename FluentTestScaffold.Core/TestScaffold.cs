@@ -140,7 +140,7 @@ public class TestScaffold
     internal TestScaffold WithServiceProvider(IServiceProvider serviceProvider)
     {
         if (this.ServiceProvider != null)
-            throw new InvalidOperationException("A service provider has already been initialised");
+            throw new InvalidOperationException("A service provider has already been initialised. You cannot use multiple IOC types (UseIoc, UseAutofac, UseAspNet) on the same TestScaffold instance.");
 
         this.ServiceProvider = serviceProvider;
 
