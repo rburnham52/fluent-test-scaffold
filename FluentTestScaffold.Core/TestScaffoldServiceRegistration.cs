@@ -34,6 +34,13 @@ public static class TestScaffoldServiceRegistration
     
     public static void RegisterDataTemplatesWithAutoDiscovery(this IServiceCollection services, ConfigOptions configOptions)
     {
+        var dataTemplateMethods = GetDataTemplateMethods(configOptions);
+        var dataTemplateService = new DataTemplateService(dataTemplateMethods);
+        services.AddSingleton(dataTemplateService);
+    }
+    
+    public static List<MethodInfo> GetDataTemplateMethods(ConfigOptions configOptions)
+    {
         var dataTemplateMethods = new List<MethodInfo>();
         if (configOptions.AutoDiscovery.HasFlag(AutoDiscovery.DataTemplates))
         {
@@ -47,7 +54,6 @@ public static class TestScaffoldServiceRegistration
                 dataTemplateMethods.AddRange(methods);
             }
         }
-        var dataTemplateService = new DataTemplateService(dataTemplateMethods);
-        services.AddSingleton(dataTemplateService);
+        return dataTemplateMethods;
     }
 }
