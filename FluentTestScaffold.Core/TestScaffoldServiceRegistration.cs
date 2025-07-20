@@ -11,11 +11,11 @@ public static class TestScaffoldServiceRegistration
         services.AddSingleton(testScaffold.TestScaffoldContext);
         services.AddSingleton(DefaultLogger.Logger);
         services.AddSingleton(testScaffold.Options);
-        
+
         services.RegisterBuildersWithAutoDiscovery(testScaffold.Options);
         services.RegisterDataTemplatesWithAutoDiscovery(testScaffold.Options);
     }
-    
+
     public static void RegisterBuildersWithAutoDiscovery(this IServiceCollection services, ConfigOptions configOptions)
     {
         if (!configOptions.AutoDiscovery.HasFlag(AutoDiscovery.Builders)) return;
@@ -31,14 +31,14 @@ public static class TestScaffoldServiceRegistration
             }
         }
     }
-    
+
     public static void RegisterDataTemplatesWithAutoDiscovery(this IServiceCollection services, ConfigOptions configOptions)
     {
         var dataTemplateMethods = GetDataTemplateMethods(configOptions);
         var dataTemplateService = new DataTemplateService(dataTemplateMethods);
         services.AddSingleton(dataTemplateService);
     }
-    
+
     public static List<MethodInfo> GetDataTemplateMethods(ConfigOptions configOptions)
     {
         var dataTemplateMethods = new List<MethodInfo>();
