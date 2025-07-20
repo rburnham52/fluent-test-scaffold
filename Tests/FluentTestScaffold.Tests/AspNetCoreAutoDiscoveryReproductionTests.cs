@@ -14,12 +14,12 @@ namespace FluentTestScaffold.Tests;
 public class AspNetCoreAutoDiscoveryReproductionTests
 {
     [Test]
-    public void TestScaffold_WithoutWebApplicationFactory_AutoDiscovery_Works()
+    public void TestScaffold_UseIoc_AutoDiscovery_Works()
     {
         var testScaffold = new TestScaffold()
             .UseIoc(c => c.RegisterSingleton(new TestService()));
 
-        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable without WebApplicationFactory using Ioc container");
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with UseIoc container");
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>());
 
