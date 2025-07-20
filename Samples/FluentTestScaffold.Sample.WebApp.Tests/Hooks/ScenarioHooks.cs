@@ -13,7 +13,7 @@ public static class ScenarioHooks
         var webApplicationFactory = new SampleWebApplicationFactory();
 
         var testScaffold = new TestScaffold()
-            .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
+            .UseAspNet<SampleWebApplicationFactory, Program>(webApplicationFactory);
 
         scenarioContext.Set(testScaffold);
     }

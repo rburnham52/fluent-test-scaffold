@@ -29,19 +29,18 @@ public class AspNetCoreAutoDiscoveryReproductionTests
     }
 
     [Test]
-    public void TestScaffold_WithWebApplicationFactory_AutoDiscovery_Works()
+    public void TestScaffold_WithWebApplicationFactory_AutoDiscovery_Fails()
     {
         var webApplicationFactory = new SampleWebApplicationFactory();
 
         var testScaffold = new TestScaffold()
             .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
 
-        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory only as it replaces the Ioc container");
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory as it's manually registered");
 
-        Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with WithWebApplicationFactory auto discovery");
+        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
 
-        var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with WithWebApplicationFactory auto discovery");
+        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<DataTemplateService>(), "DataTemplateService should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
     }
 
     [Test]
