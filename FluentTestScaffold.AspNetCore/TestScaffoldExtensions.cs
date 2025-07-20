@@ -1,39 +1,58 @@
 ﻿using FluentTestScaffold.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentTestScaffold.AspNetCore;
 
 public static class TestScaffoldExtensions
 {
-    public static TestScaffold WithWebApplicationFactory<TWebApplicationFactory, TEntry>(
+    public static TestScaffold UseAspNet<TEntryPoint>(
         this TestScaffold testScaffold,
-        TWebApplicationFactory webApplicationFactory)
-        where TWebApplicationFactory : WebApplicationFactory<TEntry>
-        where TEntry : class
+        Action<IServiceCollection>? configureServices = null)
+        where TEntryPoint : class
     {
-        testScaffold.TestScaffoldContext.Set(webApplicationFactory);
+        var factory = new AspNetWebApplicationFactory<TEntryPoint>(testScaffold, configureServices);
+        return testScaffold.WithServiceProvider(factory.Services);
+    }
 
-        return testScaffold.WithServiceProvider(webApplicationFactory.Services);
+    public static TestScaffold UseAspNet<TWebApplicationFactory, TEntryPoint>(
+        this TestScaffold testScaffold,
+        TWebApplicationFactory webApplicationFactory,
+        Action<IServiceCollection>? configureServices = null)
+        where TWebApplicationFactory : WebApplicationFactory<TEntryPoint>
+        where TEntryPoint : class
+    {
+        var enhancedFactory = webApplicationFactory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                configureServices?.Invoke(services);
+                services.AddTestScaffoldServices(testScaffold);
+                services.AddSingleton<WebApplicationFactory<TEntryPoint>>(webApplicationFactory);
+            });
+        });
+
+        return testScaffold.WithServiceProvider(enhancedFactory.Services);
     }
 
     public static HttpClient GetWebApplicationHttpClient<TWebApplicationFactory, TEntry>(this TestScaffold testScaffold)
         where TWebApplicationFactory : WebApplicationFactory<TEntry>
         where TEntry : class
     {
-        if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var webApplicationFactory))
-        {
-            throw new InvalidOperationException(
-                "A call to testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" +
-                " to initialise the a web application factory before a HttpClient can be created");
-        }
+        if (testScaffold.ServiceProvider == null)
+            throw new InvalidOperationException("A call to testScaffold.UseAspNet<TEntryPoint>() is required to initialise a web application factory before a HttpClient can be created");
+
+        var webApplicationFactory = testScaffold.ServiceProvider.GetService<WebApplicationFactory<TEntry>>();
+        if (webApplicationFactory == null)
+            throw new InvalidOperationException("No WebApplicationFactory found in service provider. Ensure UseAspNet was called properly.");
 
         var key = CreateHttpClientKey<TWebApplicationFactory, TEntry>();
 
-        // Maintain the same HttpClient for each WebApplicationFactory, this is we can maintain any cookies or sessions
-        // create between http requests
         if (!testScaffold.TestScaffoldContext.TryGetValue<HttpClient>(key, out var httpClient))
         {
-            httpClient = webApplicationFactory!.CreateClient(
+            httpClient = webApplicationFactory.CreateClient(
                 new WebApplicationFactoryClientOptions()
                 {
                     HandleCookies = true,

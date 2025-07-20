@@ -154,7 +154,7 @@ public void Setup()
     var webFactory = new MyWebApplicationFactory();
 
     testScaffold = new TestScaffold()
-        .WithWebApplicationFactory<MyWebApplicationFactory, Program>(webFactory);
+        .UseAspNet<MyWebApplicationFactory, Program>(webFactory);
 }
 ```
 

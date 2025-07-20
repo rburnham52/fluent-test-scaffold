@@ -10,6 +10,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
         <PackageReference Include="Autofac" Version="6.4.0" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.36" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="Moq" Version="4.20.72" />
@@ -26,6 +27,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
         <PackageReference Include="Autofac" Version="8.0.0" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.20" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="Moq" Version="4.20.72" />
@@ -42,6 +44,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Autofac" Version="8.3.0" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.18" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="Moq" Version="4.20.72" />
@@ -56,12 +59,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\FluentTestScaffold.AspNetCore\FluentTestScaffold.AspNetCore.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.Autofac\FluentTestScaffold.Autofac.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.Bdd\FluentTestScaffold.Bdd.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.Core\FluentTestScaffold.Core.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.Nunit\FluentTestScaffold.Nunit.csproj" />
         <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj" />
+        <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample.WebApp\FluentTestScaffold.Sample.WebApp.csproj" />
     </ItemGroup>
 
     <ItemGroup>
