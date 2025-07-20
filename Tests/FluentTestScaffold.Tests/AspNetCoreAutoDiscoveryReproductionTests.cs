@@ -28,22 +28,6 @@ public class AspNetCoreAutoDiscoveryReproductionTests
         Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
     }
 
-    [Test]
-    public void TestScaffold_WithWebApplicationFactory_AutoDiscovery_Fails()
-    {
-        var webApplicationFactory = new SampleWebApplicationFactory();
-
-#pragma warning disable CS0618 // Type or member is obsolete
-        var testScaffold = new TestScaffold()
-            .WithWebApplicationFactory<SampleWebApplicationFactory, Program>(webApplicationFactory);
-#pragma warning restore CS0618 // Type or member is obsolete
-
-        Assert.DoesNotThrow(() => testScaffold.Resolve<TestService>(), "TestService should be resolvable with WebApplicationFactory as it's manually registered");
-
-        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
-
-        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<DataTemplateService>(), "DataTemplateService should NOT be resolvable with WithWebApplicationFactory due to auto discovery bug");
-    }
 
     [Test]
     public void TestScaffold_UseAspNet_AutoDiscovery_Works()

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using FluentTestScaffold.Core;
+﻿using FluentTestScaffold.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -9,22 +8,15 @@ namespace FluentTestScaffold.AspNetCore;
 
 public static class TestScaffoldExtensions
 {
-    /// <summary>
-    /// </summary>
-    /// <param name="configureServices">Optional configuration for additional services</param>
     public static TestScaffold UseAspNet<TEntryPoint>(
         this TestScaffold testScaffold,
         Action<IServiceCollection>? configureServices = null)
         where TEntryPoint : class
     {
-        var factory = new AspNetWebApplicationFactory<TEntryPoint>(testScaffold.Options, configureServices);
-        testScaffold.TestScaffoldContext.Set(factory);
+        var factory = new AspNetWebApplicationFactory<TEntryPoint>(testScaffold, configureServices);
         return testScaffold.WithServiceProvider(factory.Services);
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="configureServices">Optional configuration for additional services</param>
     public static TestScaffold UseAspNet<TWebApplicationFactory, TEntryPoint>(
         this TestScaffold testScaffold,
         TWebApplicationFactory webApplicationFactory,
@@ -36,60 +28,31 @@ public static class TestScaffoldExtensions
         {
             builder.ConfigureTestServices(services =>
             {
-                services.AddSingleton(testScaffold.Options);
-                services.AddSingleton(testScaffold.TestScaffoldContext);
-                services.AddSingleton(DefaultLogger.Logger);
-
-                RegisterBuildersWithAutoDiscovery(services, testScaffold.Options);
-                RegisterDataTemplatesWithAutoDiscovery(services, testScaffold.Options);
-
+                services.AddTestScaffoldServices(testScaffold);
+                services.AddSingleton<WebApplicationFactory<TEntryPoint>>(webApplicationFactory);
                 configureServices?.Invoke(services);
             });
         });
 
-        testScaffold.TestScaffoldContext.Set(enhancedFactory);
         return testScaffold.WithServiceProvider(enhancedFactory.Services);
-    }
-
-    /// <summary>
-    /// </summary>
-    [Obsolete("Use UseAspNet<TEntryPoint>() instead. This method will be removed in a future version.")]
-    public static TestScaffold WithWebApplicationFactory<TWebApplicationFactory, TEntry>(
-        this TestScaffold testScaffold,
-        TWebApplicationFactory webApplicationFactory)
-        where TWebApplicationFactory : WebApplicationFactory<TEntry>
-        where TEntry : class
-    {
-        testScaffold.TestScaffoldContext.Set(webApplicationFactory);
-        return testScaffold.WithServiceProvider(webApplicationFactory.Services);
     }
 
     public static HttpClient GetWebApplicationHttpClient<TWebApplicationFactory, TEntry>(this TestScaffold testScaffold)
         where TWebApplicationFactory : WebApplicationFactory<TEntry>
         where TEntry : class
     {
-        WebApplicationFactory<TEntry>? webApplicationFactory = null;
+        if (testScaffold.ServiceProvider == null)
+            throw new InvalidOperationException("A call to testScaffold.UseAspNet<TEntryPoint>() is required to initialise a web application factory before a HttpClient can be created");
 
-        // Try to get the original factory first (for backward compatibility with WithWebApplicationFactory)
-        if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var originalFactory))
-        {
-            if (!testScaffold.TestScaffoldContext.TryGetValue<WebApplicationFactory<TEntry>>(out webApplicationFactory))
-            {
-                throw new InvalidOperationException(
-                    "A call to testScaffold.UseAspNet<TEntryPoint>() or testScaffold.WithWebApplicationFactory<TFactory, TEntryPoint>(factory) is required" +
-                    " to initialise a web application factory before a HttpClient can be created");
-            }
-        }
-        else
-        {
-            webApplicationFactory = originalFactory;
-        }
+        var webApplicationFactory = testScaffold.ServiceProvider.GetService<WebApplicationFactory<TEntry>>();
+        if (webApplicationFactory == null)
+            throw new InvalidOperationException("No WebApplicationFactory found in service provider. Ensure UseAspNet was called properly.");
 
         var key = CreateHttpClientKey<TWebApplicationFactory, TEntry>();
 
         if (!testScaffold.TestScaffoldContext.TryGetValue<HttpClient>(key, out var httpClient))
         {
-            httpClient = webApplicationFactory!.CreateClient(
+            httpClient = webApplicationFactory.CreateClient(
                 new WebApplicationFactoryClientOptions()
                 {
                     HandleCookies = true,
@@ -107,40 +70,5 @@ public static class TestScaffoldExtensions
         where TEntry : class
     {
         return $"HttpClient__{typeof(TWebApplicationFactory).FullName}";
-    }
-
-    private static void RegisterBuildersWithAutoDiscovery(IServiceCollection services, ConfigOptions configOptions)
-    {
-        if (!configOptions.AutoDiscovery.HasFlag(AutoDiscovery.Builders)) return;
-        foreach (var assembly in configOptions.Assemblies)
-        {
-            var builderTypes = assembly.GetTypes()
-                .Where(t => t.IsAssignableToGenericType(typeof(Builder<>)))
-                .Where(t => t != typeof(Builder<>))
-                .ToArray();
-            foreach (var builderType in builderTypes)
-            {
-                services.AddSingleton(builderType);
-            }
-        }
-    }
-
-    private static void RegisterDataTemplatesWithAutoDiscovery(IServiceCollection services, ConfigOptions configOptions)
-    {
-        var dataTemplateMethods = new List<MethodInfo>();
-        if (configOptions.AutoDiscovery.HasFlag(AutoDiscovery.DataTemplates))
-        {
-            foreach (var assembly in configOptions.Assemblies)
-            {
-                var methods = assembly.GetTypes()
-                    .SelectMany(t => t.GetMethods())
-                    .Where(m => m.GetCustomAttributes(typeof(DataTemplateAttribute), false).Length >= 1)
-                    .Where(m => m.GetParameters().FirstOrDefault()?.ParameterType == typeof(TestScaffold))
-                    .ToArray();
-                dataTemplateMethods.AddRange(methods);
-            }
-        }
-        var dataTemplateService = new DataTemplateService(dataTemplateMethods);
-        services.AddSingleton(dataTemplateService);
     }
 }
