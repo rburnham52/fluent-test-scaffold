@@ -25,7 +25,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var response = await httpCLient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
-        
+
         response.EnsureSuccessStatusCode();
     }
 
@@ -39,7 +39,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var response = await httpClient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
-        
+
         response.EnsureSuccessStatusCode();
     }
 
@@ -53,7 +53,7 @@ public class UnderAgedUserSteps : TestScaffoldStep
         var response = await httpClient.PostAsJsonAsync(
             "/Authentication/login",
             new LoginRequest(user.Email, user.Password));
-        
+
         response.EnsureSuccessStatusCode();
     }
 

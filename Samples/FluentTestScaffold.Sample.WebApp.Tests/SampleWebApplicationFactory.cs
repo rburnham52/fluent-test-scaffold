@@ -11,7 +11,7 @@ namespace FluentTestScaffold.Sample.WebApp.Tests;
 public class SampleWebApplicationFactory : WebApplicationFactory<Program>
 {
     private static readonly string SharedDatabaseName = Guid.NewGuid().ToString();
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
