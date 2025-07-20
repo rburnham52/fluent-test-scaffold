@@ -11,7 +11,7 @@ namespace FluentTestScaffold.Sample.WebApp.Tests;
 public class SampleWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName = Guid.NewGuid().ToString();
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
