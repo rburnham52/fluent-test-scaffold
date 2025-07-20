@@ -69,7 +69,7 @@ public static class TestScaffoldExtensions
         where TEntry : class
     {
         WebApplicationFactory<TEntry>? webApplicationFactory = null;
-        
+
         // Try to get the original factory first (for backward compatibility with WithWebApplicationFactory)
         if (!testScaffold.TestScaffoldContext.TryGetValue<TWebApplicationFactory>(out var originalFactory))
         {
