@@ -8,17 +8,41 @@ public static class ServiceProviderExtensions
     public static IServiceCollection ReplaceDbContextWithInMemoryProvider<TDbContext>(this IServiceCollection services)
         where TDbContext : DbContext
     {
-        var internalDbContext = services.Single(sd => sd.ServiceType == typeof(TDbContext));
-        services.Remove(internalDbContext);
+        if (services == null)
+            throw new ArgumentNullException(nameof(services));
 
-        var internalDbContextOptions = services.Single(sd => sd.ServiceType == typeof(DbContextOptions<TDbContext>));
-        services.Remove(internalDbContextOptions);
-
-        var inmemoryDbContextName = Guid.NewGuid().ToString();
-        services.AddDbContext<TDbContext>(o => o
-            .UseInMemoryDatabase(inmemoryDbContextName)
-        );
+        RemoveExistingDbContextRegistration<TDbContext>(services);
+        RemoveExistingDbContextOptionsRegistration<TDbContext>(services);
+        AddInMemoryDbContext<TDbContext>(services);
 
         return services;
+    }
+
+    private static void RemoveExistingDbContextRegistration<TDbContext>(IServiceCollection services)
+        where TDbContext : DbContext
+    {
+        var dbContextDescriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(TDbContext));
+        if (dbContextDescriptor != null)
+        {
+            services.Remove(dbContextDescriptor);
+        }
+    }
+
+    private static void RemoveExistingDbContextOptionsRegistration<TDbContext>(IServiceCollection services)
+        where TDbContext : DbContext
+    {
+        var optionsDescriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<TDbContext>));
+        if (optionsDescriptor != null)
+        {
+            services.Remove(optionsDescriptor);
+        }
+    }
+
+    private static void AddInMemoryDbContext<TDbContext>(IServiceCollection services)
+        where TDbContext : DbContext
+    {
+        var inMemoryDatabaseName = Guid.NewGuid().ToString();
+        services.AddDbContext<TDbContext>(options => options
+            .UseInMemoryDatabase(inMemoryDatabaseName));
     }
 }

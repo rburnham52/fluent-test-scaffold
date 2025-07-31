@@ -37,6 +37,33 @@ public static class TestScaffoldExtensions
         return testScaffold.WithServiceProvider(enhancedFactory.Services);
     }
 
+    public static HttpClient GetWebApplicationHttpClient<TEntry>(this TestScaffold testScaffold)
+        where TEntry : class
+    {
+        if (testScaffold.ServiceProvider == null)
+            throw new InvalidOperationException("A call to testScaffold.UseAspNet<TEntryPoint>() is required to initialise a web application factory before a HttpClient can be created");
+
+        var webApplicationFactory = testScaffold.ServiceProvider.GetService<WebApplicationFactory<TEntry>>();
+        if (webApplicationFactory == null)
+            throw new InvalidOperationException("No WebApplicationFactory found in service provider. Ensure UseAspNet was called properly.");
+
+        var key = CreateHttpClientKey<AspNetWebApplicationFactory<TEntry>, TEntry>();
+
+        if (!testScaffold.TestScaffoldContext.TryGetValue<HttpClient>(key, out var httpClient))
+        {
+            httpClient = webApplicationFactory.CreateClient(
+                new WebApplicationFactoryClientOptions()
+                {
+                    HandleCookies = true,
+                    AllowAutoRedirect = true
+                });
+
+            testScaffold.TestScaffoldContext.Set(httpClient, key);
+        }
+
+        return httpClient!;
+    }
+
     public static HttpClient GetWebApplicationHttpClient<TWebApplicationFactory, TEntry>(this TestScaffold testScaffold)
         where TWebApplicationFactory : WebApplicationFactory<TEntry>
         where TEntry : class

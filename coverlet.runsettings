@@ -11,7 +11,7 @@
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
           <IncludeTestAssembly>false</IncludeTestAssembly>
-          <Threshold>80</Threshold>
+          <Threshold>90</Threshold>
           <ThresholdType>line,branch,method</ThresholdType>
           <ThresholdStat>total</ThresholdStat>
           <ExcludeAssembliesWithoutSources>false</ExcludeAssembliesWithoutSources>

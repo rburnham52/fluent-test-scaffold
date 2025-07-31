@@ -54,11 +54,11 @@ $coveragePercent = [math]::Round($lineRate * 100, 2)
 
 Write-Host "Coverage: $coveragePercent%" -ForegroundColor Cyan
 
-if ($coveragePercent -lt 80) {
-    Write-Host "❌ Coverage is below 80% threshold ($coveragePercent%)" -ForegroundColor Red
+if ($coveragePercent -lt 90) {
+    Write-Host "❌ Coverage is below 90% threshold ($coveragePercent%)" -ForegroundColor Red
     exit 1
 } else {
-    Write-Host "✅ Coverage meets 80% threshold ($coveragePercent%)" -ForegroundColor Green
+    Write-Host "✅ Coverage meets 90% threshold ($coveragePercent%)" -ForegroundColor Green
 }
 
 # Open report if requested

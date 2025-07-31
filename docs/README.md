@@ -359,19 +359,21 @@ This project uses GitHub Actions for continuous integration and deployment with 
 
 ### Workflows
 
-1. **PR Check (`pr-check.yml`)**: Runs on pull requests
-   - Checks code formatting and linting rules
-   - Builds and tests on .NET 8.0 with multi-targeting (6.0, 7.0, 8.0)
-   - Validates package dependencies and checks for vulnerabilities
-   - Ensures minimum code coverage (48%)
-   - Runs performance tests for regression detection
+1. **CI (`ci.yml`)**: Runs on pushes to main and pull requests
+   - Builds and tests on multiple .NET versions (6.0, 7.0, 8.0)
+   - Runs tests with code coverage collection
+   - Generates HTML coverage reports
+   - Enforces minimum code coverage (90%)
+   - Uploads coverage artifacts for download
+   - Runs security analysis and code quality checks
 
-2. **CD (`cd.yml`)**: Runs on published releases
+2. **Release Publishing (`release-publish.yml`)**: Runs on published releases
    - Extracts version from release tag (e.g., `v1.0.0`)
+   - Validates release is from main branch
    - Builds and validates packages with tag-based versioning
-   - **Requires manual approval** via GitHub environments before publishing
-   - Publishes to NuGet.org (not GitHub Packages)
-   - Updates release status after successful deployment
+   - Publishes to both NuGet.org and GitHub Packages
+   - Updates release notes with publishing information
+   - Supports test mode with preview versions
 
 3. **CodeQL**: Automated security scanning
    - Runs static analysis for security vulnerabilities
@@ -381,9 +383,8 @@ This project uses GitHub Actions for continuous integration and deployment with 
 
 To use the CI/CD pipeline, you need to configure:
 
-1. **GitHub Environments**: Create `production` and `nuget-production` environments with protection rules requiring manual approval
-2. **`NUGET_API_KEY`**: Your NuGet.org API key for publishing packages
-3. **`GITHUB_TOKEN`**: Automatically provided by GitHub Actions
+1. **`NUGET_API_KEY`**: Your NuGet.org API key for publishing packages
+2. **`GITHUB_TOKEN`**: Automatically provided by GitHub Actions
 
 ### Release Process
 
@@ -397,7 +398,7 @@ To use the CI/CD pipeline, you need to configure:
    git tag v1.0.0
    git push origin v1.0.0
    
-   # Create GitHub release (triggers CD workflow)
+   # Create GitHub release (triggers release-publish workflow)
    gh release create v1.0.0 --title "Release v1.0.0" --notes "Release notes here"
    ```
 
@@ -405,9 +406,8 @@ To use the CI/CD pipeline, you need to configure:
    - Validate the release is from main branch
    - Build all packages with version extracted from tag
    - Run all tests and security scans
-   - **Wait for manual approval** via GitHub environments
-   - Publish to NuGet.org after approval
-   - Update release status
+   - Publish to both NuGet.org and GitHub Packages
+   - Update release notes with publishing information
 
 For detailed CI/CD setup instructions, see [CI/CD Setup Guide](ci-cd-setup.md).
 

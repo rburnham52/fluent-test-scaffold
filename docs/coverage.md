@@ -20,7 +20,7 @@ chmod +x scripts/coverage.sh
 **That's it!** The script will:
 - ✅ Run all tests with coverage collection
 - ✅ Generate an HTML report
-- ✅ Check if coverage meets 80% threshold
+- ✅ Check if coverage meets 90% threshold
 - ✅ Show you where to find the report
 
 **To view the coverage report:**
@@ -28,7 +28,7 @@ chmod +x scripts/coverage.sh
 - Or run with `-OpenReport` flag to auto-open
 
 ### 📊 What You'll See
-- **Coverage percentage** (must be ≥80%)
+- **Coverage percentage** (must be ≥90%)
 - **File-by-file breakdown** of what's tested
 - **Line-by-line details** showing covered/uncovered code
 - **HTML report** with interactive navigation
@@ -42,7 +42,7 @@ chmod +x scripts/coverage.sh
 
 ## Overview
 
-The project uses [Coverlet](https://github.com/coverlet-coverage/coverlet) for code coverage collection and [ReportGenerator](https://github.com/danielpalme/ReportGenerator) for generating HTML reports. Coverage is configured to enforce an 80% minimum threshold.
+The project uses [Coverlet](https://github.com/coverlet-coverage/coverlet) for code coverage collection and [ReportGenerator](https://github.com/danielpalme/ReportGenerator) for generating HTML reports. Coverage is configured to enforce a 90% minimum threshold.
 
 ## Coverage Configuration
 
@@ -59,7 +59,7 @@ The project uses [Coverlet](https://github.com/coverlet-coverage/coverlet) for c
 - Bin and obj directories
 
 ### Coverage Thresholds
-- **Minimum Overall Coverage**: 80%
+- **Minimum Overall Coverage**: 90%
 - **Enforcement**: Build fails if coverage drops below threshold
 - **Coverage Types**: Line, branch, and method coverage
 
@@ -146,7 +146,7 @@ After running coverage, HTML reports are generated in `./coverage/report/`. Open
 The CI workflow automatically:
 1. Runs tests with coverage collection
 2. Generates HTML reports
-3. Checks coverage threshold (80%)
+3. Checks coverage threshold (90%)
 4. Uploads coverage artifacts
 5. Fails the build if coverage is below threshold
 
@@ -211,7 +211,7 @@ Test projects include `coverlet.collector` package:
 
 ### For Contributors
 1. **Run coverage locally** before submitting PRs
-2. **Maintain 80% coverage** for new code
+2. **Maintain 90% coverage** for new code
 3. **Add tests** for uncovered code paths
 4. **Use exclusion patterns** for generated code
 
@@ -244,4 +244,4 @@ The project tracks:
 - **Branch Coverage**: Percentage of conditional branches taken
 - **Method Coverage**: Percentage of methods called
 
-All metrics must meet the 80% threshold for the build to pass. 
+All metrics must meet the 90% threshold for the build to pass. 

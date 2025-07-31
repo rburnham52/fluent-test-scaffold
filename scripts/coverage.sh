@@ -83,11 +83,11 @@ COVERAGE_PERCENT=$(echo "$LINE_RATE * 100" | bc -l | cut -d. -f1)
 
 echo "Coverage: ${COVERAGE_PERCENT}%"
 
-if [ "$COVERAGE_PERCENT" -lt 80 ]; then
-    echo "❌ Coverage is below 80% threshold (${COVERAGE_PERCENT}%)"
+if [ "$COVERAGE_PERCENT" -lt 90 ]; then
+    echo "❌ Coverage is below 90% threshold (${COVERAGE_PERCENT}%)"
     exit 1
 else
-    echo "✅ Coverage meets 80% threshold (${COVERAGE_PERCENT}%)"
+    echo "✅ Coverage meets 90% threshold (${COVERAGE_PERCENT}%)"
 fi
 
 # Open report if requested
