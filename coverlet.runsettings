@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura,html</Format>
+          <Exclude>[*]*.Program,[*]*.Startup,[*]*.Program.*,[*]*.Startup.*</Exclude>
+          <ExcludeByFile>**/Samples/**/*,**/bin/**/*,**/obj/**/*,**/*.g.cs,**/*.generated.cs,**/*.Designer.cs,**/*.AssemblyInfo.cs,**/FluentTestScaffold.SpecFlow.Tests/**/*</ExcludeByFile>
+          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <SingleHit>false</SingleHit>
+          <UseSourceLink>true</UseSourceLink>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+          <Threshold>90</Threshold>
+          <ThresholdType>line,branch,method</ThresholdType>
+          <ThresholdStat>total</ThresholdStat>
+          <ExcludeAssembliesWithoutSources>false</ExcludeAssembliesWithoutSources>
+          <MergeWith>**/coverage.json</MergeWith>
+          <UseDeterministicReport>false</UseDeterministicReport>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+  
+  <RunConfiguration>
+    <ResultsDirectory>$(MSBuildProjectDirectory)/coverage</ResultsDirectory>
+    <CollectSourceInformation>true</CollectSourceInformation>
+  </RunConfiguration>
+  
+  <TestRunParameters>
+    <Parameter name="CoverageOutputDirectory" value="$(MSBuildProjectDirectory)/coverage" />
+    <Parameter name="CoverageOutputFormat" value="cobertura,html" />
+  </TestRunParameters>
+</RunSettings> 

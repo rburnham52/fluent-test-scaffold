@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentTestScaffold.AspNetCore;
 
-internal class AspNetWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
+public class AspNetWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
     private readonly TestScaffold _testScaffold;

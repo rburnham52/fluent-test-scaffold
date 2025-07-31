@@ -6,10 +6,9 @@ This guide explains how to set up and configure the CI/CD pipeline for FluentTes
 
 The CI/CD pipeline consists of several GitHub Actions workflows that handle different aspects of the development and release process:
 
-- **CI**: Continuous Integration - builds, tests, and validates code
-- **CD**: Continuous Deployment - publishes packages and creates releases
-- **PR Check**: Pull Request validation - ensures code quality
-- **Performance Testing**: Integrated into PR validation
+- **CI**: Continuous Integration - builds, tests, and validates code with coverage
+- **Release Publishing**: Continuous Deployment - publishes packages and creates releases
+- **CodeQL**: Automated security scanning
 
 ## Prerequisites
 
@@ -45,34 +44,33 @@ Navigate to Settings → Secrets and variables → Actions and add the following
 
 #### GitHub Packages (Automatic)
 
-The CD workflow automatically publishes to GitHub Packages using the `GITHUB_TOKEN`. No additional configuration is needed.
+The release publishing workflow automatically publishes to GitHub Packages using the `GITHUB_TOKEN`. No additional configuration is needed.
 
 #### NuGet.org (Optional)
 
 To publish to NuGet.org:
 
 1. Add the `NUGET_API_KEY` secret as described above
-2. The `nuget-publish.yml` workflow will automatically run when tags are pushed
+2. The `release-publish.yml` workflow will automatically publish to NuGet.org when releases are published
 
 ### 4. Version Management
 
 The project uses **release tag-based versioning** for version management:
 
 - **Git release tags**: Primary source of version information (e.g., `v1.0.0`)
-- **GitHub Actions**: Extracts version from release tags during CD workflow
+- **GitHub Actions**: Extracts version from release tags during release workflow
 - **Assembly versioning**: Set dynamically during build from release tag
 - **NuGet packages**: Versioned using extracted tag version
 
-### 5. Manual Intervention Process
+### 5. Release Process
 
-The CI/CD pipeline includes manual intervention steps to ensure quality:
+The CI/CD pipeline includes automated release publishing:
 
-#### Release Approval Process
+#### Release Publishing Process
 
-1. **Automatic Release Creation**: When a tag is pushed, a draft release is created
-2. **Manual Review**: Review the draft release and packages
-3. **Approval Workflow**: Use "Approve Release for NuGet Publishing" workflow
-4. **NuGet Publishing**: Manually trigger "Publish to NuGet.org" workflow
+1. **Automatic Release Publishing**: When a release is published, packages are automatically built and published
+2. **Dual Publishing**: Packages are published to both GitHub Packages and NuGet.org
+3. **Release Notes Update**: Release notes are automatically updated with publishing information
 
 #### Version Synchronization
 
@@ -93,71 +91,48 @@ git pull origin main
 git tag v1.0.0
 git push origin v1.0.0
 
-# Create GitHub release (triggers CD workflow)
+# Create GitHub release (triggers release-publish workflow)
 gh release create v1.0.0 --title "Release v1.0.0" --notes "Release notes here"
 ```
 
 This will trigger:
-1. CD workflow validation (ensures release is from main branch)
+1. Release publishing workflow validation (ensures release is from main branch)
 2. Build and test with version extracted from tag
-3. Manual approval required via GitHub environments
-4. NuGet.org publishing after approval
+3. Automatic publishing to GitHub Packages and NuGet.org
+4. Release notes update with publishing information
 
 ## Workflow Details
 
 ### CI Workflow (`ci.yml`)
 
-**Triggers**: Push to main/develop, pull requests, tags
+**Triggers**: Push to main, pull requests
 
 **Jobs**:
-1. **Build and Test**: Builds and tests on multiple .NET versions
-2. **Validate Packages**: Creates and validates NuGet packages
-3. **Code Coverage**: Generates coverage reports
-4. **Security Scan**: Runs security analysis
+1. **Build and Test**: Builds and tests on multiple .NET versions (6.0, 7.0, 8.0)
+2. **Code Coverage**: Generates coverage reports with 90% threshold enforcement
+3. **Security Scan**: Runs security analysis
+4. **Code Quality**: Runs code formatting and style analysis
 
-### CD Workflow (`cd.yml`)
+### Release Publishing Workflow (`release-publish.yml`)
 
 **Triggers**: Published releases, manual workflow dispatch
 
 **Jobs**:
-1. **Validate and Prepare**: Validates release is from main branch, extracts version from tag
-2. **Publish to NuGet**: Builds packages and publishes to NuGet.org (requires manual approval)
+1. **Extract Version**: Extracts version from release tag
+2. **Validate Release**: Validates release is from main branch
+3. **Build Packages**: Builds all packages with extracted version
+4. **Publish to NuGet.org**: Publishes packages to NuGet.org
+5. **Publish to GitHub Packages**: Publishes packages to GitHub Packages
+6. **Update Release Notes**: Updates release with publishing information
 
-### PR Check Workflow (`pr-check.yml`)
+### CodeQL Security Scanning
 
-**Triggers**: Pull requests to main/develop
-
-**Jobs**:
-1. **Format Check**: Validates code formatting
-2. **Lint Check**: Runs code analyzers
-3. **Dependency Check**: Checks for outdated/vulnerable packages
-4. **Test Coverage**: Ensures minimum coverage (48%)
-5. **Performance Test**: Runs performance tests for regression detection
-
-### NuGet Publish Workflow (`nuget-publish.yml`)
-
-**Triggers**: Manual workflow dispatch
-
-**Jobs**:
-1. **Validate Release**: Validates version consistency and builds packages
-2. **Publish to NuGet.org**: Publishes packages to NuGet.org (requires approval)
-
-### Approve Release Workflow (`approve-release.yml`)
-
-**Triggers**: Manual workflow dispatch
-
-**Jobs**:
-1. **Validate Release Approval**: Validates release and creates approval record
-2. **Reject Release**: Creates rejection record if not approved
-
-### Performance Testing
-
-**Integration**: Built into PR Check workflow
+**Integration**: Built into CI workflow
 
 **Features**:
-1. **Regression Detection**: Runs performance tests on every PR
-2. **Artifact Upload**: Stores performance results for comparison
-3. **Automated Execution**: No manual intervention required
+1. **Static Analysis**: Runs security vulnerability scanning
+2. **Automated Execution**: No manual intervention required
+3. **GitHub Security Integration**: Results appear in Security tab
 
 ## Configuration
 
@@ -165,9 +140,8 @@ This will trigger:
 
 The workflows can be customized by modifying the YAML files in `.github/workflows/`:
 
-- **`.github/ci-config.json`**: Common configuration settings
-- **`version.json`**: Version management settings
-- **`Directory.Build.props`**: Build properties
+- **`Directory.Build.props`**: Build properties and version management
+- **`coverlet.runsettings`**: Code coverage configuration
 
 ### Environment Variables
 
@@ -203,15 +177,15 @@ strategy:
    - Check test data and mock configurations
    - Verify test environment setup
 
-3. **Package Publishing Issues**:
-   - Verify API keys are correctly configured
-   - Check package version conflicts
-   - Ensure package metadata is complete
-
-4. **Coverage Threshold Failures**:
+3. **Coverage Threshold Failures**:
    - Add more tests to increase coverage
    - Review uncovered code paths
    - Consider excluding non-critical code
+
+4. **Package Publishing Issues**:
+   - Verify API keys are correctly configured
+   - Check package version conflicts
+   - Ensure package metadata is complete
 
 ### Debugging Workflows
 
@@ -244,19 +218,20 @@ strategy:
 
 1. **Format Code**: Use `dotnet format` before committing
 2. **Run Tests Locally**: Ensure all tests pass before pushing
-3. **Check Dependencies**: Regularly update packages
-4. **Documentation**: Keep documentation up to date
+3. **Check Coverage**: Run coverage locally to ensure 90% threshold
+4. **Check Dependencies**: Regularly update packages
+5. **Documentation**: Keep documentation up to date
 
 ### Release Process
 
-1. **Version Bumping**: Update version in `version.json` if needed
+1. **Version Bumping**: Use semantic versioning for release tags
 2. **Changelog**: Document changes for releases
 3. **Testing**: Ensure all tests pass before tagging
 4. **Communication**: Notify team of releases
 
 ### Security
 
-1. **Regular Scans**: Monitor security scan results
+1. **Regular Scans**: Monitor CodeQL scan results
 2. **Dependency Updates**: Keep dependencies updated
 3. **Secret Management**: Rotate API keys regularly
 4. **Access Control**: Limit access to sensitive workflows
@@ -274,7 +249,7 @@ Monitor workflow status through:
 
 Track important metrics:
 - Build success rate
-- Test coverage percentage
+- Test coverage percentage (target: 90%)
 - Security scan results
 - Release frequency
 

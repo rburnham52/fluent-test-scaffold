@@ -153,6 +153,9 @@ _TeamCity*
 *.coverage
 *.coveragexml
 
+# Coverlet coverage results
+coverage/
+
 # NCrunch
 _NCrunch_*
 .*crunch*.local.xml
