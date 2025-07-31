@@ -415,6 +415,7 @@ For detailed CI/CD setup instructions, see [CI/CD Setup Guide](ci-cd-setup.md).
 <!--- Add a README.md to a folder for your feature's docs --->
 * [Setup](setup.md)
 * [CI/CD Setup](ci-cd-setup.md) - Continuous Integration and Deployment setup
+* [Code Coverage](coverage.md) - Code coverage setup and usage guide
 * [Ioc](ioc) - IOC container used by the TestScaffold. 
 * [Builders](builders) - builders are used to build up the Test Scaffold context
 * [Data Templates](data-templates) - builders are used to build up the Test Scaffold context
