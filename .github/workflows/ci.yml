@@ -40,6 +40,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Restore .NET tools
+      run: dotnet tool restore
+
     - name: Build
       run: dotnet build --no-restore --configuration Release --framework ${{ matrix.target-framework }}
 
@@ -57,11 +60,8 @@ jobs:
 
     - name: Generate Coverage Report
       run: |
-        # Install reportgenerator if not already available
-        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
-        
-        # Generate HTML report
-        reportgenerator \
+        # Generate HTML report using the restored tool
+        dotnet reportgenerator \
           -reports:./coverage/**/coverage.cobertura.xml \
           -targetdir:./coverage/report \
           -reporttypes:Html

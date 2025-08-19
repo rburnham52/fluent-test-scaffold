@@ -1,41 +1,68 @@
 using System;
 using FluentTestScaffold.Core;
+using FluentTestScaffold.Tests.Mocks;
 
 namespace FluentTestScaffold.Tests.CustomBuilder.DataTemplates;
 
+[DataTemplates]
 public class TestScaffoldDataTemplates
 {
-    public const string TemplateAttributeName = "Set Context From Attribute Name";
+    private readonly TestScaffold _testScaffold;
+    private readonly MockService? _mockService;
+    private readonly object? _testValue;
 
-    [DataTemplate]
-    public TestScaffold SetContextFromTemplate(TestScaffold testScaffold)
+    public TestScaffoldDataTemplates(TestScaffold testScaffold)
     {
-        testScaffold.TestScaffoldContext.Set(true, "AppliedByTemplate");
-        return testScaffold;
+        _testScaffold = testScaffold;
     }
 
-    [DataTemplate(Name = TemplateAttributeName)]
-    public TestScaffold TemplateMatchedByAttributeName(TestScaffold testScaffold)
+    // Constructor that actually uses injected services
+    public TestScaffoldDataTemplates(TestScaffold testScaffold, MockService mockService, object testValue)
     {
-        return SetContextFromTemplate(testScaffold);
+        _testScaffold = testScaffold;
+        _mockService = mockService;
+        _testValue = testValue;
     }
 
-
-    [DataTemplate]
-    public TestScaffold SetContextFromTemplateParameter(TestScaffold testScaffold, Guid id)
+    public void SetContextFromTemplate()
     {
-        testScaffold.TestScaffoldContext.Set(id, "AppliedByTemplateParameter");
-        return testScaffold;
+        _testScaffold.TestScaffoldContext.Set(true, "AppliedByTemplate");
     }
 
-
-    [DataTemplate]
-    public TestScaffold SetContextFromTemplateMultipleParameters(TestScaffold testScaffold, int param1, Guid param2, string param3)
+    public void TemplateMatchedByAttributeName()
     {
-        testScaffold.TestScaffoldContext.Set(param1, nameof(param1));
-        testScaffold.TestScaffoldContext.Set(param2, nameof(param2));
-        testScaffold.TestScaffoldContext.Set(param3, nameof(param3));
+        _testScaffold.TestScaffoldContext.Set(true, "AppliedByTemplateAttributeName");
+    }
 
-        return testScaffold;
+    public void SetContextFromTemplateParameter(Guid id)
+    {
+        _testScaffold.TestScaffoldContext.Set(id, "AppliedByTemplateParameter");
+    }
+
+    public void SetContextFromTemplateMultipleParameters(int param1, Guid param2, string param3)
+    {
+        _testScaffold.TestScaffoldContext.Set(param1, nameof(param1));
+        _testScaffold.TestScaffoldContext.Set(param2, nameof(param2));
+        _testScaffold.TestScaffoldContext.Set(param3, nameof(param3));
+    }
+
+    // Method that actually uses the injected services
+    public void SetContextFromTemplateWithInjectedServices()
+    {
+        // Verify the injected services are actually available
+        if (_mockService == null)
+        {
+            throw new InvalidOperationException("MockService was not injected");
+        }
+
+        if (_testValue == null)
+        {
+            throw new InvalidOperationException("TestValue was not injected");
+        }
+
+        // Use the injected services to set context
+        _testScaffold.TestScaffoldContext.Set(_mockService.GetType().Name, "InjectedServiceType");
+        _testScaffold.TestScaffoldContext.Set(_testValue, "InjectedTestValue");
+        _testScaffold.TestScaffoldContext.Set(true, "AppliedByTemplateWithInjectedServices");
     }
 }

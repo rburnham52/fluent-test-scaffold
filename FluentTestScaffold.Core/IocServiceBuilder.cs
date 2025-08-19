@@ -65,9 +65,19 @@ public abstract class IocServiceBuilder<TContainerBuilder, TServiceBuilder> : IS
     /// </summary>
     public void RegisterDataTemplatesWithAutoDiscovery()
     {
-        var dataTemplateMethods = TestScaffoldServiceRegistration.GetDataTemplateMethods(_configOptions);
-        var dataTemplateService = new DataTemplateService(dataTemplateMethods);
-        RegisterSingleton(dataTemplateService);
+        if (!_configOptions.AutoDiscovery.HasFlag(AutoDiscovery.DataTemplates)) return;
+
+        foreach (var assembly in _configOptions.Assemblies)
+        {
+            var templateTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttributes(typeof(DataTemplatesAttribute), false).Any())
+                .ToArray();
+
+            foreach (var templateType in templateTypes)
+            {
+                RegisterSingleton(templateType);
+            }
+        }
     }
 
 

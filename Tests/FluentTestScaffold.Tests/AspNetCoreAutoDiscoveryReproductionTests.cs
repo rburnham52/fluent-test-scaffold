@@ -23,8 +23,7 @@ public class AspNetCoreAutoDiscoveryReproductionTests
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>());
 
-        var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
 
     [Test]
@@ -37,8 +36,7 @@ public class AspNetCoreAutoDiscoveryReproductionTests
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with UseAspNet auto discovery");
 
-        var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with UseAspNet auto discovery");
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestScaffoldDataTemplates>(), "TestScaffoldDataTemplates should be resolvable with UseAspNet auto discovery");
     }
 
     [Test]
@@ -63,8 +61,7 @@ public class AspNetCoreAutoDiscoveryReproductionTests
 
         Assert.DoesNotThrow(() => testScaffold.Resolve<InventoryBuilder>(), "InventoryBuilder should be resolvable with UseAspNet custom factory auto discovery");
 
-        var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-        Assert.DoesNotThrow(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName), "DataTemplateService should be resolvable with UseAspNet custom factory auto discovery");
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestScaffoldDataTemplates>(), "TestScaffoldDataTemplates should be resolvable with UseAspNet custom factory auto discovery");
     }
 }
 

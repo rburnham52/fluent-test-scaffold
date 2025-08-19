@@ -6,13 +6,19 @@ using FluentTestScaffold.Sample.Data;
 
 namespace FluentTestScaffold.Tests.CustomBuilder.DataTemplates;
 
-
+[DataTemplates]
 public class ApplicationDataTemplates
 {
-    [DataTemplate]
-    public TestScaffold DefaultCatalogueAndUsers(TestScaffold testScaffold)
+    private readonly TestScaffold _testScaffold;
+
+    public ApplicationDataTemplates(TestScaffold testScaffold)
     {
-        testScaffold.UsingBuilder<UserBuilder>()
+        _testScaffold = testScaffold;
+    }
+
+    public void DefaultCatalogueAndUsers()
+    {
+        _testScaffold.UsingBuilder<UserBuilder>()
             //Setup standard users
             .WithOver18User(out var over18UserId)
             .SetTestContext("Over18UserId", over18UserId)
@@ -30,7 +36,5 @@ public class ApplicationDataTemplates
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.Avengers, Price = 24},
                 new() {Id = Guid.NewGuid(), Title = Defaults.CatalogueItems.DeadPool, Price = 14, AgeRestriction = 15}
             }).Build();
-
-        return testScaffold;
     }
 }

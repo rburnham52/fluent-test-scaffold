@@ -30,11 +30,11 @@ if ($LASTEXITCODE -ne 0) {
 
 # Install reportgenerator if not available
 Write-Host "Installing reportgenerator..." -ForegroundColor Yellow
-dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
+dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.12
 
 # Generate HTML report
 Write-Host "Generating HTML coverage report..." -ForegroundColor Yellow
-reportgenerator `
+dotnet reportgenerator `
     -reports:./coverage/**/coverage.cobertura.xml `
     -targetdir:./coverage/report `
     -reporttypes:Html

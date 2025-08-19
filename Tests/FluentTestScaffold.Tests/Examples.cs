@@ -136,14 +136,13 @@ public class Examples
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
         })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters),
-                param1, param2, param3);
+            .WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplateMultipleParameters(param1, param2, param3));
 
 
         // Using custom service builder to enable Auto Discovery
         new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder())
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
     }
 
@@ -154,8 +153,8 @@ public class Examples
     {
         // Builders and DataTemplates can set test context for use in tests
         var testScaffold = new TestScaffold()
-             .UseIoc()
-             .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+    .UseIoc()
+    .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         // This data template stores the UserId in the TestContext
         // Grab the Over18UserId
@@ -178,7 +177,7 @@ public class Examples
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
