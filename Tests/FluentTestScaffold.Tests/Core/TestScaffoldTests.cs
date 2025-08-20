@@ -79,7 +79,7 @@ public class TestScaffoldTests
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
         })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplate));
+            .WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplate());
 
         testScaffold.TestScaffoldContext.TryGetValue("AppliedByTemplate", out bool applied);
 
@@ -95,9 +95,9 @@ public class TestScaffoldTests
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
         })
             .UseIoc()
-            .WithTemplate(TestScaffoldDataTemplates.TemplateAttributeName);
+            .WithTemplate<TestScaffoldDataTemplates>(dt => dt.TemplateMatchedByAttributeName());
 
-        testScaffold.TestScaffoldContext.TryGetValue("AppliedByTemplate", out bool applied);
+        testScaffold.TestScaffoldContext.TryGetValue("AppliedByTemplateAttributeName", out bool applied);
 
         Assert.IsTrue(applied);
     }
@@ -114,53 +114,77 @@ public class TestScaffoldTests
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
         })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateParameter), id);
+            .WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplateParameter(id));
 
         testScaffold.TestScaffoldContext.TryGetValue("AppliedByTemplateParameter", out Guid idFromContext);
 
         Assert.AreEqual(id, idFromContext);
     }
 
-
     [Test]
-    public void TestScaffold_Template_With_Mismatched_Parameters_Throws_Exception()
+    public void TestScaffold_DataTemplates_Constructor_Injection_Works()
     {
-        var id = Guid.NewGuid();
-
-        var exception = Assert.Throws<DataTemplateException>(() =>
+        // Arrange: Create a test scaffold with custom services
+        var testValue = Guid.NewGuid();
+        var testScaffold = new TestScaffold(new ConfigOptions
         {
-            new TestScaffold(new ConfigOptions
+            AutoDiscovery = AutoDiscovery.DataTemplates,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
+            .UseIoc(ctx =>
             {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
-            })
-                .UseIoc()
-                .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplate), id);
-        });
-        Assert.AreEqual("Failed to apply template 'SetContextFromTemplate'. Parameter count mismatch.'", exception?.Message);
+                // Register services that the template constructor actually needs
+                ctx.Container.AddSingleton<MockService>();
+                ctx.Container.AddSingleton<object>(testValue);
+            });
+
+        // Act: Apply the template that actually uses injected services
+        testScaffold.WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplateWithInjectedServices());
+
+        // Assert: Verify the template was executed with injected services
+        testScaffold.TestScaffoldContext.TryGetValue("AppliedByTemplateWithInjectedServices", out bool applied);
+        Assert.IsTrue(applied, "Template should have been executed, indicating constructor injection worked");
+
+        // Verify the injected services were actually used
+        testScaffold.TestScaffoldContext.TryGetValue("InjectedServiceType", out string? serviceType);
+        Assert.AreEqual("MockService", serviceType, "Template should have used the injected MockService");
+
+        testScaffold.TestScaffoldContext.TryGetValue("InjectedTestValue", out object? injectedValue);
+        Assert.AreEqual(testValue, injectedValue, "Template should have used the injected test value");
+
+        // Additional verification: Try to resolve the template directly to ensure it's properly registered
+        var resolvedTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
+        Assert.IsNotNull(resolvedTemplate, "Template should be resolvable from IOC container");
     }
 
-
     [Test]
-    public void TestScaffold_Template_With_Incorrect_Parameter_Type()
+    public void TestScaffold_DataTemplates_Throws_When_Required_Service_Not_Registered()
     {
-        var incorrectParamType = 32;
-
-        var exception = Assert.Throws<DataTemplateException>(() =>
+        // Arrange: Create a test scaffold with DataTemplates auto-discovery but missing required services
+        var testScaffold = new TestScaffold(new ConfigOptions
         {
-            new TestScaffold(new ConfigOptions
+            AutoDiscovery = AutoDiscovery.DataTemplates,
+            Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
+        })
+            .UseIoc(ctx =>
             {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
-            })
-                .UseIoc()
-                .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateParameter), incorrectParamType);
-        });
-        Assert.AreEqual(
-            "Failed to apply template 'SetContextFromTemplateParameter'. Object of type 'System.Int32' cannot be converted to type 'System.Guid'.'",
-            exception?.Message);
-    }
+                // Only register TestScaffold (which is always available)
+                // Don't register MockService or object that the template constructor needs
+            });
 
+        // Act & Assert: Should throw when trying to resolve the template due to missing dependencies
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            testScaffold.WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplateWithInjectedServices());
+        });
+
+        // Verify the exception message indicates the issue
+        Assert.IsTrue(exception.Message.Contains("MockService") ||
+                     exception.Message.Contains("object") ||
+                     exception.Message.Contains("Unable to resolve") ||
+                     exception.Message.Contains("No service for type"),
+                     "Exception should indicate which service couldn't be resolved");
+    }
 
     [Test]
     public void TestScaffold_Template_With_Multiple_Param_Types()
@@ -175,8 +199,7 @@ public class TestScaffoldTests
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
         })
             .UseIoc()
-            .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param1, param2,
-                param3);
+            .WithTemplate<TestScaffoldDataTemplates>(dt => dt.SetContextFromTemplateMultipleParameters(param1, param2, param3));
 
         testScaffold.TestScaffoldContext.TryGetValue("param1", out int actualParam1);
         testScaffold.TestScaffoldContext.TryGetValue("param2", out Guid actualParam2);
@@ -186,47 +209,4 @@ public class TestScaffoldTests
         Assert.AreEqual(param2, actualParam2);
         Assert.AreEqual(param3, actualParam3);
     }
-
-    [Test]
-    public void TestScaffold_Template_With_Multiple_Param_Missing_A_Parameter()
-    {
-        var param1 = 32;
-        var param2 = Guid.NewGuid();
-
-        var exception = Assert.Throws<DataTemplateException>(() =>
-        {
-            new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
-            })
-                .UseIoc()
-                .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param1,
-                    param2);
-        });
-        Assert.AreEqual("Failed to apply template 'SetContextFromTemplateMultipleParameters'. Parameter count mismatch.'",
-            exception?.Message);
-    }
-
-    [Test]
-    public void TestScaffold_Template_With_Multiple_Params_TypeMismatch()
-    {
-        var param1 = 32;
-        var param2 = Guid.NewGuid();
-        var param3 = "Hello World";
-        var exception = Assert.Throws<DataTemplateException>(() =>
-        {
-            new TestScaffold(new ConfigOptions
-            {
-                AutoDiscovery = AutoDiscovery.All,
-                Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
-            })
-                .UseIoc()
-                .WithTemplate(nameof(TestScaffoldDataTemplates.SetContextFromTemplateMultipleParameters), param3,
-                    param2, param1);
-        });
-        Assert.AreEqual("Failed to apply template 'SetContextFromTemplateMultipleParameters'. Object of type 'System.String' cannot be converted to type 'System.Int32'.'",
-            exception?.Message);
-    }
-
 }

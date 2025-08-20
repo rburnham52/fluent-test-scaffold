@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentTestScaffold.Core;
 
@@ -102,36 +103,25 @@ public class TestScaffold
         return ServiceProvider!.GetRequiredService<T>();
     }
 
-
     /// <summary>
-    /// Finds a Data Template and applies it.
+    /// Applies a data template using an expression that returns void
     /// </summary>
-    /// <param name="templateName">Matched again the the Method Name or Attribute Name Property</param>
-    /// <param name="parameters">Params array for optional parameters</param>
-    /// <returns></returns>
-    /// <exception cref="MissingMethodException">Thrown when no matching DataTemplate method could be found</exception>
-    /// <exception cref="InvalidOperationException">Thrown where then was a problem Invoking the matched method</exception>
-    public TestScaffold WithTemplate(string templateName, params object[] parameters)
+    /// <typeparam name="TTemplate">The template type to resolve and use</typeparam>
+    /// <param name="templateSelector">Expression that selects and executes the template method</param>
+    /// <returns>The test scaffold for method chaining</returns>
+    public TestScaffold WithTemplate<TTemplate>(
+        Expression<Action<TTemplate>> templateSelector)
+        where TTemplate : class
     {
-        try
-        {
-            var dataTemplateService = Resolve<DataTemplateService>();
+        var template = Resolve<TTemplate>();
+        var compiledSelector = templateSelector.Compile();
 
-            var methodInfo = dataTemplateService.FindByName(templateName);
-            if (methodInfo.DeclaringType == null)
-                throw new InvalidOperationException("Failed to Invoke Data Template. Unknown Declaring Type");
-            var instance = Activator.CreateInstance(methodInfo.DeclaringType);
-            var paramsArray = (new object?[] { this }).Concat(parameters).ToArray();
+        // Execute the expression
+        compiledSelector(template);
 
-            methodInfo.Invoke(instance, paramsArray);
-
-            return this;
-        }
-        catch (Exception e)
-        {
-            throw new DataTemplateException(templateName, e);
-        }
+        return this;
     }
+
 
     /// <summary>
     /// Internal mechanism to allow us to assign an already prepared ServiceProvider to the Test Scaffold.

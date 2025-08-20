@@ -40,6 +40,19 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Restore .NET tools
+      run: dotnet tool restore
+
+    - name: Clean trailing whitespace
+      run: |
+        # Remove trailing whitespace from all files
+        find . -name "*.cs" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.ps1" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.sh" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+
+    - name: Format code
+      run: dotnet format --verbosity normal
+
     - name: Build
       run: dotnet build --no-restore --configuration Release --framework ${{ matrix.target-framework }}
 
@@ -57,11 +70,8 @@ jobs:
 
     - name: Generate Coverage Report
       run: |
-        # Install reportgenerator if not already available
-        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
-        
-        # Generate HTML report
-        reportgenerator \
+        # Generate HTML report using the restored tool
+        dotnet reportgenerator \
           -reports:./coverage/**/coverage.cobertura.xml \
           -targetdir:./coverage/report \
           -reporttypes:Html
@@ -106,6 +116,19 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Restore .NET tools
+      run: dotnet tool restore
+
+    - name: Clean trailing whitespace
+      run: |
+        # Remove trailing whitespace from all files
+        find . -name "*.cs" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.ps1" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.sh" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+
+    - name: Format code
+      run: dotnet format --verbosity normal
+
     - name: Run security analysis
       run: dotnet list package --vulnerable
 
@@ -125,8 +148,23 @@ jobs:
           7.0.x
           8.0.x
 
+    - name: Restore .NET tools
+      run: dotnet tool restore
+
+    - name: Clean trailing whitespace
+      run: |
+        # Remove trailing whitespace from all files
+        find . -name "*.cs" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.ps1" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+        find . -name "*.sh" -type f -exec sed -i 's/[[:space:]]*$//' {} \;
+
+    - name: Format code
+      run: dotnet format --verbosity normal
+
     - name: Run code analysis
       run: dotnet build --configuration Release --verbosity minimal
 
     - name: Run style analysis
-      run: dotnet format --verify-no-changes                                                                                                                                                                
+      run: |
+        # Verify no formatting changes are needed
+        dotnet format --verify-no-changes                                                                                                                                                                

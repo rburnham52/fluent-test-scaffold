@@ -1,4 +1,4 @@
-﻿using FluentTestScaffold.Core;
+using FluentTestScaffold.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

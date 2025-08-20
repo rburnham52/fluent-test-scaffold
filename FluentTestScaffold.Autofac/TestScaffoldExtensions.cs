@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 
 // ReSharper disable once CheckNamespace
 namespace FluentTestScaffold.Core;

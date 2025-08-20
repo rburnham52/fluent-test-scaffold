@@ -9,6 +9,7 @@ using FluentTestScaffold.Sample.Services;
 using FluentTestScaffold.Tests.CustomBuilder;
 using FluentTestScaffold.Tests.CustomBuilder.Autofac;
 using FluentTestScaffold.Tests.CustomBuilder.DataTemplates;
+
 using NUnit.Framework;
 
 namespace FluentTestScaffold.Tests;
@@ -28,8 +29,7 @@ public class BddTests
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         testScaffold
             .Scenario("User can not add age restricted item to cart when under aged")
@@ -70,8 +70,7 @@ public class BddTests
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
-
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         testScaffold
             .Scenario("User can not add age restricted item to cart when under aged")

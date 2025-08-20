@@ -118,8 +118,8 @@ dotnet test Tests/FluentTestScaffold.Tests/FluentTestScaffold.Tests.csproj \
     --results-directory ./coverage/
 
 # Generate HTML report
-dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
-reportgenerator \
+dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.12
+dotnet reportgenerator \
     -reports:./coverage/**/coverage.cobertura.xml \
     -targetdir:./coverage/report \
     -reporttypes:Html
@@ -173,7 +173,7 @@ Coverage reports are uploaded as GitHub Actions artifacts:
 #### ReportGenerator Not Found
 ```bash
 # Install ReportGenerator globally
-dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
+dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.12
 ```
 
 ### Debugging Coverage

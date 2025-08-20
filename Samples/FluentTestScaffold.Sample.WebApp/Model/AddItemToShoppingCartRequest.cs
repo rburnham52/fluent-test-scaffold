@@ -1,4 +1,4 @@
-﻿namespace FluentTestScaffold.Sample.WebApp.Model;
+namespace FluentTestScaffold.Sample.WebApp.Model;
 
 public record AddItemToShoppingCartRequest(
     Guid ItemId);

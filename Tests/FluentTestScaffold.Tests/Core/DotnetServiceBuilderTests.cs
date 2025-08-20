@@ -363,10 +363,9 @@ public class DotnetServiceBuilderTests
 
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
-            .UseIoc()
-            .Resolve<DataTemplateService>();
-        Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
+            .UseIoc();
+        Assert.Throws<InvalidOperationException>(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
 
     [Test]
@@ -385,11 +384,10 @@ public class DotnetServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
-                .UseIoc()
-                .Resolve<DataTemplateService>();
+            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
+                .UseIoc();
 
-            var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+            var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
             Assert.IsNotNull(dataTemplate);
         });
     }
@@ -399,11 +397,10 @@ public class DotnetServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
-                .UseIoc()
-                .Resolve<DataTemplateService>();
+            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
+                .UseIoc();
 
-            var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+            var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
             Assert.IsNotNull(dataTemplate);
         });
     }
@@ -426,10 +423,12 @@ public class DotnetServiceBuilderTests
         });
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(options)
-            .UseIoc()
-            .Resolve<DataTemplateService>();
-        Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            new TestScaffold(options)
+                .UseIoc()
+                .Resolve<TestScaffoldDataTemplates>();
+        });
     }
 
     [Test]

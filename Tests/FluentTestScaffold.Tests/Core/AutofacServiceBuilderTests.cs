@@ -387,10 +387,9 @@ public class AutofacServiceBuilderTests
 
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
-            .UseAutofac()
-            .Resolve<DataTemplateService>();
-        Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
+            .UseAutofac();
+        Assert.Throws<ComponentNotRegisteredException>(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
 
     [Test]
@@ -409,11 +408,10 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
-                .UseAutofac()
-                .Resolve<DataTemplateService>();
+            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
+                .UseAutofac();
 
-            var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+            var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
             Assert.IsNotNull(dataTemplate);
         });
     }
@@ -423,11 +421,10 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold()
-                .UseAutofac()
-                .Resolve<DataTemplateService>();
+            var testScaffold = new TestScaffold()
+                .UseAutofac();
 
-            var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+            var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
             Assert.IsNotNull(dataTemplate);
         });
     }
@@ -451,10 +448,9 @@ public class AutofacServiceBuilderTests
                 && !a.FullName.StartsWith("Microsoft")
                 && !a.FullName.StartsWith("System"))));
 
-            var dataTemplateService = testScaffold.Resolve<DataTemplateService>();
-            Assert.Throws<MissingMethodException>(() =>
+            Assert.Throws<ComponentNotRegisteredException>(() =>
             {
-                var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+                testScaffold.Resolve<TestScaffoldDataTemplates>();
             });
         });
     }
@@ -464,11 +460,10 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var dataTemplateService = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
-                .UseAutofac()
-                .Resolve<DataTemplateService>();
+            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
+                .UseAutofac();
 
-            var dataTemplate = dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName);
+            var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
             Assert.IsNotNull(dataTemplate);
         });
     }
@@ -491,10 +486,12 @@ public class AutofacServiceBuilderTests
         });
 
         //Service is still initialized but should have nothing cached
-        var dataTemplateService = new TestScaffold(options)
-            .UseAutofac()
-            .Resolve<DataTemplateService>();
-        Assert.Throws<MissingMethodException>(() => dataTemplateService.FindByName(TestScaffoldDataTemplates.TemplateAttributeName));
+        Assert.Throws<ComponentNotRegisteredException>(() =>
+        {
+            new TestScaffold(options)
+                .UseAutofac()
+                .Resolve<TestScaffoldDataTemplates>();
+        });
     }
 
     [Test]

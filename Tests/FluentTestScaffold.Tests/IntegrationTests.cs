@@ -86,7 +86,7 @@ public class IntegrationTest
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();
@@ -112,7 +112,7 @@ public class IntegrationTest
                 // Register service under test
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
         // Authenticate user initialised with the DataTemplate
         var requestContext = testScaffold.Resolve<IUserRequestContext>();

@@ -108,7 +108,7 @@ dotnet add package FluentTestScaffold.EntityFrameworkCore
                 ctx.Container.RegisterType<ShoppingCartService>();
             })
             .UsingBuilder<InventoryBuilder>()
-            .WithTemplate("DefaultCatalogueTemplate")
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers())
             .WithDefaultCatalogue()
             .With(new User(
                 id: userId,
@@ -240,13 +240,13 @@ The `TestScaffold` class serves as the main entry point and orchestrates the ent
 
 ```csharp
 // Apply predefined data configurations
-.WithTemplate("DefaultCatalogueTemplate")
-.WithTemplate("UserWithOrders", userId)
+.WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers())
+.WithTemplate<ApplicationDataTemplates>(dt => dt.SetupUserWithOrders(userId))
 ```
 
 **Key Methods:**
-- `WithTemplate(name)` - Apply a named data template
-- `WithTemplate(name, parameters)` - Apply named template with parameters
+- `WithTemplate<TTemplate>(dt => dt.MethodName())` - Apply a strongly-typed data template
+- `WithTemplate<TTemplate>(dt => dt.MethodName(param1, param2))` - Apply template with parameters
 
 ### Build & Service Resolution
 
@@ -334,7 +334,7 @@ var testScaffold = new TestScaffold()
         ctx.Container.RegisterType<UserService>().As<IUserService>();
     })
     .UsingBuilder<UserBuilder>()
-    .WithTemplate("StandardUser")
+    .WithTemplate<ApplicationDataTemplates>(dt => dt.SetupStandardUser())
     .With(new User { Email = "test@example.com" })
     .UsingBuilder<ProductBuilder>()
     .WithDefaultProducts()

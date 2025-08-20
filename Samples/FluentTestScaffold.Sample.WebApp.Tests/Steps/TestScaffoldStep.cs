@@ -1,4 +1,4 @@
-﻿using FluentTestScaffold.Core;
+using FluentTestScaffold.Core;
 using TechTalk.SpecFlow;
 
 namespace FluentTestScaffold.Sample.WebApp.Tests.Steps;

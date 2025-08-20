@@ -124,7 +124,7 @@ public class EfBuilderTests
                     ctx.Container.AddSingleton(_ => TestDbContextFactory.Create());
                     ctx.RegisterAppServices();
                 })
-            .WithTemplate(nameof(ApplicationDataTemplates.DefaultCatalogueAndUsers));
+            .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
 
         var dbContext = testScaffold.Resolve<TestDbContext>();

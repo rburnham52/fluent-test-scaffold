@@ -1,4 +1,4 @@
-﻿// using FluentTestScaffold.Core;
+// using FluentTestScaffold.Core;
 // using TechTalk.SpecFlow.Assist;
 //
 // namespace FluentTestScaffold.Specflow.Tests.Infrastructure;

@@ -25,7 +25,7 @@ public class AspNetCoreIntegrationTests
 
         // Assert
         Assert.That(testScaffold.ServiceProvider, Is.Not.Null);
-        Assert.DoesNotThrow(() => testScaffold.Resolve<DataTemplateService>());
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
 
     [Test]
@@ -55,7 +55,7 @@ public class AspNetCoreIntegrationTests
 
         // Assert
         Assert.That(testScaffold.ServiceProvider, Is.Not.Null);
-        Assert.DoesNotThrow(() => testScaffold.Resolve<DataTemplateService>());
+        Assert.DoesNotThrow(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
 
     [Test]

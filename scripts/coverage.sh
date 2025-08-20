@@ -60,11 +60,11 @@ fi
 
 # Install reportgenerator if not available
 echo "Installing reportgenerator..."
-dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.2.4
+dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.12
 
 # Generate HTML report
 echo "Generating HTML coverage report..."
-reportgenerator \
+dotnet reportgenerator \
     -reports:./coverage/**/coverage.cobertura.xml \
     -targetdir:./coverage/report \
     -reporttypes:Html

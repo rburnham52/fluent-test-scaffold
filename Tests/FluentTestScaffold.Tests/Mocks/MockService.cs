@@ -4,7 +4,7 @@ using FluentTestScaffold.Core;
 
 namespace FluentTestScaffold.Tests.Mocks;
 
-class MockService : IMockService
+public class MockService : IMockService
 {
     public int Count { get; set; } = 0;
 

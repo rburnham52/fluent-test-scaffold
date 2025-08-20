@@ -10,13 +10,13 @@ flowchart TD
     START[TestScaffold with ConfigOptions] --> SCAN[Scan Configured Assemblies]
 
     SCAN --> BUILDERS[Find Classes Inheriting Builder]
-    SCAN --> TEMPLATES[Find Methods with DataTemplate]
+    SCAN --> TEMPLATES[Find Classes with DataTemplates Attribute]
 
     BUILDERS --> REG_B[Register Builders with IOC]
-    TEMPLATES --> REG_T[Register DataTemplateService]
+    TEMPLATES --> REG_T[Register Template Classes with IOC]
 
     REG_B --> AVAILABLE[Available via UsingBuilder T]
-    REG_T --> AVAILABLE_T[Available via WithTemplate]
+    REG_T --> AVAILABLE_T[Available via WithTemplate T]
 
     subgraph "Auto Discovery Options"
         NONE[AutoDiscovery.None]
@@ -59,7 +59,24 @@ During IOC registration the Auto Discovery options will be used to Register any 
 ### AutoDiscovery Options
 * None - Disables Auto Discovery
 * Builders - Enables Discovery for Builders
-* DataTemplates - Enables Discovery for DataTemplates
+* DataTemplates - Enables Discovery for DataTemplates (classes marked with `[DataTemplates]` attribute)
 * All - Enables discovery for all
 
-###
+### Data Templates Auto Discovery
+
+When `AutoDiscovery.DataTemplates` is enabled, the system will:
+
+1. Scan all configured assemblies for classes marked with the `[DataTemplates]` attribute
+2. Register each template class as a singleton in the IOC container
+3. Make them available for use with the `WithTemplate<TTemplate>()` method
+
+```csharp
+// Enable data template auto discovery
+var config = new ConfigOptions 
+{
+    AutoDiscovery = AutoDiscovery.DataTemplates,
+    Assemblies = new List<Assembly> { typeof(MyTemplates).Assembly }
+};
+
+var testScaffold = new TestScaffold(config).UseIoc();
+```

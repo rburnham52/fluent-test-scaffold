@@ -34,26 +34,18 @@ public static class TestScaffoldServiceRegistration
 
     public static void RegisterDataTemplatesWithAutoDiscovery(this IServiceCollection services, ConfigOptions configOptions)
     {
-        var dataTemplateMethods = GetDataTemplateMethods(configOptions);
-        var dataTemplateService = new DataTemplateService(dataTemplateMethods);
-        services.AddSingleton(dataTemplateService);
-    }
+        if (!configOptions.AutoDiscovery.HasFlag(AutoDiscovery.DataTemplates)) return;
 
-    public static List<MethodInfo> GetDataTemplateMethods(ConfigOptions configOptions)
-    {
-        var dataTemplateMethods = new List<MethodInfo>();
-        if (configOptions.AutoDiscovery.HasFlag(AutoDiscovery.DataTemplates))
+        foreach (var assembly in configOptions.Assemblies)
         {
-            foreach (var assembly in configOptions.Assemblies)
+            var templateTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttributes(typeof(DataTemplatesAttribute), false).Any())
+                .ToArray();
+
+            foreach (var templateType in templateTypes)
             {
-                var methods = assembly.GetTypes()
-                    .SelectMany(t => t.GetMethods())
-                    .Where(m => m.GetCustomAttributes(typeof(DataTemplateAttribute), false).Length >= 1)
-                    .Where(m => m.GetParameters().FirstOrDefault()?.ParameterType == typeof(TestScaffold))
-                    .ToArray();
-                dataTemplateMethods.AddRange(methods);
+                services.AddSingleton(templateType);
             }
         }
-        return dataTemplateMethods;
     }
 }
