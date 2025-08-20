@@ -24,6 +24,9 @@
     <PackageVersion>$(Version)</PackageVersion>
     <!-- Default version - will be overridden by CI -->
     <Version Condition="'$(Version)' == ''">1.0.0</Version>
+    <!-- Code Formatting -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <!-- Include README in packages -->
   <ItemGroup>

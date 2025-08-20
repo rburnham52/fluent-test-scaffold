@@ -1,4 +1,4 @@
-﻿using FluentTestScaffold.AspNetCore;
+using FluentTestScaffold.AspNetCore;
 using FluentTestScaffold.Core;
 using TechTalk.SpecFlow;
 

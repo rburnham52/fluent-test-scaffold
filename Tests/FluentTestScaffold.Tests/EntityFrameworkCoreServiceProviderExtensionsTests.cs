@@ -11,7 +11,7 @@ namespace FluentTestScaffold.Tests;
 [TestFixture]
 public class EntityFrameworkCoreServiceProviderExtensionsTests
 {
-    private IServiceCollection _services;
+    private IServiceCollection? _services;
 
     [SetUp]
     public void Setup()
@@ -74,7 +74,7 @@ public class EntityFrameworkCoreServiceProviderExtensionsTests
     public void ReplaceDbContextWithInMemoryProvider_WithNullServices_ShouldThrowArgumentNullException()
     {
         // Arrange
-        IServiceCollection services = null;
+        IServiceCollection? services = null;
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>

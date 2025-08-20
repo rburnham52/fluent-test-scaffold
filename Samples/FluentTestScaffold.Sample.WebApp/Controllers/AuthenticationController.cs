@@ -1,4 +1,4 @@
-﻿using FluentTestScaffold.Sample.Services;
+using FluentTestScaffold.Sample.Services;
 using FluentTestScaffold.Sample.WebApp.Model;
 using Microsoft.AspNetCore.Mvc;
 

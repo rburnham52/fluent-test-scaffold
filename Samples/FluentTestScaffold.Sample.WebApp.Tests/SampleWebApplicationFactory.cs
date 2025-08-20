@@ -1,4 +1,4 @@
-﻿using FluentTestScaffold.EntityFrameworkCore;
+using FluentTestScaffold.EntityFrameworkCore;
 using FluentTestScaffold.Sample.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

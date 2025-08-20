@@ -31,7 +31,6 @@ public class BddTests
             })
             .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
 
-
         testScaffold
             .Scenario("User can not add age restricted item to cart when under aged")
             .Given<IUserRequestContext>("A user is authenticated", requestContext =>
@@ -72,7 +71,6 @@ public class BddTests
                 serviceBuilder.Container.RegisterType<ShoppingCartService>();
             })
             .WithTemplate<ApplicationDataTemplates>(dt => dt.DefaultCatalogueAndUsers());
-
 
         testScaffold
             .Scenario("User can not add age restricted item to cart when under aged")

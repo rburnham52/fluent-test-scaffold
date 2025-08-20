@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using FluentTestScaffold.Sample.Data;
 using FluentTestScaffold.Sample.Services;
 using Microsoft.AspNetCore.Authentication;
