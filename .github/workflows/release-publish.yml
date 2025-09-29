@@ -233,6 +233,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-version, validate-release]
     if: needs.validate-release.result == 'success'
+    permissions:
+      contents: read
+      packages: write
     environment: 
       name: github-packages
       url: https://github.com/${{ github.repository }}/packages
