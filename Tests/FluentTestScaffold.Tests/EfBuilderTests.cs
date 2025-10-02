@@ -275,4 +275,149 @@ public class EfBuilderTests
             options => options.Excluding(x => x.Title));
         item!.Title.Should().Be(Defaults.CatalogueItems.Avengers);
     }
+
+    [Test]
+    public void EfCoreBuilder_Build_Should_Apply_All_Enqueued_Actions_And_SaveChanges()
+    {
+        // Arrange
+        var dbContext = TestDbContextFactory.Create();
+        var userId1 = Guid.NewGuid();
+        var userId2 = Guid.NewGuid();
+        var user1 = new User(userId1, "John Doe", "john@test.com", "password123", DateTime.Now.AddYears(-25));
+        var user2 = new User(userId2, "Jane Smith", "jane@test.com", "password456", DateTime.Now.AddYears(-30));
+
+        // Act
+        var testScaffold = new TestScaffold()
+            .UseIoc(ctx =>
+            {
+                ctx.Container.AddSingleton(_ => dbContext);
+            })
+            .UsingBuilder<EfCoreBuilder<TestDbContext>>()
+            .With(user1)
+            .With(user2)
+            .Build();
+
+        // Assert
+        var savedUsers = dbContext.Users.ToList();
+        savedUsers.Should().HaveCount(2);
+
+        var savedUser1 = dbContext.Users.FirstOrDefault(u => u.Id == userId1);
+        var savedUser2 = dbContext.Users.FirstOrDefault(u => u.Id == userId2);
+
+        Assert.Multiple(() =>
+        {
+
+            // Verify that Build() returns a TestScaffold instance
+            Assert.IsNotNull(testScaffold);
+            Assert.IsInstanceOf<TestScaffold>(testScaffold);
+
+            // Verify that all entities were saved to the database
+            Assert.IsNotNull(savedUser1, "First user should be saved to database");
+            Assert.IsNotNull(savedUser2, "Second user should be saved to database");
+
+            // Verify entity properties are correctly saved
+            Assert.AreEqual("John Doe", savedUser1?.Name);
+            Assert.AreEqual("john@test.com", savedUser1?.Email);
+            Assert.AreEqual("Jane Smith", savedUser2?.Name);
+            Assert.AreEqual("jane@test.com", savedUser2?.Email);
+        });
+    }
+
+    [Test]
+    public void EfCoreBuilder_Build_Should_Handle_Empty_Queue_Gracefully()
+    {
+        // Arrange
+        var dbContext = TestDbContextFactory.Create();
+
+        // Act
+        var testScaffold = new TestScaffold()
+            .UseIoc(ctx =>
+            {
+                ctx.Container.AddSingleton(_ => dbContext);
+            })
+            .UsingBuilder<EfCoreBuilder<TestDbContext>>()
+            .Build();
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            // Verify that Build() returns a TestScaffold instance even with no entities
+            Assert.IsNotNull(testScaffold);
+            Assert.IsInstanceOf<TestScaffold>(testScaffold);
+
+            // Verify that no entities were added to the database
+            Assert.AreEqual(0, dbContext.Users.Count());
+            Assert.AreEqual(0, dbContext.Items.Count());
+        });
+    }
+
+    [Test]
+    public void EfCoreBuilder_Build_Should_Call_SaveChanges_After_Base_Build()
+    {
+        // Arrange
+        var dbContext = TestDbContextFactory.Create();
+        var userId = Guid.NewGuid();
+        var user = new User(userId, "Test User", "test@test.com", "password", DateTime.Now.AddYears(-20));
+
+        // Act - Add entity and build
+        var testScaffold = new TestScaffold()
+            .UseIoc(ctx =>
+            {
+                ctx.Container.AddSingleton(_ => dbContext);
+            })
+            .UsingBuilder<EfCoreBuilder<TestDbContext>>()
+            .With(user)
+            .Build();
+
+        // Assert - Verify that changes are persisted to the database
+        var persistedUser = dbContext.Users.FirstOrDefault(u => u.Id == userId);
+        Assert.Multiple(() =>
+        {
+            // Verify that there are no unsaved changes in the DbContext
+            var hasChanges = dbContext.ChangeTracker.HasChanges();
+            Assert.IsFalse(hasChanges, "DbContext should have no pending changes after Build()");
+
+            Assert.IsNotNull(persistedUser, "User should be persisted to database after Build()");
+            Assert.AreEqual(userId, persistedUser?.Id);
+            Assert.AreEqual("Test User", persistedUser?.Name);
+
+            // Verify that Build() returns a TestScaffold instance
+            Assert.IsNotNull(testScaffold);
+            Assert.IsInstanceOf<TestScaffold>(testScaffold);
+        });
+    }
+
+    [Test]
+    public void EfCoreBuilder_Build_Should_Not_Call_SaveChanges_After_Base_Build_With_SaveChanges_False()
+    {
+        // Arrange
+        var dbContext = TestDbContextFactory.Create();
+        var userId = Guid.NewGuid();
+        var user = new User(userId, "Test User", "test@test.com", "password", DateTime.Now.AddYears(-20));
+
+        var efCoreBuilder = new TestScaffold()
+            .UseIoc(ctx =>
+            {
+                ctx.Container.AddSingleton(_ => dbContext);
+            })
+            .UsingBuilder<EfCoreBuilder<TestDbContext>>()
+            .With(user);
+
+        // Make a change to the entity to verify SaveChanges was not called
+        user.Name = "Test User";
+        dbContext.Users.Update(user);
+
+        var hasChanges = dbContext.ChangeTracker.HasChanges();
+        Assert.IsTrue(hasChanges, "DbContext should have pending changes after change to entity");
+
+        // Act - Call Build with saveChanges false
+        efCoreBuilder.Build(saveChanges:false);
+
+        // Assert - Verify that changes are persisted to the database
+        hasChanges = dbContext.ChangeTracker.HasChanges();
+
+        // Verify that there are no unsaved changes in the DbContext
+        Assert.IsFalse(hasChanges, "DbContext should have no pending changes after Build()");
+    }
 }
+
