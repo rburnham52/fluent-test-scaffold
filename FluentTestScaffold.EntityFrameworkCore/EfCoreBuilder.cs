@@ -111,6 +111,35 @@ public class EfCoreBuilder<TDbContext, TBuilder> : Builder<TBuilder>
         return (TBuilder)this;
     }
 
+    /// <summary>
+    /// Applies all enqueued actions and calls SaveChanges on the DbContext
+    /// </summary>
+    /// <returns>TestScaffold</returns>
+    public override TestScaffold Build()
+    {
+        return ApplyAndSave(true);
+    }
+
+    /// <summary>
+    /// Applies all enqueued actions and calls SaveChanges on the DbContext
+    /// </summary>
+    /// <param name="saveChanges">Optionally disable saving changes on DBContext</param>
+    /// <returns>TestScaffold</returns>
+    public TestScaffold Build(bool saveChanges = true)
+    {
+        return ApplyAndSave(saveChanges);
+    }
+
+    private TestScaffold ApplyAndSave(bool saveChanges = true)
+    {
+        var dbContext = ServiceProvider.GetRequiredService<TDbContext>();
+        var testScaffold = base.Build();
+        if(saveChanges)
+            dbContext.SaveChanges();
+        return testScaffold;
+    }
+
+
     private object[] GetKey<T>(T entity, TDbContext dbContext)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
