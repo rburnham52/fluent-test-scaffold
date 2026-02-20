@@ -7,7 +7,7 @@ namespace FluentTestScaffold.Core;
 /// Test Scaffold is the entry point for the Fluent Api.
 /// Internally it uses an IOC container that can be used by IOC builds to inject application services.
 /// </summary>
-public class TestScaffold
+public class TestScaffold : IDisposable
 {
     public readonly ConfigOptions Options;
 
@@ -161,5 +161,13 @@ public class TestScaffold
 
         ServiceProvider = serviceBuilder.CreateServiceProvider(serviceBuilder.Container);
         return this;
+    }
+
+    public void Dispose()
+    {
+        if (ServiceProvider is IDisposable disposable)
+            disposable.Dispose();
+
+        ServiceProvider = null;
     }
 }

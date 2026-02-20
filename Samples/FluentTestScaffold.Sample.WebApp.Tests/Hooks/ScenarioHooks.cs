@@ -17,4 +17,12 @@ public static class ScenarioHooks
 
         scenarioContext.Set(testScaffold);
     }
+
+    [AfterScenario]
+    public static void AfterScenario(ScenarioContext scenarioContext)
+    {
+        var testScaffold = scenarioContext.Get<TestScaffold>();
+
+        testScaffold.Dispose();
+    }
 }

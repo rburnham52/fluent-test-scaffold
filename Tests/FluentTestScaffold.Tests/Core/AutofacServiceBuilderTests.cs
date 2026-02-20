@@ -39,7 +39,7 @@ public class AutofacServiceBuilderTests
             .Returns(() => user);
 
         // Ensure the default IOC can be added to and resolved from
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.Register<IAuthService>(_ => mockAuthService.Object).SingleInstance();
@@ -56,7 +56,7 @@ public class AutofacServiceBuilderTests
     public void AutofacServiceBuilder_DefaultConfig()
     {
         //Default config should enable auto discovery
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacServiceBuilder());
 
         Assert.NotNull(testScaffold.Resolve<InventoryBuilder>());
@@ -64,7 +64,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_CustomConfig()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacServiceBuilder(new ConfigOptions()
             {
                 AutoDiscovery = AutoDiscovery.None
@@ -78,7 +78,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterScoped()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<MockService>().InstancePerLifetimeScope());
 
         var resolved1 = testScaffold.Resolve<MockService>();
@@ -95,7 +95,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterScoped_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.Register(_ =>
@@ -120,7 +120,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterScopedAs_As_Type()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.RegisterType<MockService>().As<IMockService>().InstancePerLifetimeScope();
@@ -141,7 +141,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterScopedAs_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.Register<IMockService>(_ =>
@@ -170,7 +170,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterTransient()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.RegisterType<MockService>().InstancePerDependency();
@@ -185,7 +185,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterTransient_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.Register(_ =>
@@ -207,7 +207,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterTransientAs_As_Type()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<MockService>().As<IMockService>().InstancePerDependency());
 
         var resolved1 = testScaffold.Resolve<IMockService>();
@@ -220,7 +220,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterTransientAs_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.Register<IMockService>(_ =>
             {
                 var service = new MockService();
@@ -240,7 +240,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterSingleton()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<MockService>().SingleInstance());
 
         var resolved1 = testScaffold.Resolve<MockService>();
@@ -252,7 +252,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterSingleton_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.Register(_ =>
             {
                 var service = new MockService();
@@ -270,7 +270,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterSingletonAs_As_Type()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<MockService>().As<IMockService>().SingleInstance());
 
         var resolved1 = testScaffold.Resolve<IMockService>();
@@ -283,7 +283,7 @@ public class AutofacServiceBuilderTests
     [Test]
     public void AutofacServiceBuilder_RegisterSingletonAs_With_Ctor()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.Register<IMockService>(_ =>
             {
                 var service = new MockService();
@@ -307,8 +307,10 @@ public class AutofacServiceBuilderTests
     {
         var messages = new List<string>();
 
-        new TestScaffold()
-            .UseAutofac()
+        using var testScaffold = new TestScaffold()
+            .UseAutofac();
+
+        testScaffold
             .UsingBuilder<MockBuilder>()
             .WithMockData(messages);
 
@@ -319,7 +321,7 @@ public class AutofacServiceBuilderTests
     public void AutofacServiceBuilder_RegisterBuilder_Multiple_At_Once()
     {
         var dbContext = TestDbContextFactory.Create();
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx =>
             {
                 ctx.Container.Register(_ => dbContext);
@@ -336,7 +338,7 @@ public class AutofacServiceBuilderTests
     public void AutofacServiceBuilder_With_DefaultServiceBuilder()
     {
         //Register service as instance per lifetime scope using autofac builder.
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(ctx => ctx.Container.RegisterType<TimeService>().As<ITimeService>().InstancePerLifetimeScope());
 
 
@@ -357,7 +359,7 @@ public class AutofacServiceBuilderTests
     public void AutofacServiceBuilder_WithCustomServiceBuilder()
     {
         var user = new User(Guid.NewGuid(), "Joe", "joe@test.com", "superSecret", new DateTime(2020, 03, 20));
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(),
                 ctx =>
                 {
@@ -380,14 +382,16 @@ public class AutofacServiceBuilderTests
     {
         Assert.Throws<ComponentNotRegisteredException>(() =>
         {
-            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
-                .UseAutofac()
+            using var testScaffolf = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
+                .UseAutofac();
+
+            testScaffolf
                 .Resolve<InventoryBuilder>();
         });
 
 
         //Service is still initialized but should have nothing cached
-        var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
+        using var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.None })
             .UseAutofac();
         Assert.Throws<ComponentNotRegisteredException>(() => testScaffold.Resolve<TestScaffoldDataTemplates>());
     }
@@ -397,9 +401,10 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.Builders })
-                .UseAutofac()
-                .Resolve<InventoryBuilder>();
+            using var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.Builders })
+                .UseAutofac();
+
+            testScaffold.Resolve<InventoryBuilder>();
         });
     }
 
@@ -408,7 +413,7 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
+            using var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.DataTemplates })
                 .UseAutofac();
 
             var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
@@ -421,7 +426,7 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var testScaffold = new TestScaffold()
+            using var testScaffold = new TestScaffold()
                 .UseAutofac();
 
             var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
@@ -439,7 +444,8 @@ public class AutofacServiceBuilderTests
                 AutoDiscovery = AutoDiscovery.All,
                 Assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToList(),
             };
-            var testScaffold = new TestScaffold(configOptions)
+
+            using var testScaffold = new TestScaffold(configOptions)
                 .UseAutofac();
 
             Assert.IsTrue(configOptions.Assemblies.All(a =>
@@ -460,7 +466,7 @@ public class AutofacServiceBuilderTests
     {
         Assert.DoesNotThrow(() =>
         {
-            var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
+            using var testScaffold = new TestScaffold(new ConfigOptions() { AutoDiscovery = AutoDiscovery.All })
                 .UseAutofac();
 
             var dataTemplate = testScaffold.Resolve<TestScaffoldDataTemplates>();
@@ -480,16 +486,20 @@ public class AutofacServiceBuilderTests
 
         Assert.Throws<ComponentNotRegisteredException>(() =>
         {
-            new TestScaffold(options)
-                .UseAutofac()
+            using var testScaffold = new TestScaffold(options)
+                .UseAutofac();
+
+            testScaffold
                 .Resolve<InventoryBuilder>();
         });
 
         //Service is still initialized but should have nothing cached
         Assert.Throws<ComponentNotRegisteredException>(() =>
         {
-            new TestScaffold(options)
-                .UseAutofac()
+            using var testScaffold = new TestScaffold(options)
+                .UseAutofac();
+
+            testScaffold
                 .Resolve<TestScaffoldDataTemplates>();
         });
     }
@@ -500,16 +510,18 @@ public class AutofacServiceBuilderTests
         Assert.DoesNotThrow(() =>
         {
             var timeString = "12:51:01";
-            var timeService = new TestScaffold()
+            using var testScaffold = new TestScaffold()
                 .UseAutofac(serviceBuilder =>
                 {
                     serviceBuilder.WithMock<ITimeService>(mock =>
                     {
-                        mock.Setup(c => c.GetTime()).Returns(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture));
+                        mock.Setup(c => c.GetTime())
+                            .Returns(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture));
                         return mock;
                     });
-                })
-                .Resolve<ITimeService>();
+                });
+
+            var timeService = testScaffold.Resolve<ITimeService>();
 
             var time = timeService.GetTime();
             Assert.AreEqual(TimeOnly.Parse(timeString, CultureInfo.CurrentCulture), time);

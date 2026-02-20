@@ -23,7 +23,7 @@ public class EfBuilderTests
         var dbContext = TestDbContextFactory.Create();
         var userId = Guid.Parse("65579043-8112-480C-A885-C6157947F0F3");
 
-        new TestScaffold()
+        using var testScaffolf = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -48,7 +48,7 @@ public class EfBuilderTests
     {
         var dbContext = TestDbContextFactory.Create();
         var userId = Guid.Parse("36A6736A-F8AC-4FA2-B33E-0ACB14776C0F");
-        new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -90,7 +90,7 @@ public class EfBuilderTests
     public void EBBuilder_Can_Defer_Adding_To_DbContext()
     {
         var dbContext = TestDbContextFactory.Create();
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -117,7 +117,7 @@ public class EfBuilderTests
     [Test]
     public void EBBuilder_Can_Use_EFBuilder_In_DataTemplate()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(new DotnetIocAppServicesBuilder(),
                 ctx =>
                 {
@@ -150,7 +150,7 @@ public class EfBuilderTests
             Price = 10
         };
 
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -202,11 +202,13 @@ public class EfBuilderTests
             Price = 10
         };
 
-        new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
-            })
+            });
+
+        testScaffold
             .UsingBuilder<InventoryBuilder>()
             .With(itemToAdd)
             .UsingBuilder<UserBuilder>();
@@ -227,7 +229,7 @@ public class EfBuilderTests
             Price = 10
         };
 
-        new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -249,7 +251,7 @@ public class EfBuilderTests
 
         var itemId = Guid.NewGuid();
 
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -287,7 +289,7 @@ public class EfBuilderTests
         var user2 = new User(userId2, "Jane Smith", "jane@test.com", "password456", DateTime.Now.AddYears(-30));
 
         // Act
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -330,7 +332,7 @@ public class EfBuilderTests
         var dbContext = TestDbContextFactory.Create();
 
         // Act
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -360,7 +362,7 @@ public class EfBuilderTests
         var user = new User(userId, "Test User", "test@test.com", "password", DateTime.Now.AddYears(-20));
 
         // Act - Add entity and build
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
@@ -395,11 +397,13 @@ public class EfBuilderTests
         var userId = Guid.NewGuid();
         var user = new User(userId, "Test User", "test@test.com", "password", DateTime.Now.AddYears(-20));
 
-        var efCoreBuilder = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton(_ => dbContext);
-            })
+            });
+
+        var efCoreBuilder = testScaffold
             .UsingBuilder<EfCoreBuilder<TestDbContext>>()
             .With(user);
 

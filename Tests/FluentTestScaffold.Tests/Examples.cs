@@ -56,7 +56,7 @@ public class Examples
         var email = "fts@test.com";
         var password = "Supper Secret Pa$$word";
 
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
                 // Custom App Service Builder to register common services.
@@ -169,7 +169,7 @@ public class Examples
     {
         // Test Adding Age Restricted Content
 
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
                 // Custom App Service Builder to register common services.

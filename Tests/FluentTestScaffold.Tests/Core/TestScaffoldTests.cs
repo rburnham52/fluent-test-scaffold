@@ -15,7 +15,7 @@ public class TestScaffoldTests
     [Test]
     public void TestScaffold_UsingBuilder_Resolves_Registered_Builder()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc();
 
         var builder = testScaffold.UsingBuilder<MockBuilder>();
@@ -25,7 +25,7 @@ public class TestScaffoldTests
     [Test]
     public void TestScaffold_Resolve_Service()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx => ctx.Container.AddTransient<MockService>());
 
         var service = testScaffold.Resolve<MockService>();
@@ -37,8 +37,10 @@ public class TestScaffoldTests
     public void TestScaffold_Resolve_With_Fluent_Api()
     {
         MockService? service = null;
-        new TestScaffold()
-            .UseIoc(ctx => { ctx.Container.AddTransient<MockService>(); })
+        using var testScaffold = new TestScaffold()
+            .UseIoc(ctx => { ctx.Container.AddTransient<MockService>(); });
+
+        testScaffold
             .Resolve<MockService>(out service)
             .UsingBuilder<MockBuilder>();
 
@@ -50,22 +52,26 @@ public class TestScaffoldTests
     {
         DotnetServiceBuilder serviceBuilder = null!;
         Assert.Catch<ArgumentNullException>(() =>
-            new TestScaffold().UseIoc(serviceBuilder!));
+        {
+            using var ts = new TestScaffold().UseIoc(serviceBuilder!);
+        });
     }
 
 
     [Test]
     public void TestScaffold_Resolve_Without_Ioc_Built()
     {
-        var testScaffold = new TestScaffold().Resolve<TestScaffold>();
+        using var testScaffold = new TestScaffold().Resolve<TestScaffold>();
         Assert.IsNotNull(testScaffold);
     }
 
     [Test]
     public void TestScaffold_RegisterBuilders_Auto_Build_Ioc()
     {
-        var mockBuilder = new TestScaffold()
-            .UseIoc()
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        var mockBuilder = testScaffold
             .Resolve<MockBuilder>();
         Assert.IsTrue(mockBuilder.GetType() == typeof(MockBuilder));
     }
@@ -73,7 +79,7 @@ public class TestScaffoldTests
     [Test]
     public void TestScaffold_Can_Apply_Templates_By_MethodName()
     {
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.DataTemplates,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -89,7 +95,7 @@ public class TestScaffoldTests
     [Test]
     public void TestScaffold_Can_Apply_Templates_By_AttributeName()
     {
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.All,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -108,7 +114,7 @@ public class TestScaffoldTests
     {
         var id = Guid.NewGuid();
 
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.All,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -126,7 +132,7 @@ public class TestScaffoldTests
     {
         // Arrange: Create a test scaffold with custom services
         var testValue = Guid.NewGuid();
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.DataTemplates,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -161,7 +167,7 @@ public class TestScaffoldTests
     public void TestScaffold_DataTemplates_Throws_When_Required_Service_Not_Registered()
     {
         // Arrange: Create a test scaffold with DataTemplates auto-discovery but missing required services
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.DataTemplates,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -193,7 +199,7 @@ public class TestScaffoldTests
         var param2 = Guid.NewGuid();
         var param3 = "Hello World";
 
-        var testScaffold = new TestScaffold(new ConfigOptions
+        using var testScaffold = new TestScaffold(new ConfigOptions
         {
             AutoDiscovery = AutoDiscovery.All,
             Assemblies = new List<Assembly> { typeof(TestScaffoldDataTemplates).Assembly }
@@ -208,5 +214,18 @@ public class TestScaffoldTests
         Assert.AreEqual(param1, actualParam1);
         Assert.AreEqual(param2, actualParam2);
         Assert.AreEqual(param3, actualParam3);
+    }
+
+    [Test]
+    public void TestScaffold_Disposes_Service_Provider_And_Resolved_Services()
+    {
+        var testScaffold = new TestScaffold()
+            .UseIoc(services => services.Container.AddTransient<TestDisposableService>());
+
+        var disposableService = testScaffold.Resolve<TestDisposableService>();
+
+        testScaffold.Dispose();
+
+        Assert.IsTrue(disposableService.WasDisposed);
     }
 }
