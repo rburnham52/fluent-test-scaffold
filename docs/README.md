@@ -413,6 +413,7 @@ For detailed CI/CD setup instructions, see [CI/CD Setup Guide](ci-cd-setup.md).
 
 ## Documentation
 <!--- Add a README.md to a folder for your feature's docs --->
+* [Getting Started](getting-started.md) - Step-by-step guide to the main features
 * [Setup](setup.md)
 * [CI/CD Setup](ci-cd-setup.md) - Continuous Integration and Deployment setup
 * [Code Coverage](coverage.md) - Code coverage setup and usage guide
