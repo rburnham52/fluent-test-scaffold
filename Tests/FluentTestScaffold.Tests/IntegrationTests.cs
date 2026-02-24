@@ -33,7 +33,7 @@ public class IntegrationTest
 
         // Arrange
         var userId = Guid.Parse("A5A743C3-A02F-4CA3-94F8-B0ECAF4A6345");
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
                 // Custom App Service Builder to register common services.
@@ -78,7 +78,7 @@ public class IntegrationTest
     [Test]
     public void ComponentIntegrationTest_UsingDataTemplates_UnderAged()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
                 // Custom App Service Builder to register common services.
@@ -104,7 +104,7 @@ public class IntegrationTest
     [Test]
     public void ComponentIntegrationTest_UsingDataTemplates_OverAged()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseAutofac(new AutofacAppServicesBuilder(), serviceBuilder =>
             {
                 // Custom App Service Builder to register common services.

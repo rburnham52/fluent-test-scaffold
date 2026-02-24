@@ -35,7 +35,7 @@ public class DotnetServiceBuilderTests
             .Returns(() => user);
 
         // Ensure the default IOC can be added to and resolved from
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx =>
             {
                 ctx.Container.AddSingleton<IAuthService>(_ => mockAuthService.Object)
@@ -53,7 +53,7 @@ public class DotnetServiceBuilderTests
     [Test]
     public void DotnetServiceBuilder_RegisterScoped()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc(ctx => ctx.Container.AddScoped<MockService>());
 
         var resolved1 = testScaffold.Resolve<MockService>();

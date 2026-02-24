@@ -47,6 +47,14 @@ public class ShoppingCartSteps
         _scenarioContext.Add(nameof(TestScaffold), testScaffold);
     }
 
+    [AfterScenario]
+    public void CleanUp()
+    {
+        var testScaffold = _scenarioContext.Get<TestScaffold>(nameof(TestScaffold));
+
+        testScaffold.Dispose();
+    }
+
     [Given(@"the Items")]
     public void GivenTheItems(Table table)
     {

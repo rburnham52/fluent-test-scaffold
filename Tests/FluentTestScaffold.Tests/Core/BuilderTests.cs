@@ -13,8 +13,10 @@ public class BuilderTests
     [Test]
     public void Enqueue_Actions_Are_Applied_in_Order()
     {
-        var builder = new TestScaffold()
-            .UseIoc()
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        var builder = testScaffold
             .Resolve<MockBuilder>();
 
         builder.Enqueue("first");
@@ -30,7 +32,7 @@ public class BuilderTests
     [Test]
     public void ServiceProvider_Can_Resolve_From_Internal_Ioc()
     {
-        var builder = new TestScaffold()
+        using var builder = new TestScaffold()
             .UseIoc();
 
         var resolvedScaffold = builder.ServiceProvider!.GetService<TestScaffold>();
@@ -40,7 +42,7 @@ public class BuilderTests
     [Test]
     public void Builder_UsingTestScaffold_Can_Switch_Context()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc()
             .UsingBuilder<MockBuilder>()
             .UsingTestScaffold();
@@ -52,15 +54,16 @@ public class BuilderTests
     [Test]
     public void Builder_TestContext_Can_Add_To_TestContext()
     {
-        var context = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc()
             .UsingBuilder<MockBuilder>()
             //Enqueue saves FirstAdded & LastAdded to TestContext with 2 different methods
             .Enqueue("5")
             .Enqueue("6")
             .Enqueue("3")
-            .UsingTestScaffold()
-            .TestScaffoldContext;
+            .UsingTestScaffold();
+
+        var context = testScaffold.TestScaffoldContext;
 
 
         context.TryGetValue("FirstAdded", out var firstAdded);
@@ -76,7 +79,7 @@ public class BuilderTests
     [Test]
     public void Builder_If_Conditionally_Applies_Action()
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
              .UseIoc()
              .UsingBuilder<MockBuilder>()
              .If(false, b => b.Enqueue("5"))
@@ -100,7 +103,7 @@ public class BuilderTests
     [TestCase(false, "was false")]
     public void Builder_IfElse_Conditionally_Applies_Action_Or_Alternative(bool condition, string expected)
     {
-        var testScaffold = new TestScaffold()
+        using var testScaffold = new TestScaffold()
             .UseIoc()
             .UsingBuilder<MockBuilder>()
             .IfElse(condition, b => b.Enqueue("was true"), b => b.Enqueue("was false"))
