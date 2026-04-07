@@ -1,6 +1,7 @@
 using System.Net;
 using FluentTestScaffold.Sample.Data;
 using FluentTestScaffold.Sample.Services;
+using FluentTestScaffold.Sample.WebApp;
 using FluentTestScaffold.Sample.WebApp.Exceptions.Filters;
 using FluentTestScaffold.Sample.WebApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IOverrideTestService, RealOverrideService>();
+builder.Services.AddSingleton<IOtherTestService, RealOtherService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ShoppingCartService>();

@@ -169,7 +169,7 @@ public class AspNetCoreIntegrationTests
         Assert.DoesNotThrow(() =>
         {
             var testScaffold = new TestScaffold()
-                .UseAspNet<Program>(null);
+                .UseAspNet<Program>(configureServices: null);
         });
     }
 

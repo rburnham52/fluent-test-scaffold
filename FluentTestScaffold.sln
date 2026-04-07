@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.EntityFrameworkCore", "FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj", "{DE392251-0100-4E3B-8FBA-D50BC4E89B28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Tests", "Tests\FluentTestScaffold.Tests\FluentTestScaffold.Tests.csproj", "{8AD731C9-846A-484A-851A-7AE35E2645FE}"
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.WebApp.Tests", "Samples\FluentTestScaffold.Sample.WebApp.Tests\FluentTestScaffold.Sample.WebApp.Tests.csproj", "{9FB93A12-2788-4221-97C6-524A3E5F741F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F577EE9A-0FE6-4D6E-B9F3-606D5C8A2CEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentTestScaffold.Sample.AutofacWebApp", "Samples\FluentTestScaffold.Sample.AutofacWebApp\FluentTestScaffold.Sample.AutofacWebApp.csproj", "{B32EBED5-F4B5-46C6-A62A-02E2B38B197A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{9FB93A12-2788-4221-97C6-524A3E5F741F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FB93A12-2788-4221-97C6-524A3E5F741F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FB93A12-2788-4221-97C6-524A3E5F741F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32EBED5-F4B5-46C6-A62A-02E2B38B197A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32EBED5-F4B5-46C6-A62A-02E2B38B197A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32EBED5-F4B5-46C6-A62A-02E2B38B197A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32EBED5-F4B5-46C6-A62A-02E2B38B197A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0FFDE425-801E-4101-8C37-39A6C17CBAAF} = {492423A5-EF68-4399-BD5E-2F375C3349D1}
@@ -84,5 +90,6 @@ Global
 		{9FB93A12-2788-4221-97C6-524A3E5F741F} = {492423A5-EF68-4399-BD5E-2F375C3349D1}
 		{64F1F602-437E-4890-BB47-FBB8F9E04C6B} = {F577EE9A-0FE6-4D6E-B9F3-606D5C8A2CEA}
 		{8AD731C9-846A-484A-851A-7AE35E2645FE} = {F577EE9A-0FE6-4D6E-B9F3-606D5C8A2CEA}
+		{B32EBED5-F4B5-46C6-A62A-02E2B38B197A} = {492423A5-EF68-4399-BD5E-2F375C3349D1}
 	EndGlobalSection
 EndGlobal

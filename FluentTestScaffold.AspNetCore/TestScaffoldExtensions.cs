@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FluentTestScaffold.AspNetCore;
 
@@ -10,10 +11,11 @@ public static class TestScaffoldExtensions
 {
     public static TestScaffold UseAspNet<TEntryPoint>(
         this TestScaffold testScaffold,
-        Action<IServiceCollection>? configureServices = null)
+        Action<IServiceCollection>? configureServices = null,
+        Action<IHostBuilder>? configureHost = null)
         where TEntryPoint : class
     {
-        var factory = new AspNetWebApplicationFactory<TEntryPoint>(testScaffold, configureServices);
+        var factory = new AspNetWebApplicationFactory<TEntryPoint>(testScaffold, configureServices, configureHost);
         return testScaffold.WithServiceProvider(factory.Services);
     }
 
