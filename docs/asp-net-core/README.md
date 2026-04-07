@@ -78,7 +78,7 @@ To override existing services with a mock or testing service, or to replace a Db
 
 ```csharp
 testScaffold = new TestScaffold()
-    .UseAspNet<Program>(services =>
+    .UseAspNet<Program>(configureServices: services =>
     {
         // replacing a service registration with a mock
         services.ReplaceServiceWithMock<IEmailService>(mockEmailService);
@@ -87,6 +87,48 @@ testScaffold = new TestScaffold()
         services.ReplaceDbContextWithInMemoryProvider<MyApplicationDbContext>();
     });
 ```
+
+> **Note:** When passing `null` to `UseAspNet`, use the named argument `configureServices: null` to avoid ambiguity with the Autofac overload.
+
+### Overriding services in apps using third-party DI containers
+
+If your application uses a third-party DI container such as **Autofac**, the `configureServices` approach above will not work. This is because `ConfigureTestServices` (which `configureServices` uses internally) runs before the container's `ConfigureContainer` callbacks, and the container's registrations overwrite the test overrides.
+
+Use the `configureHost` parameter to inject overrides that run **after** all app-level `ConfigureContainer` callbacks:
+
+```csharp
+// Generic approach — works with any third-party container
+testScaffold = new TestScaffold()
+    .UseAspNet<Program>(
+        configureHost: hostBuilder =>
+            hostBuilder.ConfigureContainer<ContainerBuilder>(cb =>
+                cb.RegisterInstance(mockService).As<IMyService>()));
+```
+
+The `configureHost` callback receives the `IHostBuilder` and is invoked inside `CreateHost`, giving it "last wins" override semantics.
+
+#### Autofac convenience overload
+
+If your app uses Autofac, install `FluentTestScaffold.Autofac` for a strongly-typed overload that hides the `IHostBuilder` plumbing:
+
+```csharp
+// Autofac-specific — no IHostBuilder knowledge needed
+testScaffold = new TestScaffold()
+    .UseAspNet<Program>(
+        configureAutofac: cb =>
+            cb.RegisterInstance(mockService).As<IMyService>());
+```
+
+> **Important:** The `configureAutofac` parameter is **required** (not optional) to avoid overload ambiguity. Callers who do not need Autofac overrides should use the parameterless `UseAspNet<TEntryPoint>()`.
+
+#### When to use which override method
+
+| Your app uses | Override method | Why |
+|---|---|---|
+| Default .NET DI only | `configureServices` | `ConfigureTestServices` works — no container overwrites it |
+| Autofac | `configureAutofac` (Autofac overload) | Runs after Autofac modules; strongly typed |
+| Other third-party container | `configureHost` | Generic escape hatch; works with any container |
+| Custom factory subclass | Override `CreateHost` directly | Full control; use `UseAspNet<TFactory, TEntry>` |
 
 ### Populating your In-memory database with test data
 

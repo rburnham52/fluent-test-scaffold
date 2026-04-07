@@ -101,6 +101,23 @@ var testScaffold = new TestScaffold()
     });
 ```
 
+### Autofac with ASP.NET Core Integration Tests
+
+When your ASP.NET Core app uses Autofac as its DI container (via `UseServiceProviderFactory<AutofacServiceProviderFactory>`), the standard `configureServices` parameter on `UseAspNet` will **not** override services registered by Autofac modules. This is because `ConfigureContainer` runs after `ConfigureTestServices` in the ASP.NET Core host build pipeline.
+
+Use the Autofac-specific `UseAspNet` overload to override Autofac-registered services:
+
+```csharp
+var testScaffold = new TestScaffold()
+    .UseAspNet<Program>(
+        configureAutofac: cb =>
+            cb.RegisterInstance(mockService).As<IMyService>());
+```
+
+This overload wraps `configureHost` internally with `hostBuilder.ConfigureContainer<ContainerBuilder>(...)`, ensuring your test overrides run **after** the app's Autofac module registrations.
+
+See [ASP.NET Core - Overriding services in apps using third-party DI containers](../asp-net-core) for the full guide.
+
 ## Service Builder
 When calling UseIoc, the constructor func injects a Service Builder that wraps the IOC's Container Builder and also exposes some helper methods to Register Builders and the Test Scaffold with the IOC container.
 

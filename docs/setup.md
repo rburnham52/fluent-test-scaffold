@@ -22,6 +22,7 @@ flowchart TB
     CORE --> EF
     CORE --> BDD
     CORE --> ASPNET
+    AUTOFAC --> ASPNET
     
     style CORE fill:#e3f2fd,stroke:#000,stroke-width:2px,color:#000
     style AUTOFAC fill:#f3e5f5,stroke:#000,stroke-width:2px,color:#000
@@ -35,7 +36,7 @@ Install the core Library.
 [Install `FluentTestScaffold.Core`](https://github.com/rburnham52/fluent-test-scaffold/pkgs/nuget/FluentTestScaffold.Core)
 
 ### Autofac Ioc support
-To enable Autofac ioc Container
+To enable Autofac ioc Container (includes ASP.NET Core integration support)
 
 [Install `FluentTestScaffold.Autofac`](https://github.com/rburnham52/fluent-test-scaffold/pkgs/nuget/FluentTestScaffold.Autofac)
 
