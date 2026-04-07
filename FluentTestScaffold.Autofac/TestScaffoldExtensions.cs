@@ -6,7 +6,7 @@ namespace FluentTestScaffold.Core;
 /// <summary>
 /// TestScaffold extensions
 /// </summary>
-public static class TestScaffoldExtensions
+public static partial class TestScaffoldExtensions
 {
     /// <summary>
     /// Configures Test Scaffold context.

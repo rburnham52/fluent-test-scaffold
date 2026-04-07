@@ -66,6 +66,7 @@
         <ProjectReference Include="..\..\FluentTestScaffold.EntityFrameworkCore\FluentTestScaffold.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\FluentTestScaffold.Nunit\FluentTestScaffold.Nunit.csproj" />
         <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample\FluentTestScaffold.Sample.csproj" />
+        <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample.AutofacWebApp\FluentTestScaffold.Sample.AutofacWebApp.csproj" />
         <ProjectReference Include="..\..\Samples\FluentTestScaffold.Sample.WebApp\FluentTestScaffold.Sample.WebApp.csproj" />
     </ItemGroup>
 
