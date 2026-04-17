@@ -14,7 +14,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold Scenario(this TestScaffold testScaffold, string description)
         {
-            LogStep(testScaffold, nameof(Scenario), description);
+            TestScaffoldBddHelpers.LogStep(testScaffold, nameof(Scenario), description);
             return testScaffold;
         }
         /// <summary>
@@ -22,7 +22,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold Given(this TestScaffold testScaffold, string description, Action<TestScaffold> action)
         {
-            return PerformAction(testScaffold, nameof(Given), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(Given), description, action);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold Given<TService>(this TestScaffold testScaffold, string description, Action<TService> action) where TService : notnull
         {
-            return PerformAction(testScaffold, nameof(Given), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(Given), description, action);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold When(this TestScaffold testScaffold, string description, Action<TestScaffold> action)
         {
-            return PerformAction(testScaffold, nameof(When), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(When), description, action);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold When<TService>(this TestScaffold testScaffold, string description, Action<TService> action) where TService : notnull
         {
-            return PerformAction(testScaffold, nameof(When), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(When), description, action);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold Then(this TestScaffold testScaffold, string description, Action<TestScaffold> action)
         {
-            return PerformAction(testScaffold, nameof(Then), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(Then), description, action);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold Then<TService>(this TestScaffold testScaffold, string description, Action<TService> action) where TService : notnull
         {
-            return PerformAction(testScaffold, nameof(Then), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(Then), description, action);
         }
 
 
@@ -71,7 +71,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold And(this TestScaffold testScaffold, string description, Action<TestScaffold> action)
         {
-            return PerformAction(testScaffold, nameof(And), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(And), description, action);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static TestScaffold And<TService>(this TestScaffold testScaffold, string description, Action<TService> action) where TService : notnull
         {
-            return PerformAction(testScaffold, nameof(And), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(And), description, action);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace FluentTestScaffold.Core
         /// <param name="testScaffold"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
-        public static void Catch<T>(this TestScaffold testScaffold, Action action)
+        public static void Catch<T>(this TestScaffold testScaffold, Action action) where T : Exception
         {
             try
             {
@@ -108,38 +108,11 @@ namespace FluentTestScaffold.Core
         /// <param name="testScaffold"></param>
         /// <param name="action"></param>
         /// <typeparam name="T"></typeparam>
-        public static void Handle<T>(this TestScaffold testScaffold, Action<T> action)
+        public static void Handle<T>(this TestScaffold testScaffold, Action<T> action) where T : Exception
         {
-            var exception = testScaffold.TestScaffoldContext.Get<T>("CaughtException");
-            if (exception != null)
-                action(exception);
-        }
-
-
-        private static TestScaffold PerformAction(TestScaffold testScaffold, string actionType, string description, Action<TestScaffold> action)
-        {
-            var logger = testScaffold.ServiceProvider?.GetService<ITestScaffoldLogger>();
-            if (logger != null)
-                logger.Info(actionType + " " + description);
-
-            action(testScaffold);
-            return testScaffold;
-        }
-
-        private static TestScaffold PerformAction<TService>(TestScaffold testScaffold, string actionType, string description, Action<TService> action) where TService : notnull
-        {
-            LogStep(testScaffold, actionType, description);
-
-            var service = testScaffold.Resolve<TService>();
-            action(service);
-            return testScaffold;
-        }
-
-        private static void LogStep(TestScaffold testScaffold, string actionType, string description)
-        {
-            var logger = testScaffold.ServiceProvider?.GetService<ITestScaffoldLogger>();
-            if (logger != null)
-                logger.Info(actionType + " " + description);
+            if(!testScaffold.TestScaffoldContext.TryGetValue<T>("CaughtException", out var exception) || exception == null)
+                throw new InvalidOperationException($"Handle<{typeof(T).Name}> was called but no exception of type {typeof(T).Name} was caught. Ensure Catch<{typeof(T).Name}> is called before Handle.");
+            action(exception);
         }
     }
 }
