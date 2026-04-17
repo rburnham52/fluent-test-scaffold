@@ -6,6 +6,12 @@ namespace FluentTestScaffold.Core
     /// </summary>
     public static class TestScaffoldAsyncBddExtensions
     {
+        private const string GivenActionType = "Given";
+        private const string WhenActionType = "When";
+        private const string ThenActionType = "Then";
+        private const string AndActionType = "And";
+        private const string ScenarioActionType = "Scenario";
+
         // === Async extensions on TestScaffold ===
 
         /// <summary>
@@ -13,7 +19,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> GivenAsync(this TestScaffold testScaffold, string description, Func<TestScaffold, Task> action)
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(GivenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -21,7 +27,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> GivenAsync<TService>(this TestScaffold testScaffold, string description, Func<TService, Task> action) where TService : notnull
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(GivenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -29,7 +35,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> WhenAsync(this TestScaffold testScaffold, string description, Func<TestScaffold, Task> action)
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(WhenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -37,7 +43,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> WhenAsync<TService>(this TestScaffold testScaffold, string description, Func<TService, Task> action) where TService : notnull
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(WhenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -45,7 +51,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> ThenAsync(this TestScaffold testScaffold, string description, Func<TestScaffold, Task> action)
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(ThenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -53,7 +59,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> ThenAsync<TService>(this TestScaffold testScaffold, string description, Func<TService, Task> action) where TService : notnull
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(ThenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -61,7 +67,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> AndAsync(this TestScaffold testScaffold, string description, Func<TestScaffold, Task> action)
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(AndAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, AndActionType, description, action);
         }
 
         /// <summary>
@@ -69,7 +75,7 @@ namespace FluentTestScaffold.Core
         /// </summary>
         public static Task<TestScaffold> AndAsync<TService>(this TestScaffold testScaffold, string description, Func<TService, Task> action) where TService : notnull
         {
-            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(AndAsync), description, action);
+            return TestScaffoldBddHelpers.PerformActionAsync(testScaffold, AndActionType, description, action);
         }
 
         /// <summary>
@@ -113,7 +119,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> ScenarioAsync(this Task<TestScaffold> testScaffoldTask, string description)
         {
             var testScaffold = await testScaffoldTask;
-            TestScaffoldBddHelpers.LogStep(testScaffold, nameof(ScenarioAsync), description);
+            TestScaffoldBddHelpers.LogStep(testScaffold, ScenarioActionType, description);
             return testScaffold;
         }
 
@@ -123,7 +129,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> GivenAsync(this Task<TestScaffold> testScaffoldTask, string description, Func<TestScaffold, Task> action)
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(GivenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -132,7 +138,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> GivenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Func<TService, Task> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(GivenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -141,7 +147,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> GivenAsync(this Task<TestScaffold> testScaffoldTask, string description, Action<TestScaffold> action)
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(GivenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -150,7 +156,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> GivenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Action<TService> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(GivenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, GivenActionType, description, action);
         }
 
         /// <summary>
@@ -159,7 +165,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> WhenAsync(this Task<TestScaffold> testScaffoldTask, string description, Func<TestScaffold, Task> action)
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(WhenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -168,7 +174,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> WhenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Func<TService, Task> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(WhenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -177,7 +183,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> WhenAsync(this Task<TestScaffold> testScaffoldTask, string description, Action<TestScaffold> action)
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(WhenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -186,7 +192,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> WhenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Action<TService> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(WhenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, WhenActionType, description, action);
         }
 
         /// <summary>
@@ -195,7 +201,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> ThenAsync(this Task<TestScaffold> testScaffoldTask, string description, Func<TestScaffold, Task> action)
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(ThenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -204,7 +210,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> ThenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Func<TService, Task> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(ThenAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -213,7 +219,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> ThenAsync(this Task<TestScaffold> testScaffoldTask, string description, Action<TestScaffold> action)
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(ThenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -222,7 +228,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> ThenAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Action<TService> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(ThenAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, ThenActionType, description, action);
         }
 
         /// <summary>
@@ -231,7 +237,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> AndAsync(this Task<TestScaffold> testScaffoldTask, string description, Func<TestScaffold, Task> action)
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(AndAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, AndActionType, description, action);
         }
 
         /// <summary>
@@ -240,7 +246,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> AndAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Func<TService, Task> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, nameof(AndAsync), description, action);
+            return await TestScaffoldBddHelpers.PerformActionAsync(testScaffold, AndActionType, description, action);
         }
 
         /// <summary>
@@ -249,7 +255,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> AndAsync(this Task<TestScaffold> testScaffoldTask, string description, Action<TestScaffold> action)
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(AndAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, AndActionType, description, action);
         }
 
         /// <summary>
@@ -258,7 +264,7 @@ namespace FluentTestScaffold.Core
         public static async Task<TestScaffold> AndAsync<TService>(this Task<TestScaffold> testScaffoldTask, string description, Action<TService> action) where TService : notnull
         {
             var testScaffold = await testScaffoldTask;
-            return TestScaffoldBddHelpers.PerformAction(testScaffold, nameof(AndAsync), description, action);
+            return TestScaffoldBddHelpers.PerformAction(testScaffold, AndActionType, description, action);
         }
     }
 }
