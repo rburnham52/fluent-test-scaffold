@@ -1,7 +1,26 @@
 namespace FluentTestScaffold.Core;
 
-public class TestScaffoldContext : Dictionary<string, object>
+public interface ITestScaffoldContext
 {
+    bool TryGetValue<TValue>(out TValue? value);
+    bool TryGetValue<TValue>(string? key, out TValue? value);
+    void Set<T>(T? data);
+    void Set<T>(T? data, string? key);
+    void Set<T>(Func<T> func);
+    T Get<T>();
+    T Get<T>(string? key);
+    bool ContainsKey(string key);
+    object? this[string? key] { get; set; }
+}
+
+public class TestScaffoldContext : Dictionary<string, object?>, ITestScaffoldContext
+{
+    object? ITestScaffoldContext.this[string? key]
+    {
+        get => this.GetValueOrDefault(key ?? throw new InvalidOperationException("Key can not be null"));
+        set => base[key ?? throw new InvalidOperationException("Key can not be null")] = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
     public bool TryGetValue<TValue>(out TValue? value)
     {
         return TryGetValue(GetDefaultKey<TValue>(), out value);
@@ -11,7 +30,7 @@ public class TestScaffoldContext : Dictionary<string, object>
     {
         if (key != null && base.TryGetValue(key, out var result))
         {
-            value = TheValueIsAFactoryMethod<TValue>(result) ? CallTheFactoryMethodToGetTheValue<TValue>(result) : (TValue)result;
+            value = TheValueIsAFactoryMethod<TValue>(result) ? CallTheFactoryMethodToGetTheValue<TValue>(result!) : (TValue?)result;
             return true;
         }
 
@@ -24,17 +43,17 @@ public class TestScaffoldContext : Dictionary<string, object>
         return typeof(T).FullName;
     }
 
-    public void Set<T>(T data)
+    public void Set<T>(T? data)
     {
         Set(data, GetDefaultKey<T>());
     }
 
-    public void Set<T>(T data, string? key)
+    public void Set<T>(T? data, string? key)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
-        if (data != null)
-            this[key] = data;
+
+        this[key] = data;
     }
 
     public void Set<T>(Func<T> func)
@@ -51,7 +70,7 @@ public class TestScaffoldContext : Dictionary<string, object>
     {
         var value = this[key ?? throw new ArgumentNullException(nameof(key))];
         if (TheValueIsAFactoryMethod<T>(value))
-            value = CallTheFactoryMethodToGetTheValue<T>(value);
+            value = CallTheFactoryMethodToGetTheValue<T>(value!);
         return (T)value!;
     }
 

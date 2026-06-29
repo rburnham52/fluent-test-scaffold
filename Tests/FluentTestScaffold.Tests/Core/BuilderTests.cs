@@ -66,8 +66,8 @@ public class BuilderTests
         var context = testScaffold.TestScaffoldContext;
 
 
-        context.TryGetValue("FirstAdded", out var firstAdded);
-        context.TryGetValue("LastAdded", out var lastAdded);
+        context.TryGetValue<string>("FirstAdded", out var firstAdded);
+        context.TryGetValue<string>("LastAdded", out var lastAdded);
 
 
         Assert.IsNotNull(firstAdded);
