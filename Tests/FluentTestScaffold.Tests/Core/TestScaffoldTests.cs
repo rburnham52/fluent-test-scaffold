@@ -185,7 +185,7 @@ public class TestScaffoldTests
         });
 
         // Verify the exception message indicates the issue
-        Assert.IsTrue(exception.Message.Contains("MockService") ||
+        Assert.IsTrue(exception!.Message.Contains("MockService") ||
                      exception.Message.Contains("object") ||
                      exception.Message.Contains("Unable to resolve") ||
                      exception.Message.Contains("No service for type"),

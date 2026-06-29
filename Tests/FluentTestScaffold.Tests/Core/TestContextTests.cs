@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using FluentTestScaffold.Core;
 using NUnit.Framework;
 
@@ -95,6 +96,16 @@ namespace FluentTestScaffold.Tests.Core
         }
 
         [Test]
+        public void TryGetValueWithFactoryMethodWithNull()
+        {
+            var context = new TestScaffoldContext();
+            context.Set<string>((string?)null);
+            bool success = context.TryGetValue<string>(out var retrievedValue);
+            Assert.IsTrue(success);
+            Assert.IsNull(retrievedValue);
+        }
+
+        [Test]
         public void TryGetValueWithNonExistentKey()
         {
             var context = new TestScaffoldContext();
@@ -131,6 +142,25 @@ namespace FluentTestScaffold.Tests.Core
         {
             var context = new TestScaffoldContext();
             Assert.Throws<ArgumentNullException>(() => context.Get<int>(null));
+        }
+
+        [Test]
+        public void SetNullValue()
+        {
+            var context = new TestScaffoldContext();
+
+            context.Set("Test value", "Key");
+
+            context.Get<string>("Key")
+                .Should()
+                .Be("Test value");
+
+
+            context.Set<string>(null, "Key");
+
+            context.Get<string>("Key")
+                .Should()
+                .BeNull();
         }
     }
 }
