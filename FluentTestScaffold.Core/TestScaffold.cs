@@ -19,22 +19,42 @@ public class TestScaffold : IDisposable
     /// <summary>
     /// Provides a places to store data during setup that can be accesses later.
     /// </summary>
-    public TestScaffoldContext TestScaffoldContext { get; private set; } = new();
+    public ITestScaffoldContext TestScaffoldContext { get; private set; }
 
     /// <summary>
-    /// Creates an instance of TestScaffold
+    /// Creates an instance of TestScaffold with default context
     /// </summary>
     public TestScaffold()
     {
         Options = ConfigOptions.Default;
+        TestScaffoldContext = new TestScaffoldContext();
     }
 
     /// <summary>
-    /// Creates an instance of TestScaffold with config
+    /// Creates an instance of TestScaffold with a custom context implementation
+    /// </summary>
+    public TestScaffold(ITestScaffoldContext testScaffoldContext)
+    {
+        Options = ConfigOptions.Default;
+        TestScaffoldContext = testScaffoldContext ?? throw new ArgumentNullException(nameof(testScaffoldContext));
+    }
+
+    /// <summary>
+    /// Creates an instance of TestScaffold with config and default context
     /// </summary>
     public TestScaffold(ConfigOptions options)
     {
         Options = options;
+        TestScaffoldContext = new TestScaffoldContext();
+    }
+
+    /// <summary>
+    /// Creates an instance of TestScaffold with config and custom context implementation
+    /// </summary>
+    public TestScaffold(ConfigOptions options, ITestScaffoldContext? testScaffoldContext)
+    {
+        Options = options;
+        TestScaffoldContext = testScaffoldContext ?? new TestScaffoldContext();
     }
 
     /// <summary>
@@ -154,7 +174,7 @@ public class TestScaffold : IDisposable
             configureServices((TServiceBuilder)serviceBuilder);
 
         serviceBuilder.RegisterSingleton(this);
-        serviceBuilder.RegisterSingleton(TestScaffoldContext);
+        serviceBuilder.RegisterSingleton<ITestScaffoldContext>(TestScaffoldContext);
         serviceBuilder.RegisterSingleton(DefaultLogger.Logger);
         serviceBuilder.RegisterBuildersWithAutoDiscovery();
         serviceBuilder.RegisterDataTemplatesWithAutoDiscovery();

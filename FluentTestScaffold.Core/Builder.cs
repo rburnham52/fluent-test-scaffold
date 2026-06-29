@@ -12,7 +12,7 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     private readonly Queue<Action<IServiceProvider>> _buildActions = new();
 
     protected IServiceProvider ServiceProvider => _serviceProvider;
-    protected TestScaffoldContext TestScaffoldContext => _serviceProvider.GetRequiredService<TestScaffoldContext>();
+    protected ITestScaffoldContext TestScaffoldContext => _serviceProvider.GetRequiredService<ITestScaffoldContext>();
 
     /// <summary>
     /// Builder Constructor
@@ -58,8 +58,8 @@ public class Builder<TBuilder> : IBuilder where TBuilder : Builder<TBuilder>
     /// <returns></returns>
     public TBuilder SetTestContext(string key, object value)
     {
-        var testContext = _serviceProvider.GetRequiredService<TestScaffoldContext>();
-        testContext[key] = value;
+        var testContext = _serviceProvider.GetRequiredService<ITestScaffoldContext>();
+        testContext.Set(value, key);
 
         return (TBuilder)this;
     }
