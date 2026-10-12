@@ -88,7 +88,7 @@ public class TestScaffoldTests
             .UseIoc();
 
         Assert.AreSame(testScaffold, testScaffold.Resolve<TestScaffold>());
-        Assert.AreSame(testScaffold.TestScaffoldContext, testScaffold.Resolve<TestScaffoldContext>());
+        Assert.AreSame(testScaffold.TestScaffoldContext, testScaffold.Resolve<ITestScaffoldContext>());
         Assert.AreSame(DefaultLogger.Logger, testScaffold.Resolve<ITestScaffoldLogger>());
     }
 
@@ -274,7 +274,7 @@ public class TestScaffoldTests
         });
 
         // Verify the exception message indicates the issue
-        Assert.IsTrue(exception.Message.Contains("MockService") ||
+        Assert.IsTrue(exception!.Message.Contains("MockService") ||
                      exception.Message.Contains("object") ||
                      exception.Message.Contains("Unable to resolve") ||
                      exception.Message.Contains("No service for type"),
