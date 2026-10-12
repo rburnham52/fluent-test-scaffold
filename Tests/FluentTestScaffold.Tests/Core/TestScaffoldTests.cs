@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using FluentTestScaffold.Core;
 using FluentTestScaffold.Tests.CustomBuilder.DataTemplates;
@@ -20,6 +21,94 @@ public class TestScaffoldTests
 
         var builder = testScaffold.UsingBuilder<MockBuilder>();
         Assert.IsNotNull(builder);
+    }
+
+    [Test]
+    public void TestScaffold_UsingBuilder_Without_Ioc_Built()
+    {
+        using var testScaffold = new TestScaffold();
+
+        var builder = testScaffold.UsingBuilder<MockBuilder>();
+
+        Assert.IsNotNull(builder);
+        Assert.IsNotNull(testScaffold.ServiceProvider);
+    }
+
+    [Test]
+    public void TestScaffold_UsingBuilder_Throws_When_Builder_Not_Registered()
+    {
+        using var testScaffold = new TestScaffold(new ConfigOptions { AutoDiscovery = AutoDiscovery.None })
+            .UseIoc();
+
+        var exception = Assert.Throws<InvalidOperationException>(() => testScaffold.UsingBuilder<MockBuilder>());
+
+        Assert.That(exception!.Message, Does.Contain("Register the Builder"));
+    }
+
+    [Test]
+    public void TestScaffold_Uses_Default_Options_When_None_Provided()
+    {
+        using var testScaffold = new TestScaffold();
+
+        Assert.AreEqual(AutoDiscovery.All, testScaffold.Options.AutoDiscovery);
+        CollectionAssert.Contains(testScaffold.Options.Assemblies, typeof(TestScaffoldTests).Assembly);
+        Assert.IsFalse(testScaffold.Options.Assemblies.Any(a =>
+            a.FullName!.StartsWith("Microsoft.") || a.FullName.StartsWith("System.")));
+    }
+
+    [Test]
+    public void TestScaffold_Uses_Provided_Options()
+    {
+        var options = new ConfigOptions { AutoDiscovery = AutoDiscovery.None };
+
+        using var testScaffold = new TestScaffold(options);
+
+        Assert.AreSame(options, testScaffold.Options);
+    }
+
+    [Test]
+    public void TestScaffold_UseIoc_Called_Twice_Keeps_Existing_Service_Provider()
+    {
+        var secondConfigureCalled = false;
+        using var testScaffold = new TestScaffold()
+            .UseIoc(ctx => ctx.Container.AddSingleton<MockService>());
+
+        var serviceProvider = testScaffold.ServiceProvider;
+
+        testScaffold.UseIoc(_ => secondConfigureCalled = true);
+
+        Assert.AreSame(serviceProvider, testScaffold.ServiceProvider);
+        Assert.IsFalse(secondConfigureCalled);
+    }
+
+    [Test]
+    public void TestScaffold_Registers_Itself_And_Context_With_Ioc()
+    {
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        Assert.AreSame(testScaffold, testScaffold.Resolve<TestScaffold>());
+        Assert.AreSame(testScaffold.TestScaffoldContext, testScaffold.Resolve<TestScaffoldContext>());
+        Assert.AreSame(DefaultLogger.Logger, testScaffold.Resolve<ITestScaffoldLogger>());
+    }
+
+    [Test]
+    public void TestScaffold_Dispose_Clears_Service_Provider()
+    {
+        var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        testScaffold.Dispose();
+
+        Assert.IsNull(testScaffold.ServiceProvider);
+    }
+
+    [Test]
+    public void TestScaffold_Dispose_Without_Ioc_Built_Does_Not_Throw()
+    {
+        var testScaffold = new TestScaffold();
+
+        Assert.DoesNotThrow(() => testScaffold.Dispose());
     }
 
     [Test]

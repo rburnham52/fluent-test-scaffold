@@ -73,6 +73,21 @@ public class AutofacServiceBuilderTests
         Assert.Throws<ComponentNotRegisteredException>(() => testScaffold.Resolve<InventoryBuilder>());
     }
 
+    [Test]
+    public void AutofacServiceBuilder_CustomServiceBuilder_WithDefaultConstructor()
+    {
+        using var testScaffold = new TestScaffold()
+            .UseAutofac(new DefaultConstructorAutofacServiceBuilder(),
+                ctx => ctx.Container.RegisterType<MockService>().SingleInstance());
+
+        Assert.AreSame(testScaffold, testScaffold.Resolve<TestScaffold>());
+        Assert.NotNull(testScaffold.Resolve<MockService>());
+    }
+
+    private class DefaultConstructorAutofacServiceBuilder : AutofacServiceBuilder<DefaultConstructorAutofacServiceBuilder>
+    {
+    }
+
     //Scoped
 
     [Test]
