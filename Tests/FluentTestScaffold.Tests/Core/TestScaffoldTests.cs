@@ -88,7 +88,7 @@ public class TestScaffoldTests
             .UseIoc();
 
         Assert.AreSame(testScaffold, testScaffold.Resolve<TestScaffold>());
-        Assert.AreSame(testScaffold.TestScaffoldContext, testScaffold.Resolve<TestScaffoldContext>());
+        Assert.AreSame(testScaffold.TestScaffoldContext, testScaffold.Resolve<ITestScaffoldContext>());
         Assert.AreSame(DefaultLogger.Logger, testScaffold.Resolve<ITestScaffoldLogger>());
     }
 
