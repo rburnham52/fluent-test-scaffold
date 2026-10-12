@@ -132,6 +132,48 @@ public class AspNetCoreIntegrationTests
     }
 
     [Test]
+    public void GetWebApplicationHttpClient_WithoutWebApplicationFactory_ShouldThrowException()
+    {
+        // Arrange
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            testScaffold.GetWebApplicationHttpClient<Program>());
+
+        Assert.That(exception.Message, Does.Contain("No WebApplicationFactory found"));
+    }
+
+    [Test]
+    public void GetWebApplicationHttpClient_WithCustomFactoryWithoutWebApplicationFactory_ShouldThrowException()
+    {
+        // Arrange
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            testScaffold.GetWebApplicationHttpClient<CustomWebApplicationFactory, Program>());
+
+        Assert.That(exception.Message, Does.Contain("No WebApplicationFactory found"));
+    }
+
+    [Test]
+    public void UseAspNet_AfterUseIoc_ShouldThrowException()
+    {
+        // Arrange
+        using var testScaffold = new TestScaffold()
+            .UseIoc();
+
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            testScaffold.UseAspNet<Program>());
+
+        Assert.That(exception.Message, Does.Contain("already been initialised"));
+    }
+
+    [Test]
     public void GetWebApplicationHttpClient_MultipleCalls_ShouldReturnSameInstance()
     {
         // Arrange

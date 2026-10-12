@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FluentTestScaffold.Core;
 using NUnit.Framework;
 
@@ -117,6 +118,61 @@ namespace FluentTestScaffold.Tests.Core
             var context = new TestScaffoldContext();
             bool success = context.TryGetValue("myKey", out int value);
             Assert.IsFalse(success);
+        }
+
+        [Test]
+        public void TryGetValueWithNullKey()
+        {
+            var context = new TestScaffoldContext();
+            context.Set(42);
+            bool success = context.TryGetValue(null, out int value);
+            Assert.IsFalse(success);
+            Assert.AreEqual(0, value);
+        }
+
+        [Test]
+        public void TryGetValueWithFactoryMethodAndCustomKey()
+        {
+            var context = new TestScaffoldContext { ["myKey"] = new Func<int>(() => 42) };
+            bool success = context.TryGetValue("myKey", out int value);
+            Assert.IsTrue(success);
+            Assert.AreEqual(42, value);
+        }
+
+        [Test]
+        public void SetNullValueDoesNotStoreValue()
+        {
+            var context = new TestScaffoldContext();
+            context.Set<string?>(null, "myKey");
+            Assert.IsFalse(context.ContainsKey("myKey"));
+        }
+
+        [Test]
+        public void SetOverwritesExistingValue()
+        {
+            var context = new TestScaffoldContext();
+            context.Set(1);
+            context.Set(2);
+            Assert.AreEqual(2, context.Get<int>());
+        }
+
+        [Test]
+        public void SetFactoryMethodIsEvaluatedOnEachGet()
+        {
+            var count = 0;
+            var context = new TestScaffoldContext();
+            context.Set(() => ++count);
+
+            Assert.AreEqual(0, count);
+            Assert.AreEqual(1, context.Get<int>());
+            Assert.AreEqual(2, context.Get<int>());
+        }
+
+        [Test]
+        public void GetWithNonExistentKeyThrowsException()
+        {
+            var context = new TestScaffoldContext();
+            Assert.Throws<KeyNotFoundException>(() => context.Get<int>());
         }
 
         [Test]
